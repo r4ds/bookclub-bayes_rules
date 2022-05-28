@@ -2,7 +2,7 @@
 
 Welcome to the R4DS Bayes Rules! Book Club!
 
-We are working together to read [_Bayes Rules!_](https://www.bayesrulesbook.com/) by Alicia A. Johnson, Miles Q. Ott, and Mine Dogucu (Chapman and Hall/CRC, copyright 2022, [9780367255398](https://www.routledge.com/Bayes-Rules-An-Introduction-to-Applied-Bayesian-Modeling/Johnson-Ott-Dogucu/p/book/9780367255398?utm_source=website&utm_medium=shared_link&utm_campaign=B023819_jm1_5ll_7pp_d676_bayesrulesauthorshare)).
+We are working together to read [_Bayes Rules!_](https://www.bayesrulesbook.com/) by Alicia A. Johnson, Miles Q. Ott, & Mine Dogucu (Chapman and Hall/CRC, copyright 2022, [9780367255398](https://www.routledge.com/Bayes-Rules-An-Introduction-to-Applied-Bayesian-Modeling/Johnson-Ott-Dogucu/p/book/9780367255398?utm_source=website&utm_medium=shared_link&utm_campaign=B023819_jm1_5ll_7pp_d676_bayesrulesauthorshare)).
 Join the [#book_club-bayes_rules](https://rfordatascience.slack.com/archives/C03EK4FUMQX) channel on the [R4DS Slack](https://r4ds.io/join) to participate.
 As we read, we are producing [notes about the book](https://r4ds.io/bayes_rules).
 
