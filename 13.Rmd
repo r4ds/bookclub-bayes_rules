@@ -1,4 +1,4 @@
-# The Big (Bayesian) Picture
+# Logistic Regression
 
 **Learning objectives:**
 

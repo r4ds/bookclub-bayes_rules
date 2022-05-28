@@ -1,4 +1,4 @@
-# The Big (Bayesian) Picture
+# Evaluating Regression Models
 
 **Learning objectives:**
 

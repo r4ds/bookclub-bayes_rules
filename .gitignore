@@ -5,8 +5,8 @@
 .DS_Store
 _book
 _bookdown_files
-bookclub-BOOKABBR.Rmd
-bookclub-BOOKABBR.html
-bookclub-BOOKABBR.knit.md
-bookclub-BOOKABBR_files
+bookclub-bayes_rules.Rmd
+bookclub-bayes_rules.html
+bookclub-bayes_rules.knit.md
+bookclub-bayes_rules_files
 libs

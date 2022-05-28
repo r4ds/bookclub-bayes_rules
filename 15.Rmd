@@ -1,4 +1,4 @@
-# The Big (Bayesian) Picture
+# Hierarchical Models are Exciting
 
 **Learning objectives:**
 

@@ -1,4 +1,4 @@
-# The Big (Bayesian) Picture
+# Non-Normal Hierarchical Regression & Classification
 
 **Learning objectives:**
 
