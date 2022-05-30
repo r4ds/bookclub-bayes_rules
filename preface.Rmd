@@ -1,0 +1,45 @@
+# Preface
+
+## Bayesian statistics?
+
+* Frequentist and Bayesian methods share: *learning from data* 
+
+But Bayesian allows: 
+
+- new data + prior  
+- results easier to interpret
+- shines when frequentist fails 
+- computational tools more accesible now
+
+## Tips and tricks from the authors
+
+- Learn by doing  
+- Embrace a growth mindset (we will do mistakes!) 
+- Interpret Bayes in a context (ethics and maybe more)
+- Practice, practice, practice
+
+
+## Set up
+
+Install **rstan** : https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started
+
+```{r setup, eval=FALSE}
+install.packages(c("bayesrules", "tidyverse", "janitor", "rstanarm",
+                   "bayesplot", "tidybayes", "broom.mixed", "modelr",
+                   "e1071", "forcats"), 
+                 dependencies = TRUE)
+```
+
+On linux (ubuntu 22) I had to update some dependencies.
+
+## The authors:
+
+Alicia A. Johnson : Website https://ajohns24.github.io/portfolio/
+
+Miles Q. Ott: https://twitter.com/Miles_Ott
+
+Mine Dogucu: https://twitter.com/MineDogucu
+
+
+
+

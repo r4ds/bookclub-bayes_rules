@@ -2,12 +2,133 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- Learn to think like a Bayesian.
+- Explore the foundations of a Bayesian data analysis and how they contrast with the frequentist alternative
+- Learn a little bit about the history of the Bayesian philosophy
+
+## Thinking like a Bayesian 1/4
+
+```{r, fig.cap="A Bayesian knowledge-building diagram"}
+DiagrammeR::grViz("
+  digraph thinking_bayesian{
+  
+  # node statement
+  node [shape = oval]
+  a [label = 'Prior'];
+  b [label = 'Data'];
+  c [label = 'Posterior'];
+  d [label = 'New data'];
+  e [label = 'Posterior'];
+  f [label = 'New data']
+  g [style = invisible ]
+  
+  # edge statement
+  a -> c b -> c
+  c -> e d -> e
+  f-> g [style = dashed] e-> g [style = dashed]
+  }")
+```
+**Both Bayesian and frequentist share a common goal: learn from data about the world around** 
+
+Both use data to fit nodels, make predictions and evaluate hypothesis
+
+## Quiz time! 
+
+4-5: frequentist  
+6-8: a bit of both  
+9-12: Bayesian  
+
+TODO link to script and data in repo
+
+## Thinking like a Bayesian 2/4
+
+###  Interpreting probability: 
+
+- Bayesian philosophy: relative plausibility of an event 
+
+- Frequentist philosophy: long-run relative frequency of a repeatable  event
+
+## Thinking like a Bayesian 3/4
+
+### Bayesian balancing act
+
+Two claims: 
+
+- Zuofo claims he can predict the outcome of coin flip
+
+- Kavya claims she can distinguish between natural and artificial sweeteners 
+
+If both succeed with a 10/10 sucess rate what can we conclude from this?
+
+The frequentist approach will discard prior knowledge (it is harder to predict coin flip that having a sensitive palate to sweeteners) and the Bayesian want to use this prior knowledge. 
+
+-> How can we balance Prior and Data?
+
+## Thinking like  a Bayesian 4/4
+
+### Asking question
+
+What's the chance that I actually have the disease (a)?  Versus I do not have the disease, What's the chance that I would have gotten this positive test results (b)? 
+
+```{r}
+# building data
+disease <- c(rep("disease", 4), rep("no disease", 96))
+a <- "test positive" ; b <- "test negative"
+test <- c(rep(a, 3), b, rep(a, 9), rep(b, 87))
+disease_status <- data.frame(disease, test)
+# contingency table
+contingency_disease <- table(disease_status)
+contingency_disease <- addmargins(contingency_disease)
+knitr::kable(contingency_disease )
+```
+
+(a): `3 / 12`
+
+(b): `9 / 96`
+
+Analogy between (b) and *p-value*: it is more natural to study the uncertainty of a yet-unproven hypothesis than the uncertainty of data we have already observed.(authors'opinion) 
+
+## Quick history lesson 
+
+From stigmatized to being used in modeling COVID-19 rates. Why?
+
+- advances in computing 
+- departure from tradition (what people learn is what people use)
+- reevaluation of subjectivity : frequentist is also subjective and subjectivity is not any more a dirty word.
+
+
+## Look ahead 
+
+### 4 units
+
+1. Bayesian foundations: 5 chapters
+
+Focus: models & distributions (conjugate family) 
+
+2. Posterior simulations & analysis: 3 chapters
+
+Focus: when conjugate is not an option: MCMC then posterior analysis
+
+3. Bayesian regression & classification 
+
+Focus: extending unit 1 **reponse variable (Y)** with **predictor variables (X)**
+
+4. Hierarchical Bayesian models
+
+Focus: expanding unit 3 to accomodate and harness grouped data : expanding unit 3 to accomodate and harness grouped data : expanding unit 3 to accomodate and harness grouped data 
+
+## Summary 
+
+- Posterior knowledge <- balancing information from data and prior knowledge 
+
+- more "waves"of data -> refine knowledge (less effect of prior)
+
+- two analysts  will converge on the same posterior knowledge
 
 ## SLIDE 1
 
 - ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITS
 
 ## Meeting Videos
 
