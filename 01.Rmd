@@ -125,11 +125,6 @@ Focus: expanding unit 3 to accomodate and harness grouped data : expanding unit 
 
 - two analysts  will converge on the same posterior knowledge
 
-## SLIDE 1
-
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITS
-
 ## Meeting Videos
 
 ### Cohort 1
