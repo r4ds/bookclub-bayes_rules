@@ -16,7 +16,7 @@ Imports:
     bayesrules,
     bookdown,
     broom.mixed,
-    diagrammeR,
+    DiagrammeR,
     e1071,
     forcats,
     janitor,
