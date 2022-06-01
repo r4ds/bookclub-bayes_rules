@@ -23,7 +23,7 @@
 <meta name="author" content="The R4DS Online Learning Community" />
 
 
-<meta name="date" content="2022-05-28" />
+<meta name="date" content="2022-06-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="meeting-videos-6.html"/>
-<link rel="next" href="slide-1-7.html"/>
+<link rel="next" href="slide-1-6.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -52,8 +52,76 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/viz-1.8.2/viz.js"></script>
+<link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="libs/grViz-binding-1.0.9/grViz.js"></script>
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -77,17 +145,43 @@
 <li class="chapter" data-level="" data-path="book-club-meetings.html"><a href="book-club-meetings.html"><i class="fa fa-check"></i>Book club meetings</a></li>
 <li class="chapter" data-level="" data-path="pace.html"><a href="pace.html"><i class="fa fa-check"></i>Pace</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
+<li class="chapter" data-level="0.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html"><i class="fa fa-check"></i><b>0.1</b> Bayesian statistics?</a></li>
+<li class="chapter" data-level="0.2" data-path="tips-and-tricks-from-the-authors.html"><a href="tips-and-tricks-from-the-authors.html"><i class="fa fa-check"></i><b>0.2</b> Tips and tricks from the authors</a></li>
+<li class="chapter" data-level="0.3" data-path="set-up.html"><a href="set-up.html"><i class="fa fa-check"></i><b>0.3</b> Set up</a></li>
+<li class="chapter" data-level="0.4" data-path="the-authors.html"><a href="the-authors.html"><i class="fa fa-check"></i><b>0.4</b> The authors:</a></li>
+</ul></li>
 <li class="chapter" data-level="1" data-path="the-big-bayesian-picture.html"><a href="the-big-bayesian-picture.html"><i class="fa fa-check"></i><b>1</b> The Big (Bayesian) Picture</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="slide-1.html"><a href="slide-1.html"><i class="fa fa-check"></i><b>1.1</b> SLIDE 1</a></li>
-<li class="chapter" data-level="1.2" data-path="meeting-videos.html"><a href="meeting-videos.html"><i class="fa fa-check"></i><b>1.2</b> Meeting Videos</a>
+<li class="chapter" data-level="1.1" data-path="thinking-like-a-bayesian-14.html"><a href="thinking-like-a-bayesian-14.html"><i class="fa fa-check"></i><b>1.1</b> Thinking like a Bayesian 1/4</a></li>
+<li class="chapter" data-level="1.2" data-path="quiz-time.html"><a href="quiz-time.html"><i class="fa fa-check"></i><b>1.2</b> Quiz time!</a></li>
+<li class="chapter" data-level="1.3" data-path="thinking-like-a-bayesian-24.html"><a href="thinking-like-a-bayesian-24.html"><i class="fa fa-check"></i><b>1.3</b> Thinking like a Bayesian 2/4</a>
 <ul>
-<li class="chapter" data-level="1.2.1" data-path="meeting-videos.html"><a href="meeting-videos.html#cohort-1"><i class="fa fa-check"></i><b>1.2.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="1.3.1" data-path="thinking-like-a-bayesian-24.html"><a href="thinking-like-a-bayesian-24.html#interpreting-probability"><i class="fa fa-check"></i><b>1.3.1</b> Interpreting probability:</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="thinking-like-a-bayesian-34.html"><a href="thinking-like-a-bayesian-34.html"><i class="fa fa-check"></i><b>1.4</b> Thinking like a Bayesian 3/4</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="thinking-like-a-bayesian-34.html"><a href="thinking-like-a-bayesian-34.html#bayesian-balancing-act"><i class="fa fa-check"></i><b>1.4.1</b> Bayesian balancing act</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="thinking-like-a-bayesian-44.html"><a href="thinking-like-a-bayesian-44.html"><i class="fa fa-check"></i><b>1.5</b> Thinking like a Bayesian 4/4</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="thinking-like-a-bayesian-44.html"><a href="thinking-like-a-bayesian-44.html#asking-question"><i class="fa fa-check"></i><b>1.5.1</b> Asking question</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="quick-history-lesson.html"><a href="quick-history-lesson.html"><i class="fa fa-check"></i><b>1.6</b> Quick history lesson</a></li>
+<li class="chapter" data-level="1.7" data-path="look-ahead.html"><a href="look-ahead.html"><i class="fa fa-check"></i><b>1.7</b> Look ahead</a>
+<ul>
+<li class="chapter" data-level="1.7.1" data-path="look-ahead.html"><a href="look-ahead.html#units"><i class="fa fa-check"></i><b>1.7.1</b> 4 units</a></li>
+</ul></li>
+<li class="chapter" data-level="1.8" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i><b>1.8</b> Summary</a></li>
+<li class="chapter" data-level="1.9" data-path="meeting-videos.html"><a href="meeting-videos.html"><i class="fa fa-check"></i><b>1.9</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="1.9.1" data-path="meeting-videos.html"><a href="meeting-videos.html#cohort-1"><i class="fa fa-check"></i><b>1.9.1</b> Cohort 1</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="bayes-rule.html"><a href="bayes-rule.html"><i class="fa fa-check"></i><b>2</b> Bayes’ Rule</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="slide-1-1.html"><a href="slide-1-1.html"><i class="fa fa-check"></i><b>2.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="2.1" data-path="slide-1.html"><a href="slide-1.html"><i class="fa fa-check"></i><b>2.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="2.2" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html"><i class="fa fa-check"></i><b>2.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="2.2.1" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html#cohort-1-1"><i class="fa fa-check"></i><b>2.2.1</b> Cohort 1</a></li>
@@ -95,7 +189,7 @@
 </ul></li>
 <li class="chapter" data-level="3" data-path="the-beta-binomial-bayesian-model.html"><a href="the-beta-binomial-bayesian-model.html"><i class="fa fa-check"></i><b>3</b> The Beta-Binomial Bayesian Model</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="slide-1-2.html"><a href="slide-1-2.html"><i class="fa fa-check"></i><b>3.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="3.1" data-path="slide-1-1.html"><a href="slide-1-1.html"><i class="fa fa-check"></i><b>3.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="3.2" data-path="meeting-videos-2.html"><a href="meeting-videos-2.html"><i class="fa fa-check"></i><b>3.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="3.2.1" data-path="meeting-videos-2.html"><a href="meeting-videos-2.html#cohort-1-2"><i class="fa fa-check"></i><b>3.2.1</b> Cohort 1</a></li>
@@ -103,7 +197,7 @@
 </ul></li>
 <li class="chapter" data-level="4" data-path="balance-and-sequentiality-in-bayesian-analyses.html"><a href="balance-and-sequentiality-in-bayesian-analyses.html"><i class="fa fa-check"></i><b>4</b> Balance and Sequentiality in Bayesian Analyses</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="slide-1-3.html"><a href="slide-1-3.html"><i class="fa fa-check"></i><b>4.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="4.1" data-path="slide-1-2.html"><a href="slide-1-2.html"><i class="fa fa-check"></i><b>4.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="4.2" data-path="meeting-videos-3.html"><a href="meeting-videos-3.html"><i class="fa fa-check"></i><b>4.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="4.2.1" data-path="meeting-videos-3.html"><a href="meeting-videos-3.html#cohort-1-3"><i class="fa fa-check"></i><b>4.2.1</b> Cohort 1</a></li>
@@ -111,7 +205,7 @@
 </ul></li>
 <li class="chapter" data-level="5" data-path="conjugate-families.html"><a href="conjugate-families.html"><i class="fa fa-check"></i><b>5</b> Conjugate Families</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="slide-1-4.html"><a href="slide-1-4.html"><i class="fa fa-check"></i><b>5.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="5.1" data-path="slide-1-3.html"><a href="slide-1-3.html"><i class="fa fa-check"></i><b>5.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="5.2" data-path="meeting-videos-4.html"><a href="meeting-videos-4.html"><i class="fa fa-check"></i><b>5.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="5.2.1" data-path="meeting-videos-4.html"><a href="meeting-videos-4.html#cohort-1-4"><i class="fa fa-check"></i><b>5.2.1</b> Cohort 1</a></li>
@@ -119,7 +213,7 @@
 </ul></li>
 <li class="chapter" data-level="6" data-path="approximating-the-posterior.html"><a href="approximating-the-posterior.html"><i class="fa fa-check"></i><b>6</b> Approximating the Posterior</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="slide-1-5.html"><a href="slide-1-5.html"><i class="fa fa-check"></i><b>6.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="6.1" data-path="slide-1-4.html"><a href="slide-1-4.html"><i class="fa fa-check"></i><b>6.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="6.2" data-path="meeting-videos-5.html"><a href="meeting-videos-5.html"><i class="fa fa-check"></i><b>6.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="6.2.1" data-path="meeting-videos-5.html"><a href="meeting-videos-5.html#cohort-1-5"><i class="fa fa-check"></i><b>6.2.1</b> Cohort 1</a></li>
@@ -127,7 +221,7 @@
 </ul></li>
 <li class="chapter" data-level="7" data-path="mcmc-under-the-hood.html"><a href="mcmc-under-the-hood.html"><i class="fa fa-check"></i><b>7</b> MCMC under the Hood</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="slide-1-6.html"><a href="slide-1-6.html"><i class="fa fa-check"></i><b>7.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="7.1" data-path="slide-1-5.html"><a href="slide-1-5.html"><i class="fa fa-check"></i><b>7.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="7.2" data-path="meeting-videos-6.html"><a href="meeting-videos-6.html"><i class="fa fa-check"></i><b>7.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="7.2.1" data-path="meeting-videos-6.html"><a href="meeting-videos-6.html#cohort-1-6"><i class="fa fa-check"></i><b>7.2.1</b> Cohort 1</a></li>
@@ -135,7 +229,7 @@
 </ul></li>
 <li class="chapter" data-level="8" data-path="posterior-inference-prediction.html"><a href="posterior-inference-prediction.html"><i class="fa fa-check"></i><b>8</b> Posterior Inference &amp; Prediction</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="slide-1-7.html"><a href="slide-1-7.html"><i class="fa fa-check"></i><b>8.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="8.1" data-path="slide-1-6.html"><a href="slide-1-6.html"><i class="fa fa-check"></i><b>8.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="8.2" data-path="meeting-videos-7.html"><a href="meeting-videos-7.html"><i class="fa fa-check"></i><b>8.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="8.2.1" data-path="meeting-videos-7.html"><a href="meeting-videos-7.html#cohort-1-7"><i class="fa fa-check"></i><b>8.2.1</b> Cohort 1</a></li>
@@ -143,7 +237,7 @@
 </ul></li>
 <li class="chapter" data-level="9" data-path="simple-normal-regression.html"><a href="simple-normal-regression.html"><i class="fa fa-check"></i><b>9</b> Simple Normal Regression</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="slide-1-8.html"><a href="slide-1-8.html"><i class="fa fa-check"></i><b>9.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="9.1" data-path="slide-1-7.html"><a href="slide-1-7.html"><i class="fa fa-check"></i><b>9.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="9.2" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html"><i class="fa fa-check"></i><b>9.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="9.2.1" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-1-8"><i class="fa fa-check"></i><b>9.2.1</b> Cohort 1</a></li>
@@ -151,7 +245,7 @@
 </ul></li>
 <li class="chapter" data-level="10" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html"><i class="fa fa-check"></i><b>10</b> Evaluating Regression Models</a>
 <ul>
-<li class="chapter" data-level="10.1" data-path="slide-1-9.html"><a href="slide-1-9.html"><i class="fa fa-check"></i><b>10.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="10.1" data-path="slide-1-8.html"><a href="slide-1-8.html"><i class="fa fa-check"></i><b>10.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="10.2" data-path="meeting-videos-9.html"><a href="meeting-videos-9.html"><i class="fa fa-check"></i><b>10.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="10.2.1" data-path="meeting-videos-9.html"><a href="meeting-videos-9.html#cohort-1-9"><i class="fa fa-check"></i><b>10.2.1</b> Cohort 1</a></li>
@@ -159,7 +253,7 @@
 </ul></li>
 <li class="chapter" data-level="11" data-path="extending-the-normal-regression-model.html"><a href="extending-the-normal-regression-model.html"><i class="fa fa-check"></i><b>11</b> Extending the Normal Regression Model</a>
 <ul>
-<li class="chapter" data-level="11.1" data-path="slide-1-10.html"><a href="slide-1-10.html"><i class="fa fa-check"></i><b>11.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="11.1" data-path="slide-1-9.html"><a href="slide-1-9.html"><i class="fa fa-check"></i><b>11.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="11.2" data-path="meeting-videos-10.html"><a href="meeting-videos-10.html"><i class="fa fa-check"></i><b>11.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="11.2.1" data-path="meeting-videos-10.html"><a href="meeting-videos-10.html#cohort-1-10"><i class="fa fa-check"></i><b>11.2.1</b> Cohort 1</a></li>
@@ -167,7 +261,7 @@
 </ul></li>
 <li class="chapter" data-level="12" data-path="poisson-negative-binomial-regression.html"><a href="poisson-negative-binomial-regression.html"><i class="fa fa-check"></i><b>12</b> Poisson &amp; Negative Binomial Regression</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="slide-1-11.html"><a href="slide-1-11.html"><i class="fa fa-check"></i><b>12.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="12.1" data-path="slide-1-10.html"><a href="slide-1-10.html"><i class="fa fa-check"></i><b>12.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="12.2" data-path="meeting-videos-11.html"><a href="meeting-videos-11.html"><i class="fa fa-check"></i><b>12.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="12.2.1" data-path="meeting-videos-11.html"><a href="meeting-videos-11.html#cohort-1-11"><i class="fa fa-check"></i><b>12.2.1</b> Cohort 1</a></li>
@@ -175,7 +269,7 @@
 </ul></li>
 <li class="chapter" data-level="13" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i><b>13</b> Logistic Regression</a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="slide-1-12.html"><a href="slide-1-12.html"><i class="fa fa-check"></i><b>13.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="13.1" data-path="slide-1-11.html"><a href="slide-1-11.html"><i class="fa fa-check"></i><b>13.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="13.2" data-path="meeting-videos-12.html"><a href="meeting-videos-12.html"><i class="fa fa-check"></i><b>13.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="13.2.1" data-path="meeting-videos-12.html"><a href="meeting-videos-12.html#cohort-1-12"><i class="fa fa-check"></i><b>13.2.1</b> Cohort 1</a></li>
@@ -183,7 +277,7 @@
 </ul></li>
 <li class="chapter" data-level="14" data-path="naive-bayes-classification.html"><a href="naive-bayes-classification.html"><i class="fa fa-check"></i><b>14</b> Naive Bayes Classification</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="slide-1-13.html"><a href="slide-1-13.html"><i class="fa fa-check"></i><b>14.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="14.1" data-path="slide-1-12.html"><a href="slide-1-12.html"><i class="fa fa-check"></i><b>14.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="14.2" data-path="meeting-videos-13.html"><a href="meeting-videos-13.html"><i class="fa fa-check"></i><b>14.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="14.2.1" data-path="meeting-videos-13.html"><a href="meeting-videos-13.html#cohort-1-13"><i class="fa fa-check"></i><b>14.2.1</b> Cohort 1</a></li>
@@ -191,7 +285,7 @@
 </ul></li>
 <li class="chapter" data-level="15" data-path="hierarchical-models-are-exciting.html"><a href="hierarchical-models-are-exciting.html"><i class="fa fa-check"></i><b>15</b> Hierarchical Models are Exciting</a>
 <ul>
-<li class="chapter" data-level="15.1" data-path="slide-1-14.html"><a href="slide-1-14.html"><i class="fa fa-check"></i><b>15.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="15.1" data-path="slide-1-13.html"><a href="slide-1-13.html"><i class="fa fa-check"></i><b>15.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="15.2" data-path="meeting-videos-14.html"><a href="meeting-videos-14.html"><i class="fa fa-check"></i><b>15.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="15.2.1" data-path="meeting-videos-14.html"><a href="meeting-videos-14.html#cohort-1-14"><i class="fa fa-check"></i><b>15.2.1</b> Cohort 1</a></li>
@@ -199,7 +293,7 @@
 </ul></li>
 <li class="chapter" data-level="16" data-path="normal-hierarchical-models-without-predictors.html"><a href="normal-hierarchical-models-without-predictors.html"><i class="fa fa-check"></i><b>16</b> (Normal) Hierarchical Models without Predictors</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="slide-1-15.html"><a href="slide-1-15.html"><i class="fa fa-check"></i><b>16.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="16.1" data-path="slide-1-14.html"><a href="slide-1-14.html"><i class="fa fa-check"></i><b>16.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="16.2" data-path="meeting-videos-15.html"><a href="meeting-videos-15.html"><i class="fa fa-check"></i><b>16.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="16.2.1" data-path="meeting-videos-15.html"><a href="meeting-videos-15.html#cohort-1-15"><i class="fa fa-check"></i><b>16.2.1</b> Cohort 1</a></li>
@@ -207,7 +301,7 @@
 </ul></li>
 <li class="chapter" data-level="17" data-path="normal-hierarchical-models-with-predictors.html"><a href="normal-hierarchical-models-with-predictors.html"><i class="fa fa-check"></i><b>17</b> (Normal) Hierarchical Models with Predictors</a>
 <ul>
-<li class="chapter" data-level="17.1" data-path="slide-1-16.html"><a href="slide-1-16.html"><i class="fa fa-check"></i><b>17.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="17.1" data-path="slide-1-15.html"><a href="slide-1-15.html"><i class="fa fa-check"></i><b>17.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="17.2" data-path="meeting-videos-16.html"><a href="meeting-videos-16.html"><i class="fa fa-check"></i><b>17.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="17.2.1" data-path="meeting-videos-16.html"><a href="meeting-videos-16.html#cohort-1-16"><i class="fa fa-check"></i><b>17.2.1</b> Cohort 1</a></li>
@@ -215,7 +309,7 @@
 </ul></li>
 <li class="chapter" data-level="18" data-path="non-normal-hierarchical-regression-classification.html"><a href="non-normal-hierarchical-regression-classification.html"><i class="fa fa-check"></i><b>18</b> Non-Normal Hierarchical Regression &amp; Classification</a>
 <ul>
-<li class="chapter" data-level="18.1" data-path="slide-1-17.html"><a href="slide-1-17.html"><i class="fa fa-check"></i><b>18.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="18.1" data-path="slide-1-16.html"><a href="slide-1-16.html"><i class="fa fa-check"></i><b>18.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="18.2" data-path="meeting-videos-17.html"><a href="meeting-videos-17.html"><i class="fa fa-check"></i><b>18.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="18.2.1" data-path="meeting-videos-17.html"><a href="meeting-videos-17.html#cohort-1-17"><i class="fa fa-check"></i><b>18.2.1</b> Cohort 1</a></li>
@@ -223,7 +317,7 @@
 </ul></li>
 <li class="chapter" data-level="19" data-path="adding-more-layers.html"><a href="adding-more-layers.html"><i class="fa fa-check"></i><b>19</b> Adding More Layers</a>
 <ul>
-<li class="chapter" data-level="19.1" data-path="slide-1-18.html"><a href="slide-1-18.html"><i class="fa fa-check"></i><b>19.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="19.1" data-path="slide-1-17.html"><a href="slide-1-17.html"><i class="fa fa-check"></i><b>19.1</b> SLIDE 1</a></li>
 <li class="chapter" data-level="19.2" data-path="meeting-videos-18.html"><a href="meeting-videos-18.html"><i class="fa fa-check"></i><b>19.2</b> Meeting Videos</a>
 <ul>
 <li class="chapter" data-level="19.2.1" data-path="meeting-videos-18.html"><a href="meeting-videos-18.html#cohort-1-18"><i class="fa fa-check"></i><b>19.2.1</b> Cohort 1</a></li>
@@ -262,7 +356,7 @@
         </div>
       </div>
 <a href="meeting-videos-6.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="slide-1-7.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="slide-1-6.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
