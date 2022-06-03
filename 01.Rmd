@@ -125,6 +125,31 @@ Focus: expanding unit 3 to accomodate and harness grouped data : expanding unit 
 
 - two analysts  will converge on the same posterior knowledge
 
+## Resources mentioned
+
+This is a list of resources mentioned in the first meeting!
+
+### Other Bayesian books: 
+
+- Richard McElreath   
+      * book: https://xcelab.net/rm/statistical-rethinking/  
+      * vidéo: https://github.com/rmcelreath/stat_rethinking_2022
+
+- The "puppy" book by John K. Kruschke : https://sites.google.com/site/doingbayesiandataanalysis/
+
+### Drawing DAG (Directed Acyclic Graph)
+
+- Pen and paper  
+- [DiagrammeR](https://rich-iannone.github.io/DiagrammeR/docs.html): for drawing diagram, uses [Graphviz](https://www.graphviz.org/documentation/) or [mermaid](https://mermaid-js.github.io/mermaid/#/)  
+- [Dagitty](http://dagitty.net/): for causal diagrams
+
+### Podcast 
+
+- [Learning Bayesian Statistics](https://podcasts.apple.com/us/podcast/how-to-teach-and-learn-bayesian-stats-with-mine-dogucu/id1483485062?i=1000526699407) ep. 42 With Mine Dogucu
+
+
+
+
 ## Meeting Videos
 
 ### Cohort 1
