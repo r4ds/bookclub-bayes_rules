@@ -16,6 +16,10 @@ quick-history-lesson
 look-ahead
 units
 summary
+resources-mentioned
+other-bayesian-books
+drawing-dag-directed-acyclic-graph
+podcast
 meeting-videos
 cohort-1
 bayes-rule
