@@ -210,9 +210,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.7.4" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#posterior-probability-model"><i class="fa fa-check"></i><b>2.7.4</b> Posterior probability model</a></li>
 <li class="chapter" data-level="2.7.5" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#posterior-shortcut"><i class="fa fa-check"></i><b>2.7.5</b> Posterior shortcut</a></li>
 </ul></li>
-<li class="chapter" data-level="2.8" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html"><i class="fa fa-check"></i><b>2.8</b> Meeting Videos</a>
+<li class="chapter" data-level="2.8" data-path="links-shared-in-the-second-meeting.html"><a href="links-shared-in-the-second-meeting.html"><i class="fa fa-check"></i><b>2.8</b> Links shared in the second meeting</a></li>
+<li class="chapter" data-level="2.9" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html"><i class="fa fa-check"></i><b>2.9</b> Meeting Videos</a>
 <ul>
-<li class="chapter" data-level="2.8.1" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html#cohort-1-1"><i class="fa fa-check"></i><b>2.8.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="2.9.1" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html#cohort-1-1"><i class="fa fa-check"></i><b>2.9.1</b> Cohort 1</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="the-beta-binomial-bayesian-model.html"><a href="the-beta-binomial-bayesian-model.html"><i class="fa fa-check"></i><b>3</b> The Beta-Binomial Bayesian Model</a>
@@ -377,11 +378,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">2.5.1</span> First step prior<a href="building-a-bayesian-model-for-random-variables-1n.html#first-step-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><span class="math inline">\(\pi\)</span> : skill of Kasparov relative to Deep Blue (<strong>random variable</strong>)</p>
 <p>Prior model of <span class="math inline">\(\pi\)</span>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb12-1" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="st">&quot;total&quot;</span>)</span>
-<span id="cb12-2"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pmf : probability mass functions</span></span>
-<span id="cb12-3"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb12-3" aria-hidden="true" tabindex="-1"></a>pmf <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.65</span>, <span class="dv">1</span>)</span>
-<span id="cb12-4"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb12-4" aria-hidden="true" tabindex="-1"></a>prior_pi <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(pi, pmf)</span>
-<span id="cb12-5"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb12-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">t</span>(prior_pi))</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb7-1" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="st">&quot;total&quot;</span>)</span>
+<span id="cb7-2"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pmf : probability mass functions</span></span>
+<span id="cb7-3"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb7-3" aria-hidden="true" tabindex="-1"></a>pmf <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.65</span>, <span class="dv">1</span>)</span>
+<span id="cb7-4"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb7-4" aria-hidden="true" tabindex="-1"></a>prior_pi <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(pi, pmf)</span>
+<span id="cb7-5"><a href="building-a-bayesian-model-for-random-variables-1n.html#cb7-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">t</span>(prior_pi))</span></code></pre></div>
 <table>
 <tbody>
 <tr class="odd">

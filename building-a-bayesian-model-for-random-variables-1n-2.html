@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="building-a-bayesian-model-for-random-variables-1n-1.html"/>
-<link rel="next" href="meeting-videos-1.html"/>
+<link rel="next" href="links-shared-in-the-second-meeting.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -210,9 +210,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.7.4" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#posterior-probability-model"><i class="fa fa-check"></i><b>2.7.4</b> Posterior probability model</a></li>
 <li class="chapter" data-level="2.7.5" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#posterior-shortcut"><i class="fa fa-check"></i><b>2.7.5</b> Posterior shortcut</a></li>
 </ul></li>
-<li class="chapter" data-level="2.8" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html"><i class="fa fa-check"></i><b>2.8</b> Meeting Videos</a>
+<li class="chapter" data-level="2.8" data-path="links-shared-in-the-second-meeting.html"><a href="links-shared-in-the-second-meeting.html"><i class="fa fa-check"></i><b>2.8</b> Links shared in the second meeting</a></li>
+<li class="chapter" data-level="2.9" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html"><i class="fa fa-check"></i><b>2.9</b> Meeting Videos</a>
 <ul>
-<li class="chapter" data-level="2.8.1" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html#cohort-1-1"><i class="fa fa-check"></i><b>2.8.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="2.9.1" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html#cohort-1-1"><i class="fa fa-check"></i><b>2.9.1</b> Cohort 1</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="the-beta-binomial-bayesian-model.html"><a href="the-beta-binomial-bayesian-model.html"><i class="fa fa-check"></i><b>3</b> The Beta-Binomial Bayesian Model</a>
@@ -375,7 +376,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">2.7</span> Building a Bayesian model for random variables (1/n)<a href="building-a-bayesian-model-for-random-variables-1n-2.html#building-a-bayesian-model-for-random-variables-1n-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="binomial-likelihood-function" class="section level3 hasAnchor" number="2.7.1">
 <h3><span class="header-section-number">2.7.1</span> Binomial likelihood function<a href="building-a-bayesian-model-for-random-variables-1n-2.html#binomial-likelihood-function" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Kasparov only won one of six games. This is our data with <span class="math inline">\(L(\pi|y = 1)\)</span>. We can calculate it for each <span class="math inline">\(\pi\)</span> value. What is more likely is that <span class="math inline">\(pi\)</span> was 0.2.</p>
+<p>Kasparov only won one of six games. This is our data with <span class="math inline">\(L(\pi|y = 1)\)</span>. We can calculate it for each <span class="math inline">\(\pi\)</span> value.</p>
+<p>What is more likely is that <span class="math inline">\(pi\)</span> was 0.2.</p>
 </div>
 <div id="probability-mass-functions-vs-likelihood-functions" class="section level3 hasAnchor" number="2.7.2">
 <h3><span class="header-section-number">2.7.2</span> Probability mass functions vs likelihood functions<a href="building-a-bayesian-model-for-random-variables-1n-2.html#probability-mass-functions-vs-likelihood-functions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -397,30 +399,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="posterior-shortcut" class="section level3 hasAnchor" number="2.7.5">
 <h3><span class="header-section-number">2.7.5</span> Posterior shortcut<a href="building-a-bayesian-model-for-random-variables-1n-2.html#posterior-shortcut" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>The normalizing constant, is a <strong>constant</strong> it appears in all posterior calculations. We can works with unnormalizied proabilities or we can divide each unnormalizied probability by the sum of each of them.</p>
+<p>The normalizing constant, is a <strong>constant</strong> it appears in all posterior calculations. We can work with unnormalizied proabilities or we can divide each unnormalizied probability by the sum of each of them.</p>
 <p><span class="math display">\[ posterior \propto prior * likelihood \]</span>
 ## Posterior simulation</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define possible win probabilities</span></span>
-<span id="cb13-2"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-2" aria-hidden="true" tabindex="-1"></a>chess <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">pi =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>))</span>
-<span id="cb13-3"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the prior model</span></span>
-<span id="cb13-5"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-5" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.65</span>)</span>
-<span id="cb13-6"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate 10000 values of pi from the prior</span></span>
-<span id="cb13-8"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">84735</span>)</span>
-<span id="cb13-9"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-9" aria-hidden="true" tabindex="-1"></a>chess_sim <span class="ot">&lt;-</span> <span class="fu">sample_n</span>(chess, <span class="at">size =</span> <span class="dv">10000</span>, <span class="at">weight =</span> prior, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-10"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-11"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-11" aria-hidden="true" tabindex="-1"></a>chess_sim <span class="ot">&lt;-</span> chess_sim <span class="sc">%&gt;%</span> </span>
-<span id="cb13-12"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">rbinom</span>(<span class="dv">10000</span>, <span class="at">size =</span> <span class="dv">6</span>, <span class="at">prob =</span> pi))</span>
-<span id="cb13-13"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-14"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Focus on simulations with y = 1</span></span>
-<span id="cb13-15"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-15" aria-hidden="true" tabindex="-1"></a>win_one <span class="ot">&lt;-</span> chess_sim <span class="sc">%&gt;%</span> </span>
-<span id="cb13-16"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(y <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb13-17"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-18"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-19"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the posterior approximation</span></span>
-<span id="cb13-20"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(win_one, <span class="fu">aes</span>(<span class="at">x =</span> pi)) <span class="sc">+</span> </span>
-<span id="cb13-21"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define possible win probabilities</span></span>
+<span id="cb8-2"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-2" aria-hidden="true" tabindex="-1"></a>chess <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">pi =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>))</span>
+<span id="cb8-3"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the prior model</span></span>
+<span id="cb8-5"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-5" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.65</span>)</span>
+<span id="cb8-6"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate 10000 values of pi from the prior</span></span>
+<span id="cb8-8"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">84735</span>)</span>
+<span id="cb8-9"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-9" aria-hidden="true" tabindex="-1"></a>chess_sim <span class="ot">&lt;-</span> <span class="fu">sample_n</span>(chess, <span class="at">size =</span> <span class="dv">10000</span>, <span class="at">weight =</span> prior, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-10"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-11" aria-hidden="true" tabindex="-1"></a>chess_sim <span class="ot">&lt;-</span> chess_sim <span class="sc">%&gt;%</span> </span>
+<span id="cb8-12"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">rbinom</span>(<span class="dv">10000</span>, <span class="at">size =</span> <span class="dv">6</span>, <span class="at">prob =</span> pi))</span>
+<span id="cb8-13"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Focus on simulations with y = 1</span></span>
+<span id="cb8-15"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-15" aria-hidden="true" tabindex="-1"></a>win_one <span class="ot">&lt;-</span> chess_sim <span class="sc">%&gt;%</span> </span>
+<span id="cb8-16"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(y <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb8-17"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the posterior approximation</span></span>
+<span id="cb8-20"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(win_one, <span class="fu">aes</span>(<span class="at">x =</span> pi)) <span class="sc">+</span> </span>
+<span id="cb8-21"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code></pre></div>
 <p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 </div>
@@ -430,7 +432,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="building-a-bayesian-model-for-random-variables-1n-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="meeting-videos-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="links-shared-in-the-second-meeting.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

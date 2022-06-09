@@ -210,9 +210,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.7.4" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#posterior-probability-model"><i class="fa fa-check"></i><b>2.7.4</b> Posterior probability model</a></li>
 <li class="chapter" data-level="2.7.5" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#posterior-shortcut"><i class="fa fa-check"></i><b>2.7.5</b> Posterior shortcut</a></li>
 </ul></li>
-<li class="chapter" data-level="2.8" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html"><i class="fa fa-check"></i><b>2.8</b> Meeting Videos</a>
+<li class="chapter" data-level="2.8" data-path="links-shared-in-the-second-meeting.html"><a href="links-shared-in-the-second-meeting.html"><i class="fa fa-check"></i><b>2.8</b> Links shared in the second meeting</a></li>
+<li class="chapter" data-level="2.9" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html"><i class="fa fa-check"></i><b>2.9</b> Meeting Videos</a>
 <ul>
-<li class="chapter" data-level="2.8.1" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html#cohort-1-1"><i class="fa fa-check"></i><b>2.8.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="2.9.1" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html#cohort-1-1"><i class="fa fa-check"></i><b>2.9.1</b> Cohort 1</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="the-beta-binomial-bayesian-model.html"><a href="the-beta-binomial-bayesian-model.html"><i class="fa fa-check"></i><b>3</b> The Beta-Binomial Bayesian Model</a>
@@ -373,16 +374,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="normalizing-constant" class="section level2 hasAnchor" number="2.2">
 <h2><span class="header-section-number">2.2</span> Normalizing constant<a href="normalizing-constant.html#normalizing-constant" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p><span class="math inline">\(P(A|B) \quad and \quad P(A|B^c = 0.0222)\)</span> are our likelihood, when we know A (!) we know that getting B (Fake news) is more likely. It is different that our prior probability.</p>
-<p>Then we need can calculate the <strong>joint probability</strong> (probability of observing A nd B for example), of each options (just 2 of them):</p>
-<p><span class="math display">\[ P(A \cap B) = P(A|B) P (B) = 0.2667 *0.4 = 0.1067 \]</span></p>
-<p><span class="math display">\[ P(A^c \cap B ) = (1 - P(A|B) * P(B)) = (1 - 0.2667) * 0.4 = 0.2993  \]</span></p>
-<p>Here <span class="math inline">\(P(B\)</span>) is the <em>marginal probability</em> of B</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="normalizing-constant.html#cb6-1" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1067</span>, <span class="fl">0.2933</span>, <span class="fl">0.4</span>)</span>
-<span id="cb6-2"><a href="normalizing-constant.html#cb6-2" aria-hidden="true" tabindex="-1"></a>Bc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.0133</span>, <span class="fl">0.5867</span>, <span class="fl">0.88</span>)</span>
-<span id="cb6-3"><a href="normalizing-constant.html#cb6-3" aria-hidden="true" tabindex="-1"></a>Total <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.12</span>, <span class="fl">0.88</span>, <span class="dv">1</span>)</span>
-<span id="cb6-4"><a href="normalizing-constant.html#cb6-4" aria-hidden="true" tabindex="-1"></a>joint_p <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(B, Bc, Total, <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;Ac&quot;</span>, <span class="st">&quot;Total&quot;</span>))</span>
-<span id="cb6-5"><a href="normalizing-constant.html#cb6-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(joint_p)</span></code></pre></div>
+<p><span class="math inline">\(P(Exclam|FakeNew) = 0.2667 \quad and \quad P(Exclam|Real) = 0.0222)\)</span> are our likelihood, when we know A (!) we know that getting B (Fake news) is more likely. It is different that our prior probability.</p>
+<p>Then we need can calculate the <strong>joint probability</strong> (probability of observing A nd B for example), of each options (here it is half of them):</p>
+<p><span class="math display">\[ P(Exclam \cap FakeNew) = P(Exclam|FakeNew) P (Fakenew) = 0.2667 *0.4 = 0.1067 \]</span></p>
+<p><span class="math display">\[ P(PasExclam \cap FakeNew ) = (1 - P(Exclam|FakeNew)) * P(FakeNew)) = (1 - 0.2667) * 0.4 = 0.2993  \]</span></p>
+<p>Here <span class="math inline">\(P(B)\)</span> is the <em>marginal probability</em> of B</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="normalizing-constant.html#cb5-1" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1067</span>, <span class="fl">0.2933</span>, <span class="fl">0.4</span>)</span>
+<span id="cb5-2"><a href="normalizing-constant.html#cb5-2" aria-hidden="true" tabindex="-1"></a>Bc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.0133</span>, <span class="fl">0.5867</span>, <span class="fl">0.6</span>)</span>
+<span id="cb5-3"><a href="normalizing-constant.html#cb5-3" aria-hidden="true" tabindex="-1"></a>Total <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.12</span>, <span class="fl">0.88</span>, <span class="dv">1</span>)</span>
+<span id="cb5-4"><a href="normalizing-constant.html#cb5-4" aria-hidden="true" tabindex="-1"></a>joint_p <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(B, Bc, Total, <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;Ac&quot;</span>, <span class="st">&quot;Total&quot;</span>))</span>
+<span id="cb5-5"><a href="normalizing-constant.html#cb5-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(joint_p)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -408,14 +409,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tr class="odd">
 <td align="left">Total</td>
 <td align="right">0.4000</td>
-<td align="right">0.8800</td>
+<td align="right">0.6000</td>
 <td align="right">1.00</td>
 </tr>
 </tbody>
 </table>
-<p><span class="math inline">\(P(A)\)</span> is our normalizing constant.</p>
-<p>Ok but we want <span class="math inline">\(P(fake|exlam)\)</span> ie <span class="math inline">\(P(B|A)\)</span></p>
-<p><span class="math display">\[ P(B|A) = \frac{P(A \cap B)}{P(A)} = \frac{P(B)L(B|A)}{P(A)}  \]</span></p>
+<p><span class="math inline">\(P(Exclam)\)</span> is our normalizing constant.</p>
+<p>Ok but we want <span class="math inline">\(P(FakeNew|exlam)\)</span> ie <span class="math inline">\(P(B|A)\)</span></p>
+<p><span class="math display">\[ P(FakeNew|exclam) = \frac{P(exclam \cap FakeNew)}{P(Exclam)} = \frac{P(FakeNew)L(FakeNew|Exclam)}{P(Exclam)}  \]</span></p>
 <p><span class="math display">\[ posterior = \frac{prior . likelihood}{normalizing \quad constant} = \frac{0.4 * 0.2667}{0.12} = 0.889  \]</span></p>
 </div>
             </section>

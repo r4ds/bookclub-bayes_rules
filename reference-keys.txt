@@ -39,6 +39,7 @@ probability-mass-functions-vs-likelihood-functions
 normalizing-constant-1
 posterior-probability-model
 posterior-shortcut
+links-shared-in-the-second-meeting
 meeting-videos-1
 cohort-1-1
 the-beta-binomial-bayesian-model
