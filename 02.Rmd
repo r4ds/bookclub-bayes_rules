@@ -2,12 +2,226 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- Explore foundational probability tools  
+- Conduct first formal Bayesian analysis  
+- Practice your Bayesian grammar  
+- Simulate Bayesian models  
 
-## SLIDE 1
+## Building a Bayesian model for events 
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+**First Data set** `?? fake_news` 
+
+```{r, fig.cap="Bayesian knowledge-building diagram for wether or not the article is fake"}
+DiagrammeR::grViz("
+  digraph {
+  
+  # node statement
+  node [shape = oval]
+  a [label = 'Prior: 40% of the article are fake'];
+  b [label = 'Data: ! more common among fake news'];
+  c [label = 'Posterior: Is the article fake or not?!'];
+
+  # edge statement
+  a -> c b -> c
+  }")
+```
+
+Two variables:  
+- fake vs real  
+- ! or not  
+
+### Workflow: 
+
+1. Prior probability model
+2. A model for interpreting the data
+3. Posterior probability model
+
+$$ P(B = 0.4 )  \quad and \quad  P(B^c = 0.6) $$
+Here $P(B)$ : prior probability of an article to be a fake news
+
+Valid probability model : 
+1. accounts all event  
+2. assign probabilities for each event
+3. sum to one
+
+$P(A)$ : probability that an article contains an exclamation point in his title
+
+We know that if an article is fake news : 26.67% that the title contains **!** and if it is not fake this is just 2.22%.
+
+$$ P(A|B) = 0.2667 \quad and \quad P(A|B^c = 0.0222)  $$
+
+This is a **conditional probability**. Conditional probability help know if B give us insight in A. If it does not provide any information it means that A and B event are **independent** ($P(A|B) = P(A)$). 
+
+## Normalizing constant 
+
+$P(A|B) \quad and \quad P(A|B^c = 0.0222)$ are our likelihood, when we know A (!) we know that getting B (Fake news) is more likely. It is different that our prior probability.
+
+Then we need can calculate the **joint probability** (probability of observing A nd B for example), of each options (just 2 of them): 
+
+$$ P(A \cap B) = P(A|B) P (B) = 0.2667 *0.4 = 0.1067 $$ 
+
+$$ P(A^c \cap B ) = (1 - P(A|B) * P(B)) = (1 - 0.2667) * 0.4 = 0.2993  $$ 
+
+Here $P(B$) is the *marginal probability* of B
+
+```{r}
+B <- c(0.1067, 0.2933, 0.4)
+Bc <- c(0.0133, 0.5867, 0.88)
+Total <- c(0.12, 0.88, 1)
+joint_p <- data.frame(B, Bc, Total, row.names = c("A", "Ac", "Total"))
+knitr::kable(joint_p)
+```
+
+
+$P(A)$ is our normalizing constant.
+
+Ok but we want $P(fake|exlam)$ ie $P(B|A)$
+
+$$ P(B|A) = \frac{P(A \cap B)}{P(A)} = \frac{P(B)L(B|A)}{P(A)}  $$ 
+
+$$ posterior = \frac{prior . likelihood}{normalizing \quad constant} = \frac{0.4 * 0.2667}{0.12} = 0.889  $$
+
+## Posterior simulation 
+
+This was a model. Now we will use a simulation! 
+
+```{r}
+library(dplyr)
+library(ggplot2)
+set.seed(84735)
+# Define possible articles
+article <- data.frame(type = c("real", "fake"))
+
+# Define the prior model
+prior <- c(0.6, 0.4)
+article_sim <- dplyr::sample_n(article, size = 10000, 
+                        weight = prior, 
+                        replace = TRUE)
+# dats model
+article_sim <- article_sim %>% 
+  mutate(data_model = case_when(type == "fake" ~ 0.2667,
+                                type == "real" ~ 0.0222))
+
+
+# Simulate exclamation point usage 
+data <- c("no", "yes")
+
+set.seed(3)
+# Rbase simplier ? 
+article_sim <- article_sim %>%
+  group_by(1:n()) %>% 
+  mutate(usage = sample(data, size = 1, 
+                        prob = c(1 - data_model, data_model)))
+
+ggplot(article_sim, aes(x = type)) + 
+  geom_bar() + 
+  facet_wrap(~ usage)
+
+```
+
+## Example Pop vs Soda vs Coke
+
+ Expend TRUE/FALSE example with one with categories. 
+ 
+## Building a Bayesian model for random variables (1/n)
+
+### First step prior
+
+$\pi$ : skill of Kasparov relative to Deep Blue (**random variable**) 
+
+Prior model of $\pi$:
+
+```{r}
+pi <- c(0.2, 0.5, 0.8, "total")
+# pmf : probability mass functions
+pmf <- c(0.1, 0.25, 0.65, 1)
+prior_pi <- data.frame(pi, pmf)
+knitr::kable(t(prior_pi))
+```
+
+## Building a Bayesian model for random variables (1/n)
+
+### Binomial data model
+
+Y is the number of games (on 6 games) that Kasparov wins.
+
+Y our random variable: {0, 1, ...., 6}  , depends on $\pi$  
+
+$$f(y|\pi) = P (Y = y|\pi )  $$
+$y$ : any possible outcone
+
+If we assume games are independents (no effect on each other) and $\pi$ is fixed we can use the Binomial model.
+
+Y is the number of successes in a fixed number of trials ($n$)
+
+$$ Y|\pi \sim Bin(n, \pi) $$ 
+
+$$ f(y|\pi) = \begin{pmatrix} 6 \\y \end{pmatrix} \pi^y(1 - \pi)^{6 - y} \quad for \quad  y \in \begin{Bmatrix} 0, 1, 2, 3, 4, 5, 6 \end{Bmatrix}  $$ 
+We can use the prior for $\pi$ and all $y$ to calculate each probabilities. 
+
+## Building a Bayesian model for random variables (1/n)
+
+### Binomial likelihood function
+
+Kasparov only won one of six games. This is our data with $L(\pi|y = 1)$. We can calculate it for each $\pi$ value. What is more likely is that $pi$ was 0.2.
+
+### Probability mass functions vs likelihood functions
+
+When $\pi$ is known the conditional pmf allows us to compare the probabilities of different possible value of data Y (y1, y2 ..) occuring with $pi$
+
+when Y = y is known the likelihood function allows us to to compare the relative values of $\pi$ ($\pi_1, \pi_2, etc ..$)
+
+### Normalizing constant
+
+Total probability that Kasparov would win Y = 1 game across all possible win probability of $\pi$
+
+We apply the Law of Total Probability (the sum of all likelihood for each value of $\pi$ by the prior probailities of these $\pi$ values)
+
+$$ f(y = 1) = L(\pi = 0.2 | y = 1) f(\pi = 0.2 ) +  L(\pi = 0.5 | y = 1) f(\pi = 0.5 ) + L(\pi = 0.8 | y = 1) f(\pi = 0.8 ) +$$ 
+
+$$ f( y = 1) \simeq 0.3932 * 0.1 + 0.0938 * 0.25 + 0.0015 * 0.65 \simeq 0.0637 $$
+
+### Posterior probability model 
+
+We have the prior, the likelihod and the normalizing constant -> Bayes Rules!
+
+
+$$ posterior = \frac{prior . likelihood}{normalizing \quad constant} \quad for \in  \begin{Bmatrix} 0.2, 0
+5, 0.8 \end{Bmatrix} $$
+
+
+### Posterior shortcut
+
+The normalizing constant, is a **constant** it appears in all posterior calculations. We can works with unnormalizied proabilities or we can divide each unnormalizied probability by the sum of each of them.
+
+$$ posterior \propto prior * likelihood $$
+## Posterior simulation 
+
+```{r}
+# Define possible win probabilities
+chess <- data.frame(pi = c(0.2, 0.5, 0.8))
+
+# Define the prior model
+prior <- c(0.10, 0.25, 0.65)
+
+# Simulate 10000 values of pi from the prior
+set.seed(84735)
+chess_sim <- sample_n(chess, size = 10000, weight = prior, replace = TRUE)
+
+chess_sim <- chess_sim %>% 
+  mutate(y = rbinom(10000, size = 6, prob = pi))
+
+# Focus on simulations with y = 1
+win_one <- chess_sim %>% 
+  filter(y == 1)
+
+
+# Plot the posterior approximation
+ggplot(win_one, aes(x = pi)) + 
+  geom_bar()
+
+```
+
 
 ## Meeting Videos
 
