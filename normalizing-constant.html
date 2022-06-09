@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 1 The Big (Bayesian) Picture | Bayes Rules! Book Club</title>
+  <title>2.2 Normalizing constant | Bayes Rules! Book Club</title>
   <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 1 The Big (Bayesian) Picture | Bayes Rules! Book Club" />
+  <meta property="og:title" content="2.2 Normalizing constant | Bayes Rules! Book Club" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 1 The Big (Bayesian) Picture | Bayes Rules! Book Club" />
+  <meta name="twitter:title" content="2.2 Normalizing constant | Bayes Rules! Book Club" />
   
   <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="the-authors.html"/>
-<link rel="next" href="thinking-like-a-bayesian-14.html"/>
+<link rel="prev" href="building-a-bayesian-model-for-events.html"/>
+<link rel="next" href="posterior-simulation.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -371,22 +371,60 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="the-big-bayesian-picture" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> The Big (Bayesian) Picture<a href="the-big-bayesian-picture.html#the-big-bayesian-picture" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><strong>Learning objectives:</strong></p>
-<ul>
-<li>Learn to think like a Bayesian.</li>
-<li>Explore the foundations of a Bayesian data analysis and how they contrast with the frequentist alternative</li>
-<li>Learn a little bit about the history of the Bayesian philosophy</li>
-</ul>
+<div id="normalizing-constant" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Normalizing constant<a href="normalizing-constant.html#normalizing-constant" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><span class="math inline">\(P(A|B) \quad and \quad P(A|B^c = 0.0222)\)</span> are our likelihood, when we know A (!) we know that getting B (Fake news) is more likely. It is different that our prior probability.</p>
+<p>Then we need can calculate the <strong>joint probability</strong> (probability of observing A nd B for example), of each options (just 2 of them):</p>
+<p><span class="math display">\[ P(A \cap B) = P(A|B) P (B) = 0.2667 *0.4 = 0.1067 \]</span></p>
+<p><span class="math display">\[ P(A^c \cap B ) = (1 - P(A|B) * P(B)) = (1 - 0.2667) * 0.4 = 0.2993  \]</span></p>
+<p>Here <span class="math inline">\(P(B\)</span>) is the <em>marginal probability</em> of B</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="normalizing-constant.html#cb6-1" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1067</span>, <span class="fl">0.2933</span>, <span class="fl">0.4</span>)</span>
+<span id="cb6-2"><a href="normalizing-constant.html#cb6-2" aria-hidden="true" tabindex="-1"></a>Bc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.0133</span>, <span class="fl">0.5867</span>, <span class="fl">0.88</span>)</span>
+<span id="cb6-3"><a href="normalizing-constant.html#cb6-3" aria-hidden="true" tabindex="-1"></a>Total <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.12</span>, <span class="fl">0.88</span>, <span class="dv">1</span>)</span>
+<span id="cb6-4"><a href="normalizing-constant.html#cb6-4" aria-hidden="true" tabindex="-1"></a>joint_p <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(B, Bc, Total, <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;Ac&quot;</span>, <span class="st">&quot;Total&quot;</span>))</span>
+<span id="cb6-5"><a href="normalizing-constant.html#cb6-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(joint_p)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">B</th>
+<th align="right">Bc</th>
+<th align="right">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A</td>
+<td align="right">0.1067</td>
+<td align="right">0.0133</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="even">
+<td align="left">Ac</td>
+<td align="right">0.2933</td>
+<td align="right">0.5867</td>
+<td align="right">0.88</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="right">0.4000</td>
+<td align="right">0.8800</td>
+<td align="right">1.00</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(P(A)\)</span> is our normalizing constant.</p>
+<p>Ok but we want <span class="math inline">\(P(fake|exlam)\)</span> ie <span class="math inline">\(P(B|A)\)</span></p>
+<p><span class="math display">\[ P(B|A) = \frac{P(A \cap B)}{P(A)} = \frac{P(B)L(B|A)}{P(A)}  \]</span></p>
+<p><span class="math display">\[ posterior = \frac{prior . likelihood}{normalizing \quad constant} = \frac{0.4 * 0.2667}{0.12} = 0.889  \]</span></p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="the-authors.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="thinking-like-a-bayesian-14.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="building-a-bayesian-model-for-events.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="posterior-simulation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -417,7 +455,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/01.Rmd",
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/02.Rmd",
 "text": "Edit"
 },
 "history": {

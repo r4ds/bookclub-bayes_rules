@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 1 The Big (Bayesian) Picture | Bayes Rules! Book Club</title>
+  <title>2.3 Posterior simulation | Bayes Rules! Book Club</title>
   <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 1 The Big (Bayesian) Picture | Bayes Rules! Book Club" />
+  <meta property="og:title" content="2.3 Posterior simulation | Bayes Rules! Book Club" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 1 The Big (Bayesian) Picture | Bayes Rules! Book Club" />
+  <meta name="twitter:title" content="2.3 Posterior simulation | Bayes Rules! Book Club" />
   
   <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="the-authors.html"/>
-<link rel="next" href="thinking-like-a-bayesian-14.html"/>
+<link rel="prev" href="normalizing-constant.html"/>
+<link rel="next" href="example-pop-vs-soda-vs-coke.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -371,22 +371,56 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="the-big-bayesian-picture" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> The Big (Bayesian) Picture<a href="the-big-bayesian-picture.html#the-big-bayesian-picture" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><strong>Learning objectives:</strong></p>
-<ul>
-<li>Learn to think like a Bayesian.</li>
-<li>Explore the foundations of a Bayesian data analysis and how they contrast with the frequentist alternative</li>
-<li>Learn a little bit about the history of the Bayesian philosophy</li>
-</ul>
+<div id="posterior-simulation" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Posterior simulation<a href="posterior-simulation.html#posterior-simulation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This was a model. Now we will use a simulation!</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="posterior-simulation.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="posterior-simulation.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-2"><a href="posterior-simulation.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">84735</span>)</span>
+<span id="cb11-3"><a href="posterior-simulation.html#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define possible articles</span></span>
+<span id="cb11-4"><a href="posterior-simulation.html#cb11-4" aria-hidden="true" tabindex="-1"></a>article <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">type =</span> <span class="fu">c</span>(<span class="st">&quot;real&quot;</span>, <span class="st">&quot;fake&quot;</span>))</span>
+<span id="cb11-5"><a href="posterior-simulation.html#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="posterior-simulation.html#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the prior model</span></span>
+<span id="cb11-7"><a href="posterior-simulation.html#cb11-7" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.4</span>)</span>
+<span id="cb11-8"><a href="posterior-simulation.html#cb11-8" aria-hidden="true" tabindex="-1"></a>article_sim <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">sample_n</span>(article, <span class="at">size =</span> <span class="dv">10000</span>, </span>
+<span id="cb11-9"><a href="posterior-simulation.html#cb11-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">weight =</span> prior, </span>
+<span id="cb11-10"><a href="posterior-simulation.html#cb11-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-11"><a href="posterior-simulation.html#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># dats model</span></span>
+<span id="cb11-12"><a href="posterior-simulation.html#cb11-12" aria-hidden="true" tabindex="-1"></a>article_sim <span class="ot">&lt;-</span> article_sim <span class="sc">%&gt;%</span> </span>
+<span id="cb11-13"><a href="posterior-simulation.html#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">data_model =</span> <span class="fu">case_when</span>(type <span class="sc">==</span> <span class="st">&quot;fake&quot;</span> <span class="sc">~</span> <span class="fl">0.2667</span>,</span>
+<span id="cb11-14"><a href="posterior-simulation.html#cb11-14" aria-hidden="true" tabindex="-1"></a>                                type <span class="sc">==</span> <span class="st">&quot;real&quot;</span> <span class="sc">~</span> <span class="fl">0.0222</span>))</span>
+<span id="cb11-15"><a href="posterior-simulation.html#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="posterior-simulation.html#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="posterior-simulation.html#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate exclamation point usage </span></span>
+<span id="cb11-18"><a href="posterior-simulation.html#cb11-18" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>)</span>
+<span id="cb11-19"><a href="posterior-simulation.html#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="posterior-simulation.html#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb11-21"><a href="posterior-simulation.html#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Rbase simplier ? </span></span>
+<span id="cb11-22"><a href="posterior-simulation.html#cb11-22" aria-hidden="true" tabindex="-1"></a>article_sim <span class="ot">&lt;-</span> article_sim <span class="sc">%&gt;%</span></span>
+<span id="cb11-23"><a href="posterior-simulation.html#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-24"><a href="posterior-simulation.html#cb11-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">usage =</span> <span class="fu">sample</span>(data, <span class="at">size =</span> <span class="dv">1</span>, </span>
+<span id="cb11-25"><a href="posterior-simulation.html#cb11-25" aria-hidden="true" tabindex="-1"></a>                        <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">-</span> data_model, data_model)))</span>
+<span id="cb11-26"><a href="posterior-simulation.html#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="posterior-simulation.html#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(article_sim, <span class="fu">aes</span>(<span class="at">x =</span> type)) <span class="sc">+</span> </span>
+<span id="cb11-28"><a href="posterior-simulation.html#cb11-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span> </span>
+<span id="cb11-29"><a href="posterior-simulation.html#cb11-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> usage)</span></code></pre></div>
+<p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="the-authors.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="thinking-like-a-bayesian-14.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="normalizing-constant.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="example-pop-vs-soda-vs-coke.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -417,7 +451,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/01.Rmd",
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/02.Rmd",
 "text": "Edit"
 },
 "history": {

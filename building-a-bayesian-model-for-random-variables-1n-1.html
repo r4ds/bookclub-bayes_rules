@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 1 The Big (Bayesian) Picture | Bayes Rules! Book Club</title>
+  <title>2.6 Building a Bayesian model for random variables (1/n) | Bayes Rules! Book Club</title>
   <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 1 The Big (Bayesian) Picture | Bayes Rules! Book Club" />
+  <meta property="og:title" content="2.6 Building a Bayesian model for random variables (1/n) | Bayes Rules! Book Club" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 1 The Big (Bayesian) Picture | Bayes Rules! Book Club" />
+  <meta name="twitter:title" content="2.6 Building a Bayesian model for random variables (1/n) | Bayes Rules! Book Club" />
   
   <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="the-authors.html"/>
-<link rel="next" href="thinking-like-a-bayesian-14.html"/>
+<link rel="prev" href="building-a-bayesian-model-for-random-variables-1n.html"/>
+<link rel="next" href="building-a-bayesian-model-for-random-variables-1n-2.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -371,22 +371,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="the-big-bayesian-picture" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> The Big (Bayesian) Picture<a href="the-big-bayesian-picture.html#the-big-bayesian-picture" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><strong>Learning objectives:</strong></p>
-<ul>
-<li>Learn to think like a Bayesian.</li>
-<li>Explore the foundations of a Bayesian data analysis and how they contrast with the frequentist alternative</li>
-<li>Learn a little bit about the history of the Bayesian philosophy</li>
-</ul>
+<div id="building-a-bayesian-model-for-random-variables-1n-1" class="section level2 hasAnchor" number="2.6">
+<h2><span class="header-section-number">2.6</span> Building a Bayesian model for random variables (1/n)<a href="building-a-bayesian-model-for-random-variables-1n-1.html#building-a-bayesian-model-for-random-variables-1n-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="binomial-data-model" class="section level3 hasAnchor" number="2.6.1">
+<h3><span class="header-section-number">2.6.1</span> Binomial data model<a href="building-a-bayesian-model-for-random-variables-1n-1.html#binomial-data-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Y is the number of games (on 6 games) that Kasparov wins.</p>
+<p>Y our random variable: {0, 1, …., 6} , depends on <span class="math inline">\(\pi\)</span></p>
+<p><span class="math display">\[f(y|\pi) = P (Y = y|\pi )  \]</span>
+<span class="math inline">\(y\)</span> : any possible outcone</p>
+<p>If we assume games are independents (no effect on each other) and <span class="math inline">\(\pi\)</span> is fixed we can use the Binomial model.</p>
+<p>Y is the number of successes in a fixed number of trials (<span class="math inline">\(n\)</span>)</p>
+<p><span class="math display">\[ Y|\pi \sim Bin(n, \pi) \]</span></p>
+<p><span class="math display">\[ f(y|\pi) = \begin{pmatrix} 6 \\y \end{pmatrix} \pi^y(1 - \pi)^{6 - y} \quad for \quad  y \in \begin{Bmatrix} 0, 1, 2, 3, 4, 5, 6 \end{Bmatrix}  \]</span>
+We can use the prior for <span class="math inline">\(\pi\)</span> and all <span class="math inline">\(y\)</span> to calculate each probabilities.</p>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="the-authors.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="thinking-like-a-bayesian-14.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="building-a-bayesian-model-for-random-variables-1n.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="building-a-bayesian-model-for-random-variables-1n-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -417,7 +423,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/01.Rmd",
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/02.Rmd",
 "text": "Edit"
 },
 "history": {
