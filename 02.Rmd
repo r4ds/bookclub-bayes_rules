@@ -2,16 +2,29 @@
 
 **Learning objectives:**
 
-- Explore foundational probability tools  
+- Explore foundational probability tools
+    - conditional probability: Probability of A given B $P(A|B)$  
+    - joint probability: Probability of A and B occuring  $P(A \cap B)$   
+    - marginal probability:  Probability of an event $P(A)$
+    - Law of Total Probability: If a probability of an event is unknown it can be calculated using the know probability of other related event
+
 - Conduct first formal Bayesian analysis  
+
 - Practice your Bayesian grammar  
-- Simulate Bayesian models  
+    - Prior
+    - Likelihood
+    - Normalizing constant  
+    
+- Simulate Bayesian models
+    - `sample()`
+    - `sample_n()`
+    - `rbinon()`
 
 ## Building a Bayesian model for events 
 
 **First Data set** `?? fake_news` 
 
-```{r, fig.cap="Bayesian knowledge-building diagram for wether or not the article is fake"}
+```{r, fig.cap="Bayesian knowledge-building diagram for wether or not the article is fake", echo=FALSE}
 DiagrammeR::grViz("
   digraph {
   
@@ -32,52 +45,54 @@ Two variables:
 
 ### Workflow: 
 
-1. Prior probability model
-2. A model for interpreting the data
-3. Posterior probability model
+1. Prior probability model  
+2. A model for interpreting the data  
+3. Posterior probability model  
 
+$$ P(FakeNew = 0.4 )  \quad and \quad  P(Real = 0.6) $$
 $$ P(B = 0.4 )  \quad and \quad  P(B^c = 0.6) $$
-Here $P(B)$ : prior probability of an article to be a fake news
+
+Here $P(FakeNew)$ : prior probability of an article to be a fake news
 
 Valid probability model : 
 1. accounts all event  
 2. assign probabilities for each event
 3. sum to one
 
-$P(A)$ : probability that an article contains an exclamation point in his title
+$P(ExClam)$ : probability that an article contains an exclamation mark in his title
 
 We know that if an article is fake news : 26.67% that the title contains **!** and if it is not fake this is just 2.22%.
 
-$$ P(A|B) = 0.2667 \quad and \quad P(A|B^c = 0.0222)  $$
+$$ P(Exclam|FakeNew) = 0.2667 \quad and \quad P(Exclam|Real = 0.0222)  $$
 
 This is a **conditional probability**. Conditional probability help know if B give us insight in A. If it does not provide any information it means that A and B event are **independent** ($P(A|B) = P(A)$). 
 
 ## Normalizing constant 
 
-$P(A|B) \quad and \quad P(A|B^c = 0.0222)$ are our likelihood, when we know A (!) we know that getting B (Fake news) is more likely. It is different that our prior probability.
+$P(Exclam|FakeNew) = 0.2667 \quad and \quad P(Exclam|Real) = 0.0222)$ are our likelihood, when we know A (!) we know that getting B (Fake news) is more likely. It is different that our prior probability.
 
-Then we need can calculate the **joint probability** (probability of observing A nd B for example), of each options (just 2 of them): 
+Then we need can calculate the **joint probability** (probability of observing A nd B for example), of each options (here it is half of them): 
 
-$$ P(A \cap B) = P(A|B) P (B) = 0.2667 *0.4 = 0.1067 $$ 
+$$ P(Exclam \cap FakeNew) = P(Exclam|FakeNew) P (Fakenew) = 0.2667 *0.4 = 0.1067 $$ 
 
-$$ P(A^c \cap B ) = (1 - P(A|B) * P(B)) = (1 - 0.2667) * 0.4 = 0.2993  $$ 
+$$ P(PasExclam \cap FakeNew ) = (1 - P(Exclam|FakeNew)) * P(FakeNew)) = (1 - 0.2667) * 0.4 = 0.2993  $$ 
 
-Here $P(B$) is the *marginal probability* of B
+Here $P(B)$ is the *marginal probability* of B
 
 ```{r}
 B <- c(0.1067, 0.2933, 0.4)
-Bc <- c(0.0133, 0.5867, 0.88)
+Bc <- c(0.0133, 0.5867, 0.6)
 Total <- c(0.12, 0.88, 1)
 joint_p <- data.frame(B, Bc, Total, row.names = c("A", "Ac", "Total"))
 knitr::kable(joint_p)
 ```
 
 
-$P(A)$ is our normalizing constant.
+$P(Exclam)$ is our normalizing constant.
 
-Ok but we want $P(fake|exlam)$ ie $P(B|A)$
+Ok but we want $P(FakeNew|exlam)$ ie $P(B|A)$
 
-$$ P(B|A) = \frac{P(A \cap B)}{P(A)} = \frac{P(B)L(B|A)}{P(A)}  $$ 
+$$ P(FakeNew|exclam) = \frac{P(exclam \cap FakeNew)}{P(Exclam)} = \frac{P(FakeNew)L(FakeNew|Exclam)}{P(Exclam)}  $$ 
 
 $$ posterior = \frac{prior . likelihood}{normalizing \quad constant} = \frac{0.4 * 0.2667}{0.12} = 0.889  $$
 
@@ -85,7 +100,7 @@ $$ posterior = \frac{prior . likelihood}{normalizing \quad constant} = \frac{0.4
 
 This was a model. Now we will use a simulation! 
 
-```{r}
+```{r, message=FALSE}
 library(dplyr)
 library(ggplot2)
 set.seed(84735)
@@ -104,7 +119,7 @@ article_sim <- article_sim %>%
 
 
 # Simulate exclamation point usage 
-data <- c("no", "yes")
+data <- c("NoExclam", "Exclam")
 
 set.seed(3)
 # Rbase simplier ? 
@@ -150,7 +165,7 @@ Y our random variable: {0, 1, ...., 6}  , depends on $\pi$
 $$f(y|\pi) = P (Y = y|\pi )  $$
 $y$ : any possible outcone
 
-If we assume games are independents (no effect on each other) and $\pi$ is fixed we can use the Binomial model.
+If we assume games are independents (no effect on each other) and $\pi$ is fixed we can use the *Binomial model*.
 
 Y is the number of successes in a fixed number of trials ($n$)
 
@@ -163,7 +178,9 @@ We can use the prior for $\pi$ and all $y$ to calculate each probabilities.
 
 ### Binomial likelihood function
 
-Kasparov only won one of six games. This is our data with $L(\pi|y = 1)$. We can calculate it for each $\pi$ value. What is more likely is that $pi$ was 0.2.
+Kasparov only won one of six games. This is our data with $L(\pi|y = 1)$. We can calculate it for each $\pi$ value. 
+
+What is more likely is that $pi$ was 0.2.
 
 ### Probability mass functions vs likelihood functions
 
@@ -192,7 +209,7 @@ $$ posterior = \frac{prior . likelihood}{normalizing \quad constant} \quad for \
 
 ### Posterior shortcut
 
-The normalizing constant, is a **constant** it appears in all posterior calculations. We can works with unnormalizied proabilities or we can divide each unnormalizied probability by the sum of each of them.
+The normalizing constant, is a **constant** it appears in all posterior calculations. We can work with unnormalizied proabilities or we can divide each unnormalizied probability by the sum of each of them.
 
 $$ posterior \propto prior * likelihood $$
 ## Posterior simulation 
@@ -221,6 +238,11 @@ ggplot(win_one, aes(x = pi)) +
   geom_bar()
 
 ```
+
+## Links shared in the second meeting
+
+Bayesian probability for babies! (with cookies) : https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf
+Author: Marisa Eisenberg
 
 
 ## Meeting Videos
