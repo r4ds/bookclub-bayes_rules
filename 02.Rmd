@@ -244,6 +244,7 @@ ggplot(win_one, aes(x = pi)) +
 Bayesian probability for babies! (with cookies) : https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf
 Author: Marisa Eisenberg
 
+
 ## Meeting Videos
 
 ### Cohort 1
