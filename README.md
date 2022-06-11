@@ -11,6 +11,7 @@ As we read, we are producing [notes about the book](https://r4ds.io/bayes_rules)
 If you would like to present, please see the sign-up sheet for your cohort (linked below, and pinned in the [#book_club-bayes_rules](https://rfordatascience.slack.com/archives/C03EK4FUMQX) channel on Slack)!
 
 - [Cohort 1](https://docs.google.com/spreadsheets/d/18IDSOU2bfkD55kOB18qCB7Idbpiyp4_9qeWjkvE-Syc/edit?usp=sharing) (started 2022-06-02): [Thursdays, 13:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20220602T180000&p1=24&p2=195&p3=1440) | [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGg3BSs7FW5_LPYfAyNft7I0)
+- [Cohort 2](https://docs.google.com/spreadsheets/d/1RENoDi6HNBw_l_OsOttl_3sA5CNVF6JExgnjwoSR5y4/edit?usp=sharing) (started 2022-06-15): [Wednesdays, 12:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20220615T170000&p1=24&p2=197&p3=1440) | [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGj_iXxIxkutG3rUzh-Z5vi7)
 
 <hr>
 
@@ -29,7 +30,7 @@ Do these steps once:
 Do these steps each time you present another chapter:
 
 1. Open your project for this book.
-2. `usethis::pr_init("my-chapter")` (creates a branch for your work, to avoid confusion, making sure that you have the latest changes from other contributors).
+2. `usethis::pr_init("my-chapter")` (creates a branch for your work, to avoid confusion, making sure that you have the latest changes from other contributors; replace `my-chapter` with a descriptive name, ideally).
 3. `devtools::install_dev_deps()` (installs any packages used by the book that you don't already have installed).
 4. Edit the appropriate chapter file, if necessary. Use `##` to indicate new slides (new sections).
 5. If you use any packages that are not already in the `DESCRIPTION`, add them. You can use `usethis::use_package("myCoolPackage")` to add them quickly!
