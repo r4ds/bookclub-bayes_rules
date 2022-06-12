@@ -1,0 +1,56 @@
+---
+title: "exo_chpter2"
+author: "collective"
+date: "6/12/2022"
+output: html_document
+---
+
+**Disclaimer:** This is just an attempt to provide answers. They could be wrong!    
+
+### Exercise 2.1
+
+a) $P(B|A) > P(B)$
+
+b) $P(B|) < p(A)$
+
+c) $P(B|A) > P(B)$
+
+d) $P(B|A) > P(B)$
+
+
+### Exercice 2.2
+
+a) $P(B|A)$
+
+b) $P(A)$ 
+
+c) $P(D)$
+
+d) $P(D|C)$
+
+e) $P(F \cap E) $
+
+f) $P(F|E) $
+
+
+### Exercice 2.3
+
+Terms used:  
+ - $P(V)$: probability of being a vampire and $P(V^c)$ not being a vampire  
+ - $P(S)$: probability of sparkling and $P(S^c)$ not sparkling
+ 
+ We first need to get the $P(V)$ (normalizing constant) which is the sum of sparkling while being a vampire plus the probability of sparkling without being a vampire: 
+ 
+$$ P(S) = P(S|V) * P(V) + P(S|V^c) * (1 - P(V)) $$
+
+```{r}
+P_S = 0.7 * 0.05 + 0.03 * 0.95
+P_S
+```
+
+Edward sparked so the probability of vampire existing is $\frac{prior * likelihood}{normalizing constant}$ 
+
+```{r}
+0.7 * 0.05/P_S
+```
+
