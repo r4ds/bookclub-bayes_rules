@@ -115,15 +115,15 @@ Focus: extending unit 1 **reponse variable (Y)** with **predictor variables (X)*
 
 4. Hierarchical Bayesian models
 
-Focus: expanding unit 3 to accomodate and harness grouped data : expanding unit 3 to accomodate and harness grouped data : expanding unit 3 to accomodate and harness grouped data 
+Focus: expanding unit 3 to accomodate and harness grouped data.
 
 ## Summary 
 
 - Posterior knowledge <- balancing information from data and prior knowledge 
 
-- more "waves"of data -> refine knowledge (less effect of prior)
+- More "waves"of data -> refine knowledge (less effect of prior)
 
-- two analysts  will converge on the same posterior knowledge
+- With more and more data, two analysts will converge on the same posterior knowledge
 
 ## Resources mentioned
 
