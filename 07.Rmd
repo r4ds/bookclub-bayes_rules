@@ -218,12 +218,6 @@ $$\frac{\mu \rightarrow \mu_{proposa}}{\mu_{proposal} \rightarrow \mu} = \frac{ 
 2. Determine whether accept the proposal: depends on how favorable its posterior plausibility is relative to the posterior plausibility of the *current location*
 
 
-
-## SLIDE 1
-
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
-
 ## Meeting Videos
 
 ### Cohort 1
