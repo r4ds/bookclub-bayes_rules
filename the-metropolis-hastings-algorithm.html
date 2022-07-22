@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.8 Links shared in the second meeting | Bayes Rules! Book Club</title>
+  <title>7.3 The Metropolis-Hastings algorithm | Bayes Rules! Book Club</title>
   <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.8 Links shared in the second meeting | Bayes Rules! Book Club" />
+  <meta property="og:title" content="7.3 The Metropolis-Hastings algorithm | Bayes Rules! Book Club" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.8 Links shared in the second meeting | Bayes Rules! Book Club" />
+  <meta name="twitter:title" content="7.3 The Metropolis-Hastings algorithm | Bayes Rules! Book Club" />
   
   <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="building-a-bayesian-model-for-random-variables-1n-2.html"/>
-<link rel="next" href="meeting-videos-1.html"/>
+<link rel="prev" href="the-big-idea-22.html"/>
+<link rel="next" href="implementing-the-metropolis-hastings.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -381,18 +381,53 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="links-shared-in-the-second-meeting" class="section level2 hasAnchor" number="2.8">
-<h2><span class="header-section-number">2.8</span> Links shared in the second meeting<a href="links-shared-in-the-second-meeting.html#links-shared-in-the-second-meeting" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Bayesian probability for babies! (with cookies) : <a href="https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf" class="uri">https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf</a>
-Author: Marisa Eisenberg</p>
+<div id="the-metropolis-hastings-algorithm" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> The Metropolis-Hastings algorithm<a href="the-metropolis-hastings-algorithm.html#the-metropolis-hastings-algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>step 1: ok : <span class="math inline">\(q(\mu_{proposal}|\mu)\)</span></p></li>
+<li><p>step 2:</p>
+<ul>
+<li>we are going to calculate an <strong>acceptance probability</strong>:</li>
+</ul>
+<p><span class="math display">\[\alpha = \{1, \frac{f(\mu_{proposal}) L(\mu_{proposal}|y) q(\mu|\mu_{proposal})}{f(\mu)L(\mu|y) q(\mu_{proposal|\mu})} \}\]</span></p></li>
+</ul>
+<p>Because the Uniform proposal model is symmetric:</p>
+<p><span class="math display">\[ q(\mu_{proposal}|\mu) = q(\mu|\mu_{proposal})\]</span></p>
+<p>Then after multiplying by <span class="math inline">\(f(y)\)</span> we have now:</p>
+<p><span class="math display">\[ \alpha = min\{1, \frac{f(\mu_{proposal}|y)}{f(\mu|y)} \} \]</span></p>
+<p>This ration is equivalent to the unnormalized posterior.</p>
+<p>Two scnearios:</p>
+<ul>
+<li><p>Scenario 1: <span class="math inline">\(f(\mu_{proposal}|y) \geq f(\mu|y)\)</span> -&gt; <span class="math inline">\(\alpha = 1\)</span> we are moving</p></li>
+<li><p>Scenario 2: $f(_{proposal}|y) &lt; f(|y) $ then we move according to the probability <span class="math inline">\(\alpha\)</span></p></li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="the-metropolis-hastings-algorithm.html#cb14-1" aria-hidden="true" tabindex="-1"></a>one_mh_iteration <span class="ot">&lt;-</span> <span class="cf">function</span>(w, current){</span>
+<span id="cb14-2"><a href="the-metropolis-hastings-algorithm.html#cb14-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># STEP 1: Propose the next chain location</span></span>
+<span id="cb14-3"><a href="the-metropolis-hastings-algorithm.html#cb14-3" aria-hidden="true" tabindex="-1"></a> proposal <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="at">min =</span> current <span class="sc">-</span> w, <span class="at">max =</span> current <span class="sc">+</span> w)</span>
+<span id="cb14-4"><a href="the-metropolis-hastings-algorithm.html#cb14-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-5"><a href="the-metropolis-hastings-algorithm.html#cb14-5" aria-hidden="true" tabindex="-1"></a> <span class="co"># STEP 2: Decide whether or not to go there</span></span>
+<span id="cb14-6"><a href="the-metropolis-hastings-algorithm.html#cb14-6" aria-hidden="true" tabindex="-1"></a> proposal_plaus <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(proposal, <span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">dnorm</span>(<span class="fl">6.25</span>, proposal, <span class="fl">0.75</span>)</span>
+<span id="cb14-7"><a href="the-metropolis-hastings-algorithm.html#cb14-7" aria-hidden="true" tabindex="-1"></a> current_plaus  <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(current, <span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">dnorm</span>(<span class="fl">6.25</span>, current, <span class="fl">0.75</span>)</span>
+<span id="cb14-8"><a href="the-metropolis-hastings-algorithm.html#cb14-8" aria-hidden="true" tabindex="-1"></a> alpha <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="dv">1</span>, proposal_plaus <span class="sc">/</span> current_plaus)</span>
+<span id="cb14-9"><a href="the-metropolis-hastings-algorithm.html#cb14-9" aria-hidden="true" tabindex="-1"></a> next_stop <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(proposal, current), </span>
+<span id="cb14-10"><a href="the-metropolis-hastings-algorithm.html#cb14-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(alpha, <span class="dv">1</span><span class="sc">-</span>alpha))</span>
+<span id="cb14-11"><a href="the-metropolis-hastings-algorithm.html#cb14-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-12"><a href="the-metropolis-hastings-algorithm.html#cb14-12" aria-hidden="true" tabindex="-1"></a> <span class="co"># Return the results</span></span>
+<span id="cb14-13"><a href="the-metropolis-hastings-algorithm.html#cb14-13" aria-hidden="true" tabindex="-1"></a> <span class="fu">return</span>(<span class="fu">data.frame</span>(proposal, alpha, next_stop))</span>
+<span id="cb14-14"><a href="the-metropolis-hastings-algorithm.html#cb14-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-15"><a href="the-metropolis-hastings-algorithm.html#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="the-metropolis-hastings-algorithm.html#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8</span>)</span>
+<span id="cb14-17"><a href="the-metropolis-hastings-algorithm.html#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">one_mh_iteration</span>(<span class="at">w =</span> <span class="dv">1</span>, <span class="at">current =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>##   proposal     alpha next_stop
+## 1  2.93259 0.8240205   2.93259</code></pre>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="building-a-bayesian-model-for-random-variables-1n-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="meeting-videos-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="the-big-idea-22.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="implementing-the-metropolis-hastings.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -423,7 +458,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/02.Rmd",
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/07.Rmd",
 "text": "Edit"
 },
 "history": {

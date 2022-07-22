@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.8 Links shared in the second meeting | Bayes Rules! Book Club</title>
+  <title>7.1 The big idea 1/2 | Bayes Rules! Book Club</title>
   <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.8 Links shared in the second meeting | Bayes Rules! Book Club" />
+  <meta property="og:title" content="7.1 The big idea 1/2 | Bayes Rules! Book Club" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.8 Links shared in the second meeting | Bayes Rules! Book Club" />
+  <meta name="twitter:title" content="7.1 The big idea 1/2 | Bayes Rules! Book Club" />
   
   <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="building-a-bayesian-model-for-random-variables-1n-2.html"/>
-<link rel="next" href="meeting-videos-1.html"/>
+<link rel="prev" href="mcmc-under-the-hood.html"/>
+<link rel="next" href="the-big-idea-22.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -381,18 +381,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="links-shared-in-the-second-meeting" class="section level2 hasAnchor" number="2.8">
-<h2><span class="header-section-number">2.8</span> Links shared in the second meeting<a href="links-shared-in-the-second-meeting.html#links-shared-in-the-second-meeting" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Bayesian probability for babies! (with cookies) : <a href="https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf" class="uri">https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf</a>
-Author: Marisa Eisenberg</p>
+<div id="the-big-idea-12" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> The big idea 1/2<a href="the-big-idea-12.html#the-big-idea-12" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We are going to use a Normal-Normal model:</p>
+<p><span class="math display">\[ Y|\mu \sim Norm(\mu, 0.75^2)\]</span></p>
+<p><span class="math display">\[ \mu \sim Norm(0, 1^2) \]</span></p>
+<p>Observed outcome 6.25:</p>
+<p><span class="math display">\[ \mu|(Y = 6.25) \sim Norm(4, 0.6^2)\]</span></p>
+<p>Main idea: chain need to spend more time around <span class="math inline">\(\mu\)</span> value. Remember <span class="math inline">\(\mu^{i+1}\)</span> is dependant of <span class="math inline">\(\mu^{i}\)</span>.</p>
+<p>How are we going to visit every part of the posterior dustribution:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>step 1</strong> : propose a random location <span class="math inline">\(\mu&#39;\)</span> (I prefer <span class="math inline">\(\mu_{proposal}\)</span>) for the nex stop</p></li>
+<li><p><strong>step 2</strong> : Decide whether to:</p>
+<ul>
+<li>go to the proposed location: <span class="math inline">\(\mu_{proposal} = \mu^{i+1}\)</span></li>
+<li>stay at the current location: <span class="math inline">\(\mu = \mu^{i+1}\)</span></li>
+</ul></li>
+</ol>
+<p>Monte Carlo algorithm:</p>
+<ul>
+<li><p>step 1 propose location: draw <span class="math inline">\(\mu\)</span> from posterior model with <span class="math inline">\(pdf \quad f(\mu|y)\)</span></p></li>
+<li><p>step 2 : Go there</p></li>
+</ul>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="building-a-bayesian-model-for-random-variables-1n-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="meeting-videos-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="mcmc-under-the-hood.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="the-big-idea-22.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -423,7 +441,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/02.Rmd",
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/07.Rmd",
 "text": "Edit"
 },
 "history": {

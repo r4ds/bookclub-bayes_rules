@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.8 Links shared in the second meeting | Bayes Rules! Book Club</title>
+  <title>7.4 Implementing the Metropolis-Hastings | Bayes Rules! Book Club</title>
   <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.8 Links shared in the second meeting | Bayes Rules! Book Club" />
+  <meta property="og:title" content="7.4 Implementing the Metropolis-Hastings | Bayes Rules! Book Club" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.8 Links shared in the second meeting | Bayes Rules! Book Club" />
+  <meta name="twitter:title" content="7.4 Implementing the Metropolis-Hastings | Bayes Rules! Book Club" />
   
   <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="building-a-bayesian-model-for-random-variables-1n-2.html"/>
-<link rel="next" href="meeting-videos-1.html"/>
+<link rel="prev" href="the-metropolis-hastings-algorithm.html"/>
+<link rel="next" href="a-beta-binomial-example.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -381,18 +381,54 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="links-shared-in-the-second-meeting" class="section level2 hasAnchor" number="2.8">
-<h2><span class="header-section-number">2.8</span> Links shared in the second meeting<a href="links-shared-in-the-second-meeting.html#links-shared-in-the-second-meeting" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Bayesian probability for babies! (with cookies) : <a href="https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf" class="uri">https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf</a>
-Author: Marisa Eisenberg</p>
+<div id="implementing-the-metropolis-hastings" class="section level2 hasAnchor" number="7.4">
+<h2><span class="header-section-number">7.4</span> Implementing the Metropolis-Hastings<a href="implementing-the-metropolis-hastings.html#implementing-the-metropolis-hastings" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="implementing-the-metropolis-hastings.html#cb16-1" aria-hidden="true" tabindex="-1"></a>mh_tour <span class="ot">&lt;-</span> <span class="cf">function</span>(N, w){</span>
+<span id="cb16-2"><a href="implementing-the-metropolis-hastings.html#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Start the chain at location 3</span></span>
+<span id="cb16-3"><a href="implementing-the-metropolis-hastings.html#cb16-3" aria-hidden="true" tabindex="-1"></a>  current <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb16-4"><a href="implementing-the-metropolis-hastings.html#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="implementing-the-metropolis-hastings.html#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. Initialize the simulation</span></span>
+<span id="cb16-6"><a href="implementing-the-metropolis-hastings.html#cb16-6" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, N)</span>
+<span id="cb16-7"><a href="implementing-the-metropolis-hastings.html#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="implementing-the-metropolis-hastings.html#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Simulate N Markov chain stops</span></span>
+<span id="cb16-9"><a href="implementing-the-metropolis-hastings.html#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){    </span>
+<span id="cb16-10"><a href="implementing-the-metropolis-hastings.html#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simulate one iteration</span></span>
+<span id="cb16-11"><a href="implementing-the-metropolis-hastings.html#cb16-11" aria-hidden="true" tabindex="-1"></a>    sim <span class="ot">&lt;-</span> <span class="fu">one_mh_iteration</span>(<span class="at">w =</span> w, <span class="at">current =</span> current)</span>
+<span id="cb16-12"><a href="implementing-the-metropolis-hastings.html#cb16-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-13"><a href="implementing-the-metropolis-hastings.html#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Record next location</span></span>
+<span id="cb16-14"><a href="implementing-the-metropolis-hastings.html#cb16-14" aria-hidden="true" tabindex="-1"></a>    mu[i] <span class="ot">&lt;-</span> sim<span class="sc">$</span>next_stop</span>
+<span id="cb16-15"><a href="implementing-the-metropolis-hastings.html#cb16-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-16"><a href="implementing-the-metropolis-hastings.html#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reset the current location</span></span>
+<span id="cb16-17"><a href="implementing-the-metropolis-hastings.html#cb16-17" aria-hidden="true" tabindex="-1"></a>    current <span class="ot">&lt;-</span> sim<span class="sc">$</span>next_stop</span>
+<span id="cb16-18"><a href="implementing-the-metropolis-hastings.html#cb16-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-19"><a href="implementing-the-metropolis-hastings.html#cb16-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-20"><a href="implementing-the-metropolis-hastings.html#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 4. Return the chain locations</span></span>
+<span id="cb16-21"><a href="implementing-the-metropolis-hastings.html#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">data.frame</span>(<span class="at">iteration =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>N), mu))</span>
+<span id="cb16-22"><a href="implementing-the-metropolis-hastings.html#cb16-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="implementing-the-metropolis-hastings.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb17-2"><a href="implementing-the-metropolis-hastings.html#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">84735</span>)</span>
+<span id="cb17-3"><a href="implementing-the-metropolis-hastings.html#cb17-3" aria-hidden="true" tabindex="-1"></a>mh_simulation_1 <span class="ot">&lt;-</span> <span class="fu">mh_tour</span>(<span class="at">N =</span> <span class="dv">5000</span>, <span class="at">w =</span> <span class="dv">1</span>)</span>
+<span id="cb17-4"><a href="implementing-the-metropolis-hastings.html#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mh_simulation_1, <span class="fu">aes</span>(<span class="at">x =</span> iteration, <span class="at">y =</span> mu)) <span class="sc">+</span> </span>
+<span id="cb17-5"><a href="implementing-the-metropolis-hastings.html#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code></pre></div>
+<p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="implementing-the-metropolis-hastings.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mh_simulation_1, <span class="fu">aes</span>(<span class="at">x =</span> mu)) <span class="sc">+</span> </span>
+<span id="cb18-2"><a href="implementing-the-metropolis-hastings.html#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> ..density..), <span class="at">color =</span> <span class="st">&quot;white&quot;</span>, <span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span> </span>
+<span id="cb18-3"><a href="implementing-the-metropolis-hastings.html#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="dv">4</span>,<span class="fl">0.6</span>), <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+<p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-10-2.png" width="672" />
+## Tuning the Metropolis-Hastings algorithm</p>
+<div id="quiz" class="section level3 hasAnchor" number="7.4.1">
+<h3><span class="header-section-number">7.4.1</span> Quiz!<a href="implementing-the-metropolis-hastings.html#quiz" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>w = 0.01 or w = 100, or w = 1</p>
+<p><img src="image/various_w.png" /></p>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="building-a-bayesian-model-for-random-variables-1n-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="meeting-videos-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="the-metropolis-hastings-algorithm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="a-beta-binomial-example.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -423,7 +459,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/02.Rmd",
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/07.Rmd",
 "text": "Edit"
 },
 "history": {

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.8 Links shared in the second meeting | Bayes Rules! Book Club</title>
+  <title>7.5 A Beta-Binomial example | Bayes Rules! Book Club</title>
   <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.8 Links shared in the second meeting | Bayes Rules! Book Club" />
+  <meta property="og:title" content="7.5 A Beta-Binomial example | Bayes Rules! Book Club" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.8 Links shared in the second meeting | Bayes Rules! Book Club" />
+  <meta name="twitter:title" content="7.5 A Beta-Binomial example | Bayes Rules! Book Club" />
   
   <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="building-a-bayesian-model-for-random-variables-1n-2.html"/>
-<link rel="next" href="meeting-videos-1.html"/>
+<link rel="prev" href="implementing-the-metropolis-hastings.html"/>
+<link rel="next" href="why-the-algorithm-works.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -381,18 +381,59 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="links-shared-in-the-second-meeting" class="section level2 hasAnchor" number="2.8">
-<h2><span class="header-section-number">2.8</span> Links shared in the second meeting<a href="links-shared-in-the-second-meeting.html#links-shared-in-the-second-meeting" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Bayesian probability for babies! (with cookies) : <a href="https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf" class="uri">https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf</a>
-Author: Marisa Eisenberg</p>
+<div id="a-beta-binomial-example" class="section level2 hasAnchor" number="7.5">
+<h2><span class="header-section-number">7.5</span> A Beta-Binomial example<a href="a-beta-binomial-example.html#a-beta-binomial-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>1 success in 2 trials</p>
+<p><span class="math display">\[ Y|\pi = bin(2, \pi) \]</span></p>
+<p><span class="math display">\[ \pi = Beta(2,3) \]</span></p>
+<p>We are still playing “pretend”</p>
+<p>We are moving for step 1 to an Uniform to a Beta model because we want <span class="math inline">\(\pi\)</span> to be [0,1]. And we will draw every step from this Beta model. -&gt; change in step 1</p>
+<p><span class="math display">\[\alpha = min \{1, \frac{f(\pi_{proposal}|y)q(\pi)}{f(\pi|y) q(\pi_{proposal})} \} \]</span></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="a-beta-binomial-example.html#cb19-1" aria-hidden="true" tabindex="-1"></a>one_iteration <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b, current){</span>
+<span id="cb19-2"><a href="a-beta-binomial-example.html#cb19-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># STEP 1: Propose the next chain location</span></span>
+<span id="cb19-3"><a href="a-beta-binomial-example.html#cb19-3" aria-hidden="true" tabindex="-1"></a> proposal <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="dv">1</span>, a, b)</span>
+<span id="cb19-4"><a href="a-beta-binomial-example.html#cb19-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-5"><a href="a-beta-binomial-example.html#cb19-5" aria-hidden="true" tabindex="-1"></a> <span class="co"># STEP 2: Decide whether or not to go there</span></span>
+<span id="cb19-6"><a href="a-beta-binomial-example.html#cb19-6" aria-hidden="true" tabindex="-1"></a> proposal_plaus <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(proposal, <span class="dv">2</span>, <span class="dv">3</span>) <span class="sc">*</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">2</span>, proposal)</span>
+<span id="cb19-7"><a href="a-beta-binomial-example.html#cb19-7" aria-hidden="true" tabindex="-1"></a> proposal_q     <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(proposal, a, b) <span class="co"># &lt;- new</span></span>
+<span id="cb19-8"><a href="a-beta-binomial-example.html#cb19-8" aria-hidden="true" tabindex="-1"></a> current_plaus  <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(current, <span class="dv">2</span>, <span class="dv">3</span>) <span class="sc">*</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">2</span>, current)</span>
+<span id="cb19-9"><a href="a-beta-binomial-example.html#cb19-9" aria-hidden="true" tabindex="-1"></a> current_q      <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(current, a, b) <span class="co"># &lt;- new</span></span>
+<span id="cb19-10"><a href="a-beta-binomial-example.html#cb19-10" aria-hidden="true" tabindex="-1"></a> alpha <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="dv">1</span>, proposal_plaus <span class="sc">/</span> current_plaus <span class="sc">*</span> current_q <span class="sc">/</span> proposal_q)</span>
+<span id="cb19-11"><a href="a-beta-binomial-example.html#cb19-11" aria-hidden="true" tabindex="-1"></a> next_stop <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(proposal, current), </span>
+<span id="cb19-12"><a href="a-beta-binomial-example.html#cb19-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(alpha, <span class="dv">1</span><span class="sc">-</span>alpha))</span>
+<span id="cb19-13"><a href="a-beta-binomial-example.html#cb19-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-14"><a href="a-beta-binomial-example.html#cb19-14" aria-hidden="true" tabindex="-1"></a> <span class="fu">return</span>(<span class="fu">data.frame</span>(proposal, alpha, next_stop))</span>
+<span id="cb19-15"><a href="a-beta-binomial-example.html#cb19-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="a-beta-binomial-example.html#cb20-1" aria-hidden="true" tabindex="-1"></a>betabin_tour <span class="ot">&lt;-</span> <span class="cf">function</span>(N, a, b){</span>
+<span id="cb20-2"><a href="a-beta-binomial-example.html#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Start the chain at location 0.5</span></span>
+<span id="cb20-3"><a href="a-beta-binomial-example.html#cb20-3" aria-hidden="true" tabindex="-1"></a>  current <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb20-4"><a href="a-beta-binomial-example.html#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="a-beta-binomial-example.html#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. Initialize the simulation</span></span>
+<span id="cb20-6"><a href="a-beta-binomial-example.html#cb20-6" aria-hidden="true" tabindex="-1"></a>  pi <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, N)</span>
+<span id="cb20-7"><a href="a-beta-binomial-example.html#cb20-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-8"><a href="a-beta-binomial-example.html#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Simulate N Markov chain stops</span></span>
+<span id="cb20-9"><a href="a-beta-binomial-example.html#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){    </span>
+<span id="cb20-10"><a href="a-beta-binomial-example.html#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simulate one iteration</span></span>
+<span id="cb20-11"><a href="a-beta-binomial-example.html#cb20-11" aria-hidden="true" tabindex="-1"></a>    sim <span class="ot">&lt;-</span> <span class="fu">one_iteration</span>(<span class="at">a =</span> a, <span class="at">b =</span> b, <span class="at">current =</span> current)</span>
+<span id="cb20-12"><a href="a-beta-binomial-example.html#cb20-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-13"><a href="a-beta-binomial-example.html#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Record next location</span></span>
+<span id="cb20-14"><a href="a-beta-binomial-example.html#cb20-14" aria-hidden="true" tabindex="-1"></a>    pi[i] <span class="ot">&lt;-</span> sim<span class="sc">$</span>next_stop</span>
+<span id="cb20-15"><a href="a-beta-binomial-example.html#cb20-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-16"><a href="a-beta-binomial-example.html#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reset the current location</span></span>
+<span id="cb20-17"><a href="a-beta-binomial-example.html#cb20-17" aria-hidden="true" tabindex="-1"></a>    current <span class="ot">&lt;-</span> sim<span class="sc">$</span>next_stop</span>
+<span id="cb20-18"><a href="a-beta-binomial-example.html#cb20-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-19"><a href="a-beta-binomial-example.html#cb20-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-20"><a href="a-beta-binomial-example.html#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 4. Return the chain locations</span></span>
+<span id="cb20-21"><a href="a-beta-binomial-example.html#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">data.frame</span>(<span class="at">iteration =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>N), pi))</span>
+<span id="cb20-22"><a href="a-beta-binomial-example.html#cb20-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="building-a-bayesian-model-for-random-variables-1n-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="meeting-videos-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="implementing-the-metropolis-hastings.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="why-the-algorithm-works.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -423,7 +464,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/02.Rmd",
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/07.Rmd",
 "text": "Edit"
 },
 "history": {
