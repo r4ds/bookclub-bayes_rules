@@ -163,12 +163,41 @@ This is a list of resources mentioned in the first meeting!
 
 ### Cohort 1
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/EwK5BatQgpw")`
 
 <details>
 <summary> Meeting chat log </summary>
 
 ```
-LOG
+00:06:01	Olivier:	hello !
+00:06:47	Olivier:	various links : https://r4ds.github.io/bookclub-bayes_rules/
+00:06:55	Olivier:	https://docs.google.com/spreadsheets/d/18IDSOU2bfkD55kOB18qCB7Idbpiyp4_9qeWjkvE-Syc/edit#gid=0
+00:09:44	Olivier:	Letś wait that everyone configure zoom :P
+00:10:18	Gabby Palomo:	I didn't see if anyone else signed up for this cohort. I imagine more people did, right?
+00:10:46	Olivier:	I do not know the number of participant
+00:10:52	Olivier:	I will have to ask 
+00:11:08	Will:	Well hopefully. I'm assuming for fellow Brits there are lots people celebrating the jubilee.
+00:11:59	Gabby Palomo:	ah that's true!!
+00:12:10	erik.aalto@tocaboca.com:	I’m not hearing anything, but I could hear recording in progress when I joined..
+00:12:24	Olivier:	do you hear me ? 
+00:12:27	Gabby Palomo:	There are 85 people in the slack channel so will see.
+00:12:42	erik.aalto@tocaboca.com:	Nope, cant hear anything:/
+00:13:15	Will:	Yes I think I can hear Erik
+00:13:45	erik.aalto@tocaboca.com:	Darn, can’t hear anything…this is weird
+00:13:57	Olivier:	we hear you at least
+00:14:03	erik.aalto@tocaboca.com:	I hear the zoom notifs…like ”recording in progress”
+00:15:52	Olivier:	it is fine 
+00:16:13	Olivier:	is it better
+00:17:24	Olivier:	is it good now ?
+00:17:41	Olivier:	i restaart it
+00:19:02	Olivier:	working or not ? 
+00:19:20	Ronald Legere:	Not yet… there is a audio test thing in the audio settings menu
+00:19:48	Olivier:	good name 
+00:56:58	Ronald Legere:	Can you link those podcasts to slack? Or here ;)
+01:06:31	Olivier Leroy:	DiagrammeR
 ```
 </details>
+
+### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/GvK98TXNb18")`

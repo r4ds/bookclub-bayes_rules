@@ -13,12 +13,33 @@
 
 ### Cohort 1
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/Ne4kGkl7M1w")`
 
 <details>
 <summary> Meeting chat log </summary>
 
 ```
-LOG
+00:10:55	Kasia Ozga:	host disabled whitboard so we will not try it 😛
+00:30:25	Will Parbury:	3 Blue 1 Brown: Binomial distributions | Probabilities of probabilities, part 1 https://www.youtube.com/watch?v=8idr1WZ1A7Q
+
+Serrano.Academy: The Beta Distribution in 12 minutes! https://www.youtube.com/watch?v=juF3r12nM5A
+
+PsychEd: Milgram’s Obedience Experiment https://www.youtube.com/watch?v=cBDkJ-Nc3Ig
+00:30:38	Federica Gazzelloni:	thanks
+00:35:29	Federica Gazzelloni:	you can watch the fist two videos of advancedR cohort6 book club for how to make the notes
+00:36:32	Federica Gazzelloni:	https://www.youtube.com/playlist?list=PL3x6DOfs2NGjnCxGKeDNJUfPpRFI2hJjv
+00:36:58	Lisa:	thanks!
+00:38:21	Federica Gazzelloni:	to make the notes have a look at the first and the third videos
+00:38:42	Federica Gazzelloni:	just the begin
+00:40:39	Kasia Ozga:	v
+00:40:52	Kasia Ozga:	https://ben18785.shinyapps.io/distribution-zoo/
+00:44:06	Kasia Ozga:	mean is alpha / (alpha +alpha)
+00:44:25	Kasia Ozga:	0,4 = 1/alpha
 ```
 </details>
+
+### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/HcX1PGArVO4")`
+
+`r knitr::include_url("https://www.youtube.com/embed/xKi_S9UBBpQ")`

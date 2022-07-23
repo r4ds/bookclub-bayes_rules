@@ -13,12 +13,16 @@
 
 ### Cohort 1
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/VCo4CZJNBAs")`
 
 <details>
 <summary> Meeting chat log </summary>
 
 ```
-LOG
+00:14:08	Brendan Lam:	eventually!
 ```
 </details>
+
+### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/xjkHan4vbfQ")`

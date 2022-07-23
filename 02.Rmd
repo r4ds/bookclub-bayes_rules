@@ -249,12 +249,31 @@ Author: Marisa Eisenberg
 
 ### Cohort 1
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/-6f60j96d58")`
 
 <details>
 <summary> Meeting chat log </summary>
 
 ```
-LOG
+00:11:44	erik.aalto@tocaboca.com:	Hello, sorry for joining late, happy to see you again 😄
+00:36:06	Brendan Lam:	https://www.youtube.com/watch?v=HZGCoVF3YvM
+00:37:26	Erik:	we’ll utilize the following likelihood function notation  
+<poorly formatted paste>
+00:37:41	Erik:	sorry for how the formatting above went…
+00:42:42	Lisa:	to add to brendan's resource, here is a slide deck using cookies as an example: https://github.com/epimath/epid-814-materials/blob/master/Lectures/BayesianEstimation.pdf
+01:02:00	Federica Gazzelloni:	thanks
+01:02:34	Federica Gazzelloni:	I’d like to go back to the L(..|..)
+01:02:35	Gabby Palomo:	It was clear Olivier. Don’t worry!!
+01:03:07	Federica Gazzelloni:	just to understand how it works and what is the difference
+01:03:43	Erik:	Need to jump out! Thanks for today.
+01:04:15	Lisa:	I need to get back to work too. thank you for today!
+01:04:58	Federica Gazzelloni:	thanks
+01:05:03	Federica Gazzelloni:	I’ll check that
 ```
 </details>
+
+### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/2gP7rLLLUsA")`
+
+`r knitr::include_url("https://www.youtube.com/embed/QirQynPol0k")`
