@@ -222,6 +222,32 @@ $$\frac{\mu \rightarrow \mu_{proposa}}{\mu_{proposal} \rightarrow \mu} = \frac{ 
 
 ### Cohort 1
 
+`r knitr::include_url("https://www.youtube.com/embed/i1bA54EgaXk")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:00:12	Federica Gazzelloni:	Hello!
+00:58:29	olivier leroy:	while (count_accept < M)
+{
+  count_draw <- count_draw + 1
+un_runif <- runif(1)
+  k <- rbinom(prob = un_runif,
+              size = 10,
+              n = 1)
+  if(k == kobs) {
+    count_accept <- count_accept + 1
+    post[count_accept] <- un_runif  
+  }         
+}
+
+01:04:14	olivier leroy:	https://www.youtube.com/watch?v=Qqz5AJjyugM&list=PLDcUM9US4XdMROZ57-OIRtIK0aOynbgZN&index=8&pp=sAQB
+```
+</details>
+
+### Cohort 2
+
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>
