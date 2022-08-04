@@ -493,7 +493,7 @@ Cahpter 10: Evaluating Regression Models!
     a. By hand (dplyr mutate and summarize)
     b. `rstanarm::posterio_predict()` + `rstantools::posterior_interval()`  
 
-## Ressources: 
+## Resources: 
 
 - [Rstanarm vignette](https://mc-stan.org/rstanarm/articles/)
 
