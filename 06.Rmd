@@ -1,13 +1,182 @@
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(janitor)
+library(rstan)
+library(bayesplot)
+```
+
+
 # Approximating the Posterior
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+* Implement and examine the limitations of using grid approximation to simulate a posterior model.
+* Explore the MCMC posterior simulation using R
+* Learn several Markov chain diagnostics for examining the quality of an MCMC posterior simulation.
 
-## SLIDE 1
+N.B. We will learn more about how MCMC works in the next chapter!
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+## Motivation for approximations
+
+- Remember we are trying to compute the posterior distribution:
+
+$$ f\left(\theta | y \right) = \frac{f(\theta)L(\theta | y)}{f(y)} $$
+
+- In previous examples (conjugate priors) we were able to do this analytically 
+
+- The numerator is generally not an issue since we specify these distributions.
+
+- However, especially with many parameters, it becomes difficult or intractable to compute the denominator f(y) 
+
+$$ f(y) = \int_{\theta_1}\int_{\theta_2} ... \int_{\theta_k}f(\theta)L(\theta | y) d\theta_k ... d\theta_1 d\theta_2 $$
+
+- Solution is to approximate the posterior via simulation.
+
+
+## Grid Approximaiton
+
+- *Discretized approximation* of the posterior. 
+
+- Method of producing samples:
+
+    1. Define a grid of possible values of the parameters $\theta$,
+    2. Evaluate the numerator at each possible value ($f(\theta)L(\theta | y)$)
+    3. Obtain a discrete approximation of $f(\theta|y)$ by normalizing the results (i.e. divide by the sum!)
+    4. Randomly sample the grid values using the probabilities determined in step 3.
+    
+## Beta Binomial Example (Grid)
+
+$$ Y|\pi \sim Bin(10,\pi)\\
+     \pi \sim Beta(2,2)$$
+
+- Observe $Y=9$ successes.
+
+```{r}
+# Step 1: Define grid
+grid_data <- data.frame(pi_grid = seq(from = 0, to = 1, length = 100))
+
+# Step 2: Evaluate numerator
+grid_data <- grid_data %>% 
+  mutate(prior = dbeta(pi_grid, 2, 2),
+         likelihood = dbinom(9, 10, pi_grid)) %>%
+  mutate( unnormalized = prior*likelihood)
+
+# Step 3: Normalize! 
+grid_data <- grid_data %>% 
+   mutate(posterior = unnormalized/sum(unnormalized))
+
+ggplot(grid_data, aes(x = pi_grid, y = posterior)) + 
+  geom_point() + 
+  geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = posterior))
+```
+
+- Sample from this posterior (Step 4)
+
+```{r}
+set.seed(84735)  #BAYES
+post_sample <- sample_n(grid_data, size = 10000, weight = posterior, replace = TRUE)
+ggplot(post_sample, aes(x = pi_grid)) + 
+  geom_histogram(aes(y = ..density..), color = "white", binwidth = 0.05) + 
+  stat_function(fun = dbeta, args = list(11, 3)) + 
+  lims(x = c(0, 1))
+```
+
+- We can compute any summary statistics from the samples (or from the grid posterior itself!)
+
+- Book also gives a second example using Gamma-Poisson 
+ 
+## MCMC
+
+- Curse of dimensionality -> Grid approximation is limited to cases with only a few parameters.
+
+- **M**arkov **C**hain **M**onte **C**arlo  produces a Markov chain of samples to approximate posterior.
+
+- Samples are not **directly** from the posterior and are **not** independent!
+
+- More on *how* it works in next chapter. But we can just jump in with **rstan**
+
+## Beta-Binomial (MCMC)
+
+```{r, results='hide'}
+# define model in stan language
+bb_model <- "
+  data {
+    int<lower = 0, upper = 10> Y;
+  }
+  parameters {
+    real<lower = 0, upper = 1> pi;
+  }
+  model {
+    Y ~ binomial(10, pi);
+    pi ~ beta(2, 2);
+  }
+"
+# use stan to simulate posterior
+bb_sim <- stan(model_code = bb_model, data = list(Y = 9), 
+               chains = 4, iter = 5000*2, seed = 84735)
+```
+
+- Uses 4 *chains* and 1000 *samples* of which 1/2 are discarded by default for *burn-in*
+
+- Result is a *stanfit* object, which can be used to extract the samples
+
+```{r}
+# for examining using view
+chains <- as.data.frame(as.array(bb_sim, pars = "pi"))
+# look at a zoom in of the sample trace
+mcmc_trace(bb_sim, pars = "pi", window = c(50,100),size =0.1)
+```
+
+- Trace shows the samples exploring the parameter space but also illustrates non-zero autocorrelation.
+
+- We can also plot the resulting distribution of samples (book shows that this is close to beta-binomial expected)
+
+```{r}
+mcmc_dens(bb_sim, pars = "pi") + 
+  yaxis_text(TRUE) + 
+  ylab("density")
+```  
+
+
+## Markov chain diagnostics
+
+- Primary tools:
+   - Trace plots
+   - Effective sample size
+   - Autocorrelation
+   - R-hat
+- With trace plots, look for good mixing and compare parallel chains.
+
+- Effective sample size takes into account the correlation between samples. (best if > 10% of actual samples)
+
+```{r}
+neff_ratio(bb_sim, pars = c("pi"))
+```
+
+- Autocorrelation measures the correlation between pairs of Markov chain values that are one *Lag* “steps” apart 
+
+```{r}
+mcmc_acf(bb_sim, pars = "pi")
+```
+
+- R-hat is the ratio of the variability between chains to the variability within chains. R-hat > 1.05 is cause for concern.
+
+```{r}
+rhat(bb_sim, pars="pi")
+```
+
+## Summary
+
+- More sophisticated Bayesian models often require approximations
+
+- Learned about two methods:
+    - Grid Approximation (straightforward but limited)
+    - MCMC (more flexible)
+    
+- Learned some MCMC diagnostics
+ 
+Next chapter, MCMC **under the hood**
 
 ## Meeting Videos
 
