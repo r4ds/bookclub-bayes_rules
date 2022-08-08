@@ -25,13 +25,13 @@ $$ f\left(\theta | y \right) = \frac{f(\theta)L(\theta | y)}{f(y)} $$
 
 - In previous examples (conjugate priors) we were able to do this analytically 
 
-- The numerator is generally not an issue since we specify these distributions.
+- Numerator - no issue, we specify these distributions.
 
-- However, especially with many parameters, it becomes difficult or intractable to compute the denominator f(y) 
+- Denominator -  Can be difficult or intractable to compute the denominator f(y) !
 
 $$ f(y) = \int_{\theta_1}\int_{\theta_2} ... \int_{\theta_k}f(\theta)L(\theta | y) d\theta_k ... d\theta_1 d\theta_2 $$
 
-- Solution is to approximate the posterior via simulation.
+- Solution?  Aapproximate the posterior via simulation!
 
 
 ## Grid Approximaiton
@@ -41,7 +41,7 @@ $$ f(y) = \int_{\theta_1}\int_{\theta_2} ... \int_{\theta_k}f(\theta)L(\theta | 
 - Method of producing samples:
 
     1. Define a grid of possible values of the parameters $\theta$,
-    2. Evaluate the numerator at each possible value ($f(\theta)L(\theta | y)$)
+    2. Evaluate the numerator at each possible value  
     3. Obtain a discrete approximation of $f(\theta|y)$ by normalizing the results (i.e. divide by the sum!)
     4. Randomly sample the grid values using the probabilities determined in step 3.
     
@@ -84,13 +84,17 @@ ggplot(post_sample, aes(x = pi_grid)) +
 
 - We can compute any summary statistics from the samples (or from the grid posterior itself!)
 
-- Book also gives a second example using Gamma-Poisson 
  
 ## MCMC
 
 - Curse of dimensionality -> Grid approximation is limited to cases with only a few parameters.
 
 - **M**arkov **C**hain **M**onte **C**arlo  produces a Markov chain of samples to approximate posterior.
+
+   - Markov Chain: $\theta^{(i+1)} \sim f(\theta^{(i+1)} | \theta^{(i)}, y)$
+   
+   - Monte Carlo: Random samples from chain.
+
 
 - Samples are not **directly** from the posterior and are **not** independent!
 
@@ -117,7 +121,7 @@ bb_sim <- stan(model_code = bb_model, data = list(Y = 9),
                chains = 4, iter = 5000*2, seed = 84735)
 ```
 
-- Uses 4 *chains* and 1000 *samples* of which 1/2 are discarded by default for *burn-in*
+- Uses 4 *chains* and 10000 *samples* of which 1/2 are discarded by default for *burn-in*
 
 - Result is a *stanfit* object, which can be used to extract the samples
 
