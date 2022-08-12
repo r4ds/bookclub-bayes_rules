@@ -151,7 +151,7 @@ ggplot(bikes, aes(y = rides, x = temp_feel)) +
 
 Given the combined model assumptions reasonable, the posterior model should be able to simulate ridership data very close to the original 500 rides observations.
 
-```{r 10.9, message=FALSE, warning=FALSE, paged.print=FALSE,eval=FALSE}
+```{r 10.9, message=FALSE, warning=FALSE, paged.print=FALSE,eval=T}
 bike_model <- rstanarm::stan_glm(
                        rides ~ temp_feel, 
                        data = bikes, 
@@ -159,13 +159,9 @@ bike_model <- rstanarm::stan_glm(
                        prior_intercept = normal(5000, 1000),
                        prior = normal(100, 40), 
                        prior_aux = exponential(0.0008),
-                       chains = 4, iter = 5000*2, seed = 84735)
-```
-
-
-```{r 10.10.1, include=FALSE}
-# saveRDS(bike_model,"data/10_bike_model.rds")
-bike_model <- readRDS("data/10_bike_model.rds")
+                       chains = 4, iter = 5000*2, seed = 84735,
+                       # suppress the output
+                       refresh=0)
 ```
 
 
