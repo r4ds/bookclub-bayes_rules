@@ -107,7 +107,7 @@ $$\sigma \sim Exp(l).$$
 $$ Y_{i}| \beta_{0}, \beta_{1}, \sigma \overset{ind}{\sim} N(\mu_{i}, \sigma^2) \; with \quad \mu_{i} = \beta_{0} + \beta_{1}X_{i}  $$
 $$ \beta_{0} \sim N(m_{0}, s^2_{0} ) $$
 
-$$ \beta_{0} \sim N(m_{1}, s^2_{1} ) $$
+$$ \beta_{1} \sim N(m_{1}, s^2_{1} ) $$
 
 $$\sigma \sim Exp(l).$$ 
 

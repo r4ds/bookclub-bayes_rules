@@ -19,6 +19,7 @@ Imports:
     DiagrammeR,
     e1071,
     forcats,
+    ggthemes,
     janitor,
     modelr,
     rmarkdown,
