@@ -10,7 +10,7 @@
         - build posterior understanding of relationship between response ($Y$) and predictors ($X$) 
         - build posterior predictive models of $y$
 
-### Begining of Unit 3!
+## Begining of Unit 3!
 
 **Congratulations on our progress!** 
 
@@ -18,7 +18,7 @@
 
 ![](image/bayesian_probaility_for_baby.jpeg)
 
-### News terms 
+## News terms 
 
 $Y \rightarrow$ **Response variable**
 
@@ -447,9 +447,6 @@ knitr::include_graphics(
     "image/fig9.14.png")
 )
 ```
-## Next week with Frederica
-
-Cahpter 10: Evaluating Regression Models! 
 
 ## Summary 
 
@@ -500,6 +497,10 @@ Cahpter 10: Evaluating Regression Models!
 ## Meeting Videos
 
 ### Cohort 1
+
+`r knitr::include_url("https://www.youtube.com/embed/9n7IX3Y-6zw")`
+
+### Cohort 2
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

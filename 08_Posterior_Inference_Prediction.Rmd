@@ -13,12 +13,18 @@
 
 ### Cohort 1
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/akeNn1HBxYI")`
 
 <details>
 <summary> Meeting chat log </summary>
 
 ```
-LOG
+00:00:57	Olivier’s iPhone:	I am on mobile phone now, I will turn camera later!
+01:08:30	Brendan Lam:	Learning Bayesian Stats Podcast: https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5jYXB0aXZhdGUuZm0vbGVhcm5iYXllc3N0YXRzLw?sa=X&ved=0CAMQ4aUDahcKEwj45ff4opz5AhUAAAAAHQAAAAAQAQ&hl=en-CA
+01:14:30	Brendan Lam:	https://errorstatistics.com/
 ```
 </details>
+
+### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/n5QRu0q9p5M")`

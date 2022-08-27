@@ -7,9 +7,6 @@
 - Determine how wrong a model is
 - Determine our model’s posterior predictive accuracy
 
----
-
-
 ## More question to ask
 
 When we look at the Bayesian model results, it might be important to investigate a bit more about:
@@ -38,9 +35,7 @@ knitr::include_graphics("image/fig.10.1_dc_godcgo.png")
 
 - normality
 
----
-
-Our model-case is made of:
+## Our model-case is made of:
 
 - number of Capital Bikeshare rides: $Y_{i}$
 - temperature on day $i$: $X_{i}$
@@ -92,8 +87,8 @@ DiagrammeR::grViz("
   # edge statement
   a -> b}")
 ```
-**It’s reasonable to assume that, in light of the temperature $X$, ridership data $Y$ is independent from day to day.**
 
+**It’s reasonable to assume that, in light of the temperature $X$, ridership data $Y$ is independent from day to day.**
 
 
 We are looking for a **centered** value of the **intercept**:
@@ -118,14 +113,14 @@ data(bikes)
 
 
 ```{r 10.6,echo=FALSE}
-bikes%>%select(date,rides,temp_feel)%>%head
+bikes %>% select(date,rides,temp_feel) %>% head
 ```
 
----
 
 To evaluate **assumptions 2** and **3** we conduct a **posterior predictive check**. 
 
 Our first look was at the relationship between **rides and temperature**, and so at the consistency of the distribution.
+
 ```{r 10.7,echo=FALSE, fig.cap="Assumption 2 and 3"}
 DiagrammeR::grViz("
   digraph thinking_bayesian{
@@ -196,7 +191,7 @@ ggplot(one_simulation, aes(x = simulated_rides)) +
   theme(plot.title = element_text(size=10))
 ```
 
-**Posterior predictive check**
+## Posterior predictive check
 
 Use the `pp_check()` function from {bayesplot} package included in the {rstanarm} package. It compares the observed outcome variable y to simulated datasets from the posterior predictive distribution. 
 
@@ -212,7 +207,6 @@ So, in general to check the last two assumptions you should:
 - Assume a different data structure
 - Make a transformation
 
----
 
 ## How accurate are the posterior predictive models?
 
@@ -300,14 +294,11 @@ model_elpd$estimates
 ```
 
 
-### Improving posterior predictive accuracy
+## Improving posterior predictive accuracy
 
   * Collect more data
   * Use different or more predictors
-  
-  
----  
-  
+
   
 ## How good is the MCMC simulation vs how good is the model?
 
@@ -320,17 +311,18 @@ model_elpd$estimates
     * does it produce good predictions?
 
 
----
-
 ## Extra resources:
 
 [The Impact of Weather Conditions on Capital Bikeshare Trips](https://www.semanticscholar.org/paper/The-Impact-of-Weather-Conditions-on-Capital-Trips-Gebhart-Noland/318f13dfafa6fa12176e0b856bc141f675f17203)
 
----
-
 ## Meeting Videos
 
 ### Cohort 1
+
+`r knitr::include_url("https://www.youtube.com/embed/FlC0-3B1ZFk")`
+
+
+### Cohort 2
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
