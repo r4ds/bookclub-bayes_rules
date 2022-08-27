@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 15 Hierarchical Models are Exciting | Bayes Rules! Book Club</title>
+  <title>10.3 Our model-case is made of: | Bayes Rules! Book Club</title>
   <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 15 Hierarchical Models are Exciting | Bayes Rules! Book Club" />
+  <meta property="og:title" content="10.3 Our model-case is made of: | Bayes Rules! Book Club" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 15 Hierarchical Models are Exciting | Bayes Rules! Book Club" />
+  <meta name="twitter:title" content="10.3 Our model-case is made of: | Bayes Rules! Book Club" />
   
   <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="meeting-videos-13.html"/>
-<link rel="next" href="slide-1-8.html"/>
+<link rel="prev" href="verifying-normal-regression-assumptions.html"/>
+<link rel="next" href="posterior-predictive-check.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -482,20 +482,120 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="hierarchical-models-are-exciting" class="section level1 hasAnchor" number="15">
-<h1><span class="header-section-number">Chapter 15</span> Hierarchical Models are Exciting<a href="hierarchical-models-are-exciting.html#hierarchical-models-are-exciting" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><strong>Learning objectives:</strong></p>
+<div id="our-model-case-is-made-of" class="section level2 hasAnchor" number="10.3">
+<h2><span class="header-section-number">10.3</span> Our model-case is made of:<a href="our-model-case-is-made-of.html#our-model-case-is-made-of" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ul>
-<li>THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY</li>
+<li>number of Capital Bikeshare rides: <span class="math inline">\(Y_{i}\)</span></li>
+<li>temperature on day <span class="math inline">\(i\)</span>: <span class="math inline">\(X_{i}\)</span></li>
 </ul>
+<div class="figure">
+<img src="image/fig.10.2_weather_bikes.png" alt="Credits: dezeen.com"  />
+<p class="caption">
+(#fig:10.2)Credits: dezeen.com
+</p>
+</div>
+<p>Starting from a Regression Model:</p>
+<p><span class="math display">\[ Y_{i} = \beta_{0} + \beta_{1}X_{i} \]</span></p>
+<p>We look for an approximation of the real mean value: estimate mean value</p>
+<p><span class="math display">\[Y_{i} \approx\mu_{i}\]</span>
+<span class="math display">\[ \mu_{i} = \beta_{0} + \beta_{1}X_{i} \]</span></p>
+<blockquote>
+<p>“…To turn this into a Bayesian model, we must incorporate prior models for each of the unknown regression parameters…(ct.9.1.2)”</p>
+</blockquote>
+<p>with this model parameters:</p>
+<p><span class="math display">\[ Y_{i}| \beta_{0}, \beta_{1}, \sigma \overset{ind}{\sim} N(\mu_{i}, \sigma^2) \; with \quad \mu_{i} = \beta_{0} + \beta_{1}X_{i}  \]</span></p>
+<p>we expect some good results as we consider 500 daily observations within the two-year period.</p>
+<p>The response variable <strong>ridership</strong> <span class="math inline">\(Y\)</span> is likely to be correlated over time with other features such as <strong>temperature</strong> <span class="math inline">\(X\)</span>.</p>
+<blockquote>
+<p>“…today’s ridership likely tells us something about tomorrow’s ridership. Yet much of this correlation, or dependence, can be explained by the time of year and features associated with the time of year…”</p>
+</blockquote>
+<blockquote>
+<p>“…knowing the temperature on two subsequent days may very well “cancel out” the time correlation in their ridership data…”</p>
+</blockquote>
+<p>We are tempted to conclude:</p>
+<ul>
+<li>the temperatures in one location are independent of those in neighboring locations,</li>
+<li>the temperatures in one month don’t tell us about the next.</li>
+</ul>
+<div class="figure">
+<div id="htmlwidget-0d2425a8ecb611ecd26e" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0d2425a8ecb611ecd26e">{"x":{"diagram":"\n  digraph thinking_bayesian{\n  \n  # node statement\n  node [shape = oval,width=0.2]\n  a [label = \"Assumption 1\"]\n  b [label = \"independence\"]\n  # edge statement\n  a -> b}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+(#fig:10.3)Assumption1
+</p>
+</div>
+<p><strong>It’s reasonable to assume that, in light of the temperature <span class="math inline">\(X\)</span>, ridership data <span class="math inline">\(Y\)</span> is independent from day to day.</strong></p>
+<p>We are looking for a <strong>centered</strong> value of the <strong>intercept</strong>:</p>
+<p><span class="math display">\[ \beta_{0c} \sim N(m_{0}, s^2_{0})= N(5000, 1000^2 ) \tag{a.}\]</span></p>
+<p><span class="math display">\[ \beta_{1} \sim N(m_{1}, s^2_{1}) = N(100, 40^2 \tag{b.}) \]</span>
+<span class="math display">\[ \sigma\sim Exp(l) = Exp(0.0008 \tag{c.}) \]</span></p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="our-model-case-is-made-of.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(bikes)</span></code></pre></div>
+<pre><code>##         date rides temp_feel
+## 1 2011-01-01   654  64.72625
+## 2 2011-01-03  1229  49.04645
+## 3 2011-01-04  1454  51.09098
+## 4 2011-01-05  1518  52.63430
+## 5 2011-01-07  1362  50.79551
+## 6 2011-01-08   891  46.60286</code></pre>
+<p>To evaluate <strong>assumptions 2</strong> and <strong>3</strong> we conduct a <strong>posterior predictive check</strong>.</p>
+<p>Our first look was at the relationship between <strong>rides and temperature</strong>, and so at the consistency of the distribution.</p>
+<div class="figure">
+<div id="htmlwidget-27775b97e3c63d1c4303" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-27775b97e3c63d1c4303">{"x":{"diagram":"\n  digraph thinking_bayesian{\n  \n  # node statement\n  node [shape = oval,width=0.2]\n  a [label = \"Assumption 2\"]\n  b [label = \"Assumption 3\"]\n  c [label = \"linearity\"]\n  d [label = \"normality\"]\n  # edge statement\n  a -> c\n  b -> d}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+(#fig:10.7)Assumption 2 and 3
+</p>
+</div>
+<p><img src="bookclub-bayes_rules_files/figure-html/10.8-1.png" width="672" /></p>
+<p>Given the combined model assumptions reasonable, the posterior model should be able to simulate ridership data very close to the original 500 rides observations.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="our-model-case-is-made-of.html#cb53-1" aria-hidden="true" tabindex="-1"></a>bike_model <span class="ot">&lt;-</span> rstanarm<span class="sc">::</span><span class="fu">stan_glm</span>(</span>
+<span id="cb53-2"><a href="our-model-case-is-made-of.html#cb53-2" aria-hidden="true" tabindex="-1"></a>                       rides <span class="sc">~</span> temp_feel, </span>
+<span id="cb53-3"><a href="our-model-case-is-made-of.html#cb53-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> bikes, </span>
+<span id="cb53-4"><a href="our-model-case-is-made-of.html#cb53-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">family =</span> gaussian, </span>
+<span id="cb53-5"><a href="our-model-case-is-made-of.html#cb53-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">prior_intercept =</span> <span class="fu">normal</span>(<span class="dv">5000</span>, <span class="dv">1000</span>),</span>
+<span id="cb53-6"><a href="our-model-case-is-made-of.html#cb53-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">prior =</span> <span class="fu">normal</span>(<span class="dv">100</span>, <span class="dv">40</span>), </span>
+<span id="cb53-7"><a href="our-model-case-is-made-of.html#cb53-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">prior_aux =</span> <span class="fu">exponential</span>(<span class="fl">0.0008</span>),</span>
+<span id="cb53-8"><a href="our-model-case-is-made-of.html#cb53-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">5000</span><span class="sc">*</span><span class="dv">2</span>, <span class="at">seed =</span> <span class="dv">84735</span>,</span>
+<span id="cb53-9"><a href="our-model-case-is-made-of.html#cb53-9" aria-hidden="true" tabindex="-1"></a>                       <span class="co"># suppress the output</span></span>
+<span id="cb53-10"><a href="our-model-case-is-made-of.html#cb53-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">refresh=</span><span class="dv">0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="our-model-case-is-made-of.html#cb54-1" aria-hidden="true" tabindex="-1"></a>bike_model_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(bike_model)</span>
+<span id="cb54-2"><a href="our-model-case-is-made-of.html#cb54-2" aria-hidden="true" tabindex="-1"></a>first_set <span class="ot">&lt;-</span> <span class="fu">head</span>(bike_model_df, <span class="dv">1</span>)</span>
+<span id="cb54-3"><a href="our-model-case-is-made-of.html#cb54-3" aria-hidden="true" tabindex="-1"></a>first_set</span></code></pre></div>
+<pre><code>##   (Intercept) temp_feel    sigma
+## 1   -2040.536  80.44231 1280.101</code></pre>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="our-model-case-is-made-of.html#cb56-1" aria-hidden="true" tabindex="-1"></a>beta_0 <span class="ot">&lt;-</span> first_set<span class="sc">$</span><span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span></span>
+<span id="cb56-2"><a href="our-model-case-is-made-of.html#cb56-2" aria-hidden="true" tabindex="-1"></a>beta_1 <span class="ot">&lt;-</span> first_set<span class="sc">$</span>temp_feel</span>
+<span id="cb56-3"><a href="our-model-case-is-made-of.html#cb56-3" aria-hidden="true" tabindex="-1"></a>sigma  <span class="ot">&lt;-</span> first_set<span class="sc">$</span>sigma</span>
+<span id="cb56-4"><a href="our-model-case-is-made-of.html#cb56-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-5"><a href="our-model-case-is-made-of.html#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">84735</span>)</span>
+<span id="cb56-6"><a href="our-model-case-is-made-of.html#cb56-6" aria-hidden="true" tabindex="-1"></a>one_simulation <span class="ot">&lt;-</span> bikes <span class="sc">%&gt;%</span> </span>
+<span id="cb56-7"><a href="our-model-case-is-made-of.html#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mu =</span> beta_0 <span class="sc">+</span> beta_1 <span class="sc">*</span> temp_feel,</span>
+<span id="cb56-8"><a href="our-model-case-is-made-of.html#cb56-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">simulated_rides =</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)) <span class="sc">%&gt;%</span> </span>
+<span id="cb56-9"><a href="our-model-case-is-made-of.html#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(temp_feel, rides, simulated_rides)</span>
+<span id="cb56-10"><a href="our-model-case-is-made-of.html#cb56-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-11"><a href="our-model-case-is-made-of.html#cb56-11" aria-hidden="true" tabindex="-1"></a>one_simulation<span class="sc">%&gt;%</span>head</span></code></pre></div>
+<pre><code>##   temp_feel rides simulated_rides
+## 1  64.72625   654        4020.319
+## 2  49.04645  1229        1746.346
+## 3  51.09098  1454        3068.930
+## 4  52.63430  1518        2496.768
+## 5  50.79551  1362        3065.187
+## 6  46.60286   891        3735.023</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="our-model-case-is-made-of.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(one_simulation, <span class="fu">aes</span>(<span class="at">x =</span> simulated_rides)) <span class="sc">+</span> </span>
+<span id="cb58-2"><a href="our-model-case-is-made-of.html#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">&quot;lightblue&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb58-3"><a href="our-model-case-is-made-of.html#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x =</span> rides), <span class="at">color =</span> <span class="st">&quot;darkblue&quot;</span>)<span class="sc">+</span></span>
+<span id="cb58-4"><a href="our-model-case-is-made-of.html#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">&quot;One posterior simulated dataset of ridership (light blue)</span><span class="sc">\n</span><span class="st">along with the actual observed ridership data (dark blue).&quot;</span>)<span class="sc">+</span></span>
+<span id="cb58-5"><a href="our-model-case-is-made-of.html#cb58-5" aria-hidden="true" tabindex="-1"></a>  ggthemes<span class="sc">::</span><span class="fu">theme_fivethirtyeight</span>()<span class="sc">+</span></span>
+<span id="cb58-6"><a href="our-model-case-is-made-of.html#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>))</span></code></pre></div>
+<p><img src="bookclub-bayes_rules_files/figure-html/10.12-1.png" width="672" /></p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="meeting-videos-13.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="slide-1-8.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="verifying-normal-regression-assumptions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="posterior-predictive-check.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -526,7 +626,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/15_Hierarchical_Models_are_Exciting.Rmd",
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/10_Evaluating_Regression_Models.Rmd",
 "text": "Edit"
 },
 "history": {
