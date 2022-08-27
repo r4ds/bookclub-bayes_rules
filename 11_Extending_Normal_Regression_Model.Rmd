@@ -13,6 +13,43 @@
 
 ### Cohort 1
 
+`r knitr::include_url("https://www.youtube.com/embed/hN8tHpDP_2o")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:05:50	olivier:	need to relaod!
+00:06:02	olivier:	but yes quarto seems a bit difficukt
+00:08:30	Brendan Lam:	HI there!
+00:08:33	Brendan Lam:	I can't talk right now
+00:08:39	Brendan Lam:	But I'll be here
+00:09:01	Federica Gazzelloni:	Hello!
+00:10:12	Brendan Lam:	i think we call them internet cafes
+00:10:31	olivier:	iinternet taxi
+00:12:56	Federica Gazzelloni:	hope you find it useful
+00:26:10	Brendan Lam:	I believe u can do hypothesis testing in Bayesian settings, but the notion of Type I and II error rates aren't the same?
+00:26:27	olivier:	called bayes factor no ? unsure 
+00:26:50	Brendan Lam:	Yes^
+00:30:30	olivier:	temp3pm ~ .  = temp3pm = hundity * wind *  pressure
+00:30:58	olivier:	or temp3pm = humidity + wind etc
+00:43:36	Brendan Lam:	How many book clubs r you in Federica??
+00:44:10	Federica Gazzelloni:	http://www.feat.engineering/
+00:44:12	olivier:	R-inla 
+00:45:12	olivier:	do4ds
+00:46:06	olivier:	https://do4ds.com/
+00:47:14	Brendan Lam:	Me too
+00:51:44	Brendan Lam:	Might be my last one!
+00:51:53	Brendan Lam:	I have meetings at this time when school starts
+00:51:58	Brendan Lam:	but will try my best!
+00:52:05	Brendan Lam:	I might!!
+00:52:37	Brendan Lam:	Thanks everyone!
+00:52:47	Erik Aa:	thanks everyone
+```
+</details>
+
+### Cohort 2
+
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>

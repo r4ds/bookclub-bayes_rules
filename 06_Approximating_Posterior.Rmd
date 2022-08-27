@@ -190,12 +190,12 @@ Next chapter, MCMC **under the hood**
 
 ### Cohort 2
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/HOTwWnXWnLo")`
 
 <details>
 <summary> Meeting chat log </summary>
 
 ```
-LOG
+00:11:00	Ron:	6.12 through 6.18
 ```
 </details>

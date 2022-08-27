@@ -13,6 +13,28 @@
 
 ### Cohort 1
 
+`r knitr::include_url("https://www.youtube.com/embed/KEz89fpGDGM")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:13:31	olivier:	http://c1.staticflickr.com/8/7199/6867921547_239ce73660.jpg
+00:17:00	Will Parbury:	https://en.wikipedia.org/wiki/Julia_Child
+00:19:52	olivier:	16:9
+00:23:18	olivier:	I am lagging a b it so I will switch off video
+00:27:53	olivier:	ln
+00:34:40	olivier:	r$> exp(-0.03)
+[1] 0.9704455
+00:35:43	olivier:	r$> exp(0.03)
+[1] 1.030455
+
+00:50:38	olivier:	c
+```
+</details>
+
+### Cohort 2
+
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>
