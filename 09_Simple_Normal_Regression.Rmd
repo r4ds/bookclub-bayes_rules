@@ -18,7 +18,7 @@
 
 ![](image/bayesian_probaility_for_baby.jpeg)
 
-## News terms 
+### New terms 
 
 $Y \rightarrow$ **Response variable**
 
@@ -148,7 +148,7 @@ $$ \beta_{1} \sim N(100, 40^2 \tag{b.}) $$
 
 $$\sigma \sim Exp(0.0008). \tag{c.}$$ 
 
-The only hard part was using an eqution from chapter5: 
+The only hard part was using an equation from chapter5: 
 
 $$E(\sigma) = \frac{1}{l} = 1250$$ 
 
