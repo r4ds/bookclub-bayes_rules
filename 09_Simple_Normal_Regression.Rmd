@@ -450,9 +450,9 @@ knitr::include_graphics(
 
 ## Summary 
 
-- Build a simple Bayesian Normal regression with reesponse and predictor quantitative 
+- Build a simple Bayesian Normal regression with response and predictor quantitative 
 
-- We noved fron global mean to local mean with the help of linear dependence
+- We moved from global mean to local mean with the help of linear dependence
 
 
 1. Build models
