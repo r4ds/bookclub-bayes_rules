@@ -116,7 +116,7 @@ cohort-1-7
 cohort-2-7
 simple-normal-regression
 begining-of-unit-3
-news-terms
+new-terms
 building-the-regression-model
 data-model
 normal-regression-assumptions
@@ -126,6 +126,7 @@ putting-it-all-together
 tuning-prior-models-for-regression-parameters
 posterior-simulatiion
 simulation-via-rstanarm
+simulation-directly-with-rstan
 interpreting-the-posterior
 quiz-3
 posterior-prediction
@@ -134,6 +135,7 @@ building-a-posterior-predictive-model
 posterior-with-rstanarm
 sequential-regression-modeling
 using-default-rstanarm-priors
+you-are-not-done-yet
 summary-3
 resources
 meeting-videos-8

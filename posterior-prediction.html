@@ -23,7 +23,7 @@
 <meta name="author" content="The R4DS Online Learning Community" />
 
 
-<meta name="date" content="2022-08-27" />
+<meta name="date" content="2022-08-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -336,7 +336,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9" data-path="simple-normal-regression.html"><a href="simple-normal-regression.html"><i class="fa fa-check"></i><b>9</b> Simple Normal Regression</a>
 <ul>
 <li class="chapter" data-level="9.1" data-path="begining-of-unit-3.html"><a href="begining-of-unit-3.html"><i class="fa fa-check"></i><b>9.1</b> Begining of Unit 3!</a></li>
-<li class="chapter" data-level="9.2" data-path="news-terms.html"><a href="news-terms.html"><i class="fa fa-check"></i><b>9.2</b> News terms</a></li>
+<li class="chapter" data-level="9.2" data-path="new-terms.html"><a href="new-terms.html"><i class="fa fa-check"></i><b>9.2</b> New terms</a></li>
 <li class="chapter" data-level="9.3" data-path="building-the-regression-model.html"><a href="building-the-regression-model.html"><i class="fa fa-check"></i><b>9.3</b> Building the regression model</a>
 <ul>
 <li class="chapter" data-level="9.3.1" data-path="building-the-regression-model.html"><a href="building-the-regression-model.html#data-model"><i class="fa fa-check"></i><b>9.3.1</b> Data model</a></li>
@@ -347,6 +347,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.5" data-path="posterior-simulatiion.html"><a href="posterior-simulatiion.html"><i class="fa fa-check"></i><b>9.5</b> Posterior simulatiion</a>
 <ul>
 <li class="chapter" data-level="9.5.1" data-path="posterior-simulatiion.html"><a href="posterior-simulatiion.html#simulation-via-rstanarm"><i class="fa fa-check"></i><b>9.5.1</b> Simulation via rstanarm</a></li>
+<li class="chapter" data-level="9.5.2" data-path="posterior-simulatiion.html"><a href="posterior-simulatiion.html#simulation-directly-with-rstan"><i class="fa fa-check"></i><b>9.5.2</b> Simulation directly with rstan</a></li>
 </ul></li>
 <li class="chapter" data-level="9.6" data-path="interpreting-the-posterior.html"><a href="interpreting-the-posterior.html"><i class="fa fa-check"></i><b>9.6</b> Interpreting the posterior</a></li>
 <li class="chapter" data-level="9.7" data-path="posterior-prediction.html"><a href="posterior-prediction.html"><i class="fa fa-check"></i><b>9.7</b> Posterior prediction</a>
@@ -357,12 +358,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="9.8" data-path="sequential-regression-modeling.html"><a href="sequential-regression-modeling.html"><i class="fa fa-check"></i><b>9.8</b> Sequential regression modeling</a></li>
 <li class="chapter" data-level="9.9" data-path="using-default-rstanarm-priors.html"><a href="using-default-rstanarm-priors.html"><i class="fa fa-check"></i><b>9.9</b> Using default rstanarm priors</a></li>
-<li class="chapter" data-level="9.10" data-path="summary-3.html"><a href="summary-3.html"><i class="fa fa-check"></i><b>9.10</b> Summary</a></li>
-<li class="chapter" data-level="9.11" data-path="resources.html"><a href="resources.html"><i class="fa fa-check"></i><b>9.11</b> Resources:</a></li>
-<li class="chapter" data-level="9.12" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html"><i class="fa fa-check"></i><b>9.12</b> Meeting Videos</a>
+<li class="chapter" data-level="9.10" data-path="you-are-not-done-yet.html"><a href="you-are-not-done-yet.html"><i class="fa fa-check"></i><b>9.10</b> You are not done yet!</a></li>
+<li class="chapter" data-level="9.11" data-path="summary-3.html"><a href="summary-3.html"><i class="fa fa-check"></i><b>9.11</b> Summary</a></li>
+<li class="chapter" data-level="9.12" data-path="resources.html"><a href="resources.html"><i class="fa fa-check"></i><b>9.12</b> Resources:</a></li>
+<li class="chapter" data-level="9.13" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html"><i class="fa fa-check"></i><b>9.13</b> Meeting Videos</a>
 <ul>
-<li class="chapter" data-level="9.12.1" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-1-8"><i class="fa fa-check"></i><b>9.12.1</b> Cohort 1</a></li>
-<li class="chapter" data-level="9.12.2" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-2-8"><i class="fa fa-check"></i><b>9.12.2</b> Cohort 2</a></li>
+<li class="chapter" data-level="9.13.1" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-1-8"><i class="fa fa-check"></i><b>9.13.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="9.13.2" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-2-8"><i class="fa fa-check"></i><b>9.13.2</b> Cohort 2</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html"><i class="fa fa-check"></i><b>10</b> Evaluating Regression Models</a>
@@ -491,17 +493,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <details class="details-example">
 <summary>
-Stop teasing us!
+Answer:
 </summary>
 <p>One option is</p>
 <p><span class="math display">\[ -2194.24 + 82.16 * 75 = 3967.76 \]</span></p>
-<p>But this do not take into account :</p>
+<p>But this does not take into account :</p>
 <ul>
 <li><p>Sampling variability</p></li>
 <li><p>Posterior variability</p></li>
 </ul>
 </details>
-<p>The posterior predictive nodel take that into account. We have an overall chance to observe <span class="math inline">\(Y_{new}\)</span> and its parameters. We can <em>approximate</em> this posterior predictive model with our 20 000 sets of parameters.</p>
+<p>The posterior predictive model takes into account both kinds of variability. We can <em>approximate</em> this posterior predictive model with our 20 000 samples of parameters.</p>
 </div>
 <div id="building-a-posterior-predictive-model" class="section level3 hasAnchor" number="9.7.2">
 <h3><span class="header-section-number">9.7.2</span> Building a posterior predictive model<a href="posterior-prediction.html#building-a-posterior-predictive-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -515,7 +517,7 @@ Stop teasing us!
 <span id="cb44-8"><a href="posterior-prediction.html#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>       <span class="sc">-</span><span class="dv">2657</span>     <span class="fl">88.16</span>  <span class="dv">1323</span> <span class="dv">3955</span>  <span class="dv">4838</span></span>
 <span id="cb44-9"><a href="posterior-prediction.html#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>       <span class="sc">-</span><span class="dv">2188</span>     <span class="fl">83.01</span>  <span class="dv">1323</span> <span class="dv">4038</span>  <span class="dv">3874</span></span>
 <span id="cb44-10"><a href="posterior-prediction.html#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span>       <span class="sc">-</span><span class="dv">1984</span>     <span class="fl">81.54</span>  <span class="dv">1363</span> <span class="dv">4132</span>  <span class="dv">5196</span></span></code></pre></div>
-<p>Interesting point is <code>mu</code> (<span class="math inline">\(\mu\)</span>) Vs. <code>y_new</code> (<span class="math inline">\(Y_{new}\)</span>).</p>
+<p>Interesting point is <code>mu</code> (<span class="math inline">\(\mu\)</span>) vs. <code>y_new</code> (<span class="math inline">\(Y_{new}\)</span>).</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="posterior-prediction.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Construct 80% posterior credible intervals</span></span>
 <span id="cb45-2"><a href="posterior-prediction.html#cb45-2" aria-hidden="true" tabindex="-1"></a>predict_75 <span class="sc">%&gt;%</span> </span>
 <span id="cb45-3"><a href="posterior-prediction.html#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">lower_mu =</span> <span class="fu">quantile</span>(mu, <span class="fl">0.025</span>),</span>
@@ -530,7 +532,7 @@ Stop teasing us!
 </div>
 <div id="posterior-with-rstanarm" class="section level3 hasAnchor" number="9.7.3">
 <h3><span class="header-section-number">9.7.3</span> Posterior with rstanarm<a href="posterior-prediction.html#posterior-with-rstanarm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>We have done it from “scatch” but we can use <code>rstanarm::posterior_predict()</code></p>
+<p>We have done it from “scratch” but we can use <code>rstanarm::posterior_predict()</code></p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="posterior-prediction.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate a set of predictions</span></span>
 <span id="cb46-2"><a href="posterior-prediction.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">84735</span>)</span>
 <span id="cb46-3"><a href="posterior-prediction.html#cb46-3" aria-hidden="true" tabindex="-1"></a>shortcut_prediction <span class="ot">&lt;-</span> </span>

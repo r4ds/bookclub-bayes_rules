@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>18.1 SLIDE 1 | Bayes Rules! Book Club</title>
+  <title>9.2 New terms | Bayes Rules! Book Club</title>
   <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="18.1 SLIDE 1 | Bayes Rules! Book Club" />
+  <meta property="og:title" content="9.2 New terms | Bayes Rules! Book Club" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="18.1 SLIDE 1 | Bayes Rules! Book Club" />
+  <meta name="twitter:title" content="9.2 New terms | Bayes Rules! Book Club" />
   
   <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="non-normal-hierarchical-regression-classification.html"/>
-<link rel="next" href="meeting-videos-17.html"/>
+<link rel="prev" href="begining-of-unit-3.html"/>
+<link rel="next" href="building-the-regression-model.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -484,20 +484,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="slide-1-11" class="section level2 hasAnchor" number="18.1">
-<h2><span class="header-section-number">18.1</span> SLIDE 1<a href="slide-1-11.html#slide-1-11" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="new-terms" class="section level2 hasAnchor" number="9.2">
+<h2><span class="header-section-number">9.2</span> New terms<a href="new-terms.html#new-terms" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><span class="math inline">\(Y \rightarrow\)</span> <strong>Response variable</strong></p>
+<p><span class="math inline">\(X_{1}, X_{2}, ..., X_{p} \rightarrow\)</span> <strong>Predictors</strong></p>
 <ul>
-<li>ADD SLIDES AS SECTIONS (<code>##</code>).</li>
-<li>TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.</li>
+<li><p>We want to analyze quantitative response : <strong>Regression</strong></p></li>
+<li><p>We want to analyze categorical response: <strong>Classification</strong></p></li>
 </ul>
+<p>In this chapter we will focus on the <strong>Normal regression model</strong>.</p>
+<p>Our <em>toy</em> example will come from a bike sharing service. We will try to understand the demand for it service.</p>
+<p>We want a model of the number of rides/day. Poisson model is not valid here because we do not have an equal mean and variance. Instead we are going to go with a <strong>normal model</strong>:</p>
+<p><span class="math display">\[Y_{i}|\mu, \sigma \overset{ind}{\sim} N(\mu, \sigma^2)  \]</span></p>
+<p><span class="math display">\[ \mu \sim N(\theta, \tau^2) \]</span></p>
+<p><span class="math display">\[ \sigma \sim some \; prior \; model \]</span></p>
+<p>Can’t we do better with a predictor? Here it will be the temperature in Fahrenheit.</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="non-normal-hierarchical-regression-classification.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="meeting-videos-17.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="begining-of-unit-3.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="building-the-regression-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -528,7 +537,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/18_Non_Normal_Hierarchical.Rmd",
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/09_Simple_Normal_Regression.Rmd",
 "text": "Edit"
 },
 "history": {

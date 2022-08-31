@@ -23,7 +23,7 @@
 <meta name="author" content="The R4DS Online Learning Community" />
 
 
-<meta name="date" content="2022-08-27" />
+<meta name="date" content="2022-08-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -336,7 +336,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9" data-path="simple-normal-regression.html"><a href="simple-normal-regression.html"><i class="fa fa-check"></i><b>9</b> Simple Normal Regression</a>
 <ul>
 <li class="chapter" data-level="9.1" data-path="begining-of-unit-3.html"><a href="begining-of-unit-3.html"><i class="fa fa-check"></i><b>9.1</b> Begining of Unit 3!</a></li>
-<li class="chapter" data-level="9.2" data-path="news-terms.html"><a href="news-terms.html"><i class="fa fa-check"></i><b>9.2</b> News terms</a></li>
+<li class="chapter" data-level="9.2" data-path="new-terms.html"><a href="new-terms.html"><i class="fa fa-check"></i><b>9.2</b> New terms</a></li>
 <li class="chapter" data-level="9.3" data-path="building-the-regression-model.html"><a href="building-the-regression-model.html"><i class="fa fa-check"></i><b>9.3</b> Building the regression model</a>
 <ul>
 <li class="chapter" data-level="9.3.1" data-path="building-the-regression-model.html"><a href="building-the-regression-model.html#data-model"><i class="fa fa-check"></i><b>9.3.1</b> Data model</a></li>
@@ -347,6 +347,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.5" data-path="posterior-simulatiion.html"><a href="posterior-simulatiion.html"><i class="fa fa-check"></i><b>9.5</b> Posterior simulatiion</a>
 <ul>
 <li class="chapter" data-level="9.5.1" data-path="posterior-simulatiion.html"><a href="posterior-simulatiion.html#simulation-via-rstanarm"><i class="fa fa-check"></i><b>9.5.1</b> Simulation via rstanarm</a></li>
+<li class="chapter" data-level="9.5.2" data-path="posterior-simulatiion.html"><a href="posterior-simulatiion.html#simulation-directly-with-rstan"><i class="fa fa-check"></i><b>9.5.2</b> Simulation directly with rstan</a></li>
 </ul></li>
 <li class="chapter" data-level="9.6" data-path="interpreting-the-posterior.html"><a href="interpreting-the-posterior.html"><i class="fa fa-check"></i><b>9.6</b> Interpreting the posterior</a></li>
 <li class="chapter" data-level="9.7" data-path="posterior-prediction.html"><a href="posterior-prediction.html"><i class="fa fa-check"></i><b>9.7</b> Posterior prediction</a>
@@ -357,12 +358,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="9.8" data-path="sequential-regression-modeling.html"><a href="sequential-regression-modeling.html"><i class="fa fa-check"></i><b>9.8</b> Sequential regression modeling</a></li>
 <li class="chapter" data-level="9.9" data-path="using-default-rstanarm-priors.html"><a href="using-default-rstanarm-priors.html"><i class="fa fa-check"></i><b>9.9</b> Using default rstanarm priors</a></li>
-<li class="chapter" data-level="9.10" data-path="summary-3.html"><a href="summary-3.html"><i class="fa fa-check"></i><b>9.10</b> Summary</a></li>
-<li class="chapter" data-level="9.11" data-path="resources.html"><a href="resources.html"><i class="fa fa-check"></i><b>9.11</b> Resources:</a></li>
-<li class="chapter" data-level="9.12" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html"><i class="fa fa-check"></i><b>9.12</b> Meeting Videos</a>
+<li class="chapter" data-level="9.10" data-path="you-are-not-done-yet.html"><a href="you-are-not-done-yet.html"><i class="fa fa-check"></i><b>9.10</b> You are not done yet!</a></li>
+<li class="chapter" data-level="9.11" data-path="summary-3.html"><a href="summary-3.html"><i class="fa fa-check"></i><b>9.11</b> Summary</a></li>
+<li class="chapter" data-level="9.12" data-path="resources.html"><a href="resources.html"><i class="fa fa-check"></i><b>9.12</b> Resources:</a></li>
+<li class="chapter" data-level="9.13" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html"><i class="fa fa-check"></i><b>9.13</b> Meeting Videos</a>
 <ul>
-<li class="chapter" data-level="9.12.1" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-1-8"><i class="fa fa-check"></i><b>9.12.1</b> Cohort 1</a></li>
-<li class="chapter" data-level="9.12.2" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-2-8"><i class="fa fa-check"></i><b>9.12.2</b> Cohort 2</a></li>
+<li class="chapter" data-level="9.13.1" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-1-8"><i class="fa fa-check"></i><b>9.13.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="9.13.2" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-2-8"><i class="fa fa-check"></i><b>9.13.2</b> Cohort 2</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html"><i class="fa fa-check"></i><b>10</b> Evaluating Regression Models</a>
@@ -492,21 +494,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb37-5"><a href="posterior-simulatiion.html#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
 <span id="cb37-6"><a href="posterior-simulatiion.html#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-26-5.png" width="672" />
-I am saving you from the triple integrals in the denominator of p 220 and we are jumping strait into MCMC!</p>
+<p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-26-5.png" width="672" /></p>
+<p>I am saving you from the triple integrals in the denominator of p 220 and we are jumping directly to MCMC!
+We are going to use <code>rstanarm</code> : Rstan + arm = applied regression models</p>
 <div id="simulation-via-rstanarm" class="section level3 hasAnchor" number="9.5.1">
 <h3><span class="header-section-number">9.5.1</span> Simulation via rstanarm<a href="posterior-simulatiion.html#simulation-via-rstanarm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="posterior-simulatiion.html#cb39-1" aria-hidden="true" tabindex="-1"></a>bike_model <span class="ot">&lt;-</span> rstanarm<span class="sc">::</span><span class="fu">stan_glm</span>(</span>
 <span id="cb39-2"><a href="posterior-simulatiion.html#cb39-2" aria-hidden="true" tabindex="-1"></a>                      <span class="co"># data information</span></span>
-<span id="cb39-3"><a href="posterior-simulatiion.html#cb39-3" aria-hidden="true" tabindex="-1"></a>                       rides <span class="sc">~</span> temp_feel, <span class="co"># &lt;- using a variation of the formula syntax ?</span></span>
+<span id="cb39-3"><a href="posterior-simulatiion.html#cb39-3" aria-hidden="true" tabindex="-1"></a>                       rides <span class="sc">~</span> temp_feel, <span class="co"># &lt;- formula syntax (as used by lm, glm etc)</span></span>
 <span id="cb39-4"><a href="posterior-simulatiion.html#cb39-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> bikes, </span>
 <span id="cb39-5"><a href="posterior-simulatiion.html#cb39-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">family =</span> gaussian, <span class="co"># &lt;- we assume normal data </span></span>
-<span id="cb39-6"><a href="posterior-simulatiion.html#cb39-6" aria-hidden="true" tabindex="-1"></a>                       <span class="co"># Priors information </span></span>
-<span id="cb39-7"><a href="posterior-simulatiion.html#cb39-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">prior_intercept =</span> <span class="fu">normal</span>(<span class="dv">5000</span>, <span class="dv">1000</span>), <span class="co"># normal diff de rnorm</span></span>
+<span id="cb39-6"><a href="posterior-simulatiion.html#cb39-6" aria-hidden="true" tabindex="-1"></a>                       <span class="co"># Priors  </span></span>
+<span id="cb39-7"><a href="posterior-simulatiion.html#cb39-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">prior_intercept =</span> <span class="fu">normal</span>(<span class="dv">5000</span>, <span class="dv">1000</span>), <span class="co"># centered intercept</span></span>
 <span id="cb39-8"><a href="posterior-simulatiion.html#cb39-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">prior =</span> <span class="fu">normal</span>(<span class="dv">100</span>, <span class="dv">40</span>), </span>
 <span id="cb39-9"><a href="posterior-simulatiion.html#cb39-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">prior_aux =</span> <span class="fu">exponential</span>(<span class="fl">0.0008</span>), <span class="co">#notice the aux for auxiliary more after</span></span>
 <span id="cb39-10"><a href="posterior-simulatiion.html#cb39-10" aria-hidden="true" tabindex="-1"></a>                       <span class="co"># MCMC information</span></span>
 <span id="cb39-11"><a href="posterior-simulatiion.html#cb39-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">5000</span><span class="sc">*</span><span class="dv">2</span>, <span class="at">seed =</span> <span class="dv">84735</span>)</span></code></pre></div>
+</div>
+<div id="simulation-directly-with-rstan" class="section level3 hasAnchor" number="9.5.2">
+<h3><span class="header-section-number">9.5.2</span> Simulation directly with rstan<a href="posterior-simulatiion.html#simulation-directly-with-rstan" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="posterior-simulatiion.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># STEP 1: DEFINE the model</span></span>
 <span id="cb40-2"><a href="posterior-simulatiion.html#cb40-2" aria-hidden="true" tabindex="-1"></a>stan_bike_model <span class="ot">&lt;-</span> <span class="st">&quot;</span></span>
 <span id="cb40-3"><a href="posterior-simulatiion.html#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="st">  data {</span></span>
@@ -536,19 +542,19 @@ I am saving you from the triple integrals in the denominator of p 220 and we are
 <span id="cb40-27"><a href="posterior-simulatiion.html#cb40-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">5000</span><span class="sc">*</span><span class="dv">2</span>, <span class="at">seed =</span> <span class="dv">84735</span>)</span></code></pre></div>
 <p>The model will return 5000 x nb of chains simulation of our parameters. Rstanarm will change their name:</p>
 <ul>
-<li><p><span class="math inline">\(\beta_{0} \rightarrow (intercept)\)</span> (I think it is <span class="math inline">\(\beta_{0}\)</span> and not <span class="math inline">\(\beta_{0c}\)</span>)</p></li>
+<li><p><span class="math inline">\(\beta_{0} \rightarrow (intercept)\)</span> (Note that this <em>is</em> <span class="math inline">\(\beta_{0}\)</span> even though prior is specified for <span class="math inline">\(\beta_{0c}\)</span>)</p></li>
 <li><p><span class="math inline">\(\beta_{1} \rightarrow temp\_feel\)</span></p></li>
 </ul>
 <p>But <span class="math inline">\(\sigma\)</span> stay sigma.</p>
 <p>We need to check if the simulation went well for that we can?</p>
 <details class="details-example">
 <summary>
-Stop teasing us!
+Answer:
 </summary>
-<p>[X] check the effective sample size: <code>neff_ratio</code></p>
-<p>[X] rhat</p>
-<p>[X] trace plot (<em>fuzzy moustach</em>)</p>
-<p>[X] overlay the density of each chains</p>
+<p>[X] Check the effective sample size: <code>neff_ratio</code></p>
+<p>[X] Compute rhat</p>
+<p>[X] Examine trace plot</p>
+<p>[X] Overlay the density plots of each chains</p>
 </details>
 </div>
 </div>
