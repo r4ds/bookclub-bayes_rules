@@ -3,12 +3,13 @@
 **Learning objectives:**
 
 - Building **simple linear regression model**
-  
+   
+   * Understand Bayesian approach to regression
    * Interpret appropriate **prior models**  
    * **Simulate** posterior model of the regression parameters 
    * Utilize simulation result to
         - build posterior understanding of relationship between response ($Y$) and predictors ($X$) 
-        - build posterior predictive models of $y$
+        - build posterior predictive models of $Y$
 
 ## Begining of Unit 3!
 
@@ -22,7 +23,7 @@
 
 $Y \rightarrow$ **Response variable**
 
-$X_{i}, X_{2},  ..., X_{p} \rightarrow$ **Predictors**
+$X_{1}, X_{2},  ..., X_{p} \rightarrow$ **Predictors**
 
 
 - We want to analyze quantitative response : **Regression** 
@@ -77,7 +78,7 @@ As you can see $\sigma$ is now about variability from the **local mean**
 
 ### Specifying the priors
 
-We are going to use `rstanarm` : Rstan + arm = applied regression models
+
 
 #### Quiz!
 
@@ -112,13 +113,13 @@ $$\sigma \sim Exp(l)$$
 
 > Model building one step at a time ! 
 
-  1. Y is discret or continuous $\rightarrow$ appropriate model for data 
+  1. Y is discrete or continuous $\rightarrow$ appropriate model for data 
   
-  2. Rewrite the mean of Y as a function of predictors X
+  2. Rewrite the mean of Y as a function of predictors X (e.g. $\mu = \beta_0 + \beta_1 X$)
   
-  3. Identify unknow parameters in your model
+  3. Identify unknown parameters in your model
   
-  4.  what can be the value of those parameters for defining prior 
+  4. Note the values these parameters might take $\rightarrow$ Identify appropriate priors 
 
 
 ## Tuning prior models for regression parameters
@@ -162,7 +163,9 @@ ggplot(bikes, aes(x = temp_feel, y = rides)) +
   geom_point(size = 0.5) + 
   geom_smooth(method = "lm", se = FALSE)
 ```
+
 I am saving you from the triple integrals in the denominator of p 220 and we are jumping directly to MCMC!
+We are going to use `rstanarm` : Rstan + arm = applied regression models
 
 ### Simulation via rstanarm 
 
