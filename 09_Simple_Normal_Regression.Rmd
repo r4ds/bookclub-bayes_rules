@@ -3,12 +3,13 @@
 **Learning objectives:**
 
 - Building **simple linear regression model**
-  
+   
+   * Understand Bayesian approach to regression
    * Interpret appropriate **prior models**  
    * **Simulate** posterior model of the regression parameters 
    * Utilize simulation result to
         - build posterior understanding of relationship between response ($Y$) and predictors ($X$) 
-        - build posterior predictive models of $y$
+        - build posterior predictive models of $Y$
 
 ## Begining of Unit 3!
 
@@ -18,18 +19,18 @@
 
 ![](image/bayesian_probaility_for_baby.jpeg)
 
-## News terms 
+## New terms 
 
 $Y \rightarrow$ **Response variable**
 
-$X_{i}, X_{2},  ..., X_{p} \rightarrow$ **Predictors**
+$X_{1}, X_{2},  ..., X_{p} \rightarrow$ **Predictors**
 
 
 - We want to analyze quantitative response : **Regression** 
 
 - We want to analyze categorical response:  **Classification**
 
-In this chapter we will go with the **Normal regression model**. 
+In this chapter we will focus on the **Normal regression model**. 
 
 Our *toy* example will come from a bike sharing service. We will try to understand the demand for it service. 
 
@@ -57,7 +58,7 @@ We are now moving away from the **global mean** ($\mu$) to **local mean** ($\mu_
 
 $$ \mu_{i} = \beta_{0} + \beta_{1}X_{i} $$
 
-$\beta_{0}$ is the **intercept coefficent** but it is hard to interpret (would you rent bike when it is 0 degree F)
+$\beta_{0}$ is the **intercept coefficent** but it is hard to interpret (would you rent bike when it is 0 degree F?)
 
 $\beta_{1}$ is the Temperature coefficient it indicates the *typical* change in ridership for every one unit increase in temperature. In case we have just one quantitative predictor it is called the *slope*.
 
@@ -73,13 +74,11 @@ As you can see $\sigma$ is now about variability from the **local mean**
 
 - Structure of the relationship: Y can be written as a **linear function** of predictor X : $\mu = \beta_{0} + \beta_{1}X$ 
 
-- Structure of the variability: at any value of X, Y will vary **normaly** around $\mu$ with a consistent sd $\sigma$
+- Structure of the variability: at any value of X, Y will vary **normaly** around $\mu$ with a consistent standard deviation $\sigma$
 
 ### Specifying the priors
 
-We are going to use `rstanarm` : Rstan + arm = applied regression models
 
-![](image/rstanarm.png)
 
 #### Quiz!
 
@@ -98,9 +97,7 @@ $$ \beta_{1} \sim N(m_{1}, s^2_{1} ) $$
 
 $m_{0}, m_{1}, s_{0}, s_{1}$ are parameters of parameters so they are : **hyperparameters**
 
-$$\sigma \sim Exp(l).$$ 
-
-(no idea about the dot, probably = not 0)
+$$\sigma \sim Exp(l)$$ 
 
 ### Putting it all together 
 
@@ -109,35 +106,35 @@ $$ \beta_{0} \sim N(m_{0}, s^2_{0} ) $$
 
 $$ \beta_{1} \sim N(m_{1}, s^2_{1} ) $$
 
-$$\sigma \sim Exp(l).$$ 
+$$\sigma \sim Exp(l)$$ 
 
 </details>
 
 
 > Model building one step at a time ! 
 
-  1. Y is discret or continuous $\rightarrow$ appropriate model for data 
+  1. Y is discrete or continuous $\rightarrow$ appropriate model for data 
   
-  2. Rewrite the mean of Y as a function of predictors X
+  2. Rewrite the mean of Y as a function of predictors X (e.g. $\mu = \beta_0 + \beta_1 X$)
   
-  3. Identify unknow parameters in your model
+  3. Identify unknown parameters in your model
   
-  4.  what can be the value of those parameters for defining prior 
+  4. Note the values these parameters might take $\rightarrow$ Identify appropriate priors 
 
 
 ## Tuning prior models for regression parameters
 
 a. An average temperature day (65, 70 degree F) in DC: 3000-7000 riders with around 5000
 
-b. For every one degree increase you get +100 riders $\pm$ 80
+b. For every one degree increase you get about +100 riders $\pm$ 80
 
-c. at any given Temperature daily ridership vary with a sd of 1250 rides 
+c. At any given Temperature daily ridership vary with a sd of 1250 rides 
 
 We will work with centered data $\beta_{0} \rightarrow \beta_{0c}$ because : 
 
-- it is easier in this example 
+- it is easier to interpret and specify in this example 
 
-- this is what `rstanarm` use
+- this is what `rstanarm` uses
 
 
 $$ Y_{i}| \beta_{0}, \beta_{1}, \sigma \overset{ind}{\sim} N(\mu_{i}, \sigma^2) \; with \quad \mu_{i} = \beta_{0} + \beta_{1}X_{i}  $$
@@ -148,11 +145,11 @@ $$ \beta_{1} \sim N(100, 40^2 \tag{b.}) $$
 
 $$\sigma \sim Exp(0.0008). \tag{c.}$$ 
 
-The only hard part was using an eqution from chapter5: 
+The only hard part was using an equation from chapter 5: 
 
 $$E(\sigma) = \frac{1}{l} = 1250$$ 
 
-It is good to simulate this prior and see what they look like but we will do that in the part about rstanarm prior later.
+It is good to simulate this prior and see what they look like but we will do that in the part about using default rstanarm priors later.
 
 ## Posterior simulatiion 
 
@@ -166,24 +163,27 @@ ggplot(bikes, aes(x = temp_feel, y = rides)) +
   geom_point(size = 0.5) + 
   geom_smooth(method = "lm", se = FALSE)
 ```
-I am saving you from the triple integrals in the denominator of p 220 and we are jumping strait into MCMC!
+
+I am saving you from the triple integrals in the denominator of p 220 and we are jumping directly to MCMC!
+We are going to use `rstanarm` : Rstan + arm = applied regression models
 
 ### Simulation via rstanarm 
 
 ```{r, eval=FALSE }
 bike_model <- rstanarm::stan_glm(
                       # data information
-                       rides ~ temp_feel, # <- using a variation of the formula syntax ?
+                       rides ~ temp_feel, # <- formula syntax (as used by lm, glm etc)
                        data = bikes, 
                        family = gaussian, # <- we assume normal data 
-                       # Priors information 
-                       prior_intercept = normal(5000, 1000), # normal diff de rnorm
+                       # Priors  
+                       prior_intercept = normal(5000, 1000), # centered intercept
                        prior = normal(100, 40), 
                        prior_aux = exponential(0.0008), #notice the aux for auxiliary more after
                        # MCMC information
                        chains = 4, iter = 5000*2, seed = 84735)
 ```
 
+### Simulation directly with rstan
 
 ```{r, eval=FALSE }
 # STEP 1: DEFINE the model
@@ -217,7 +217,7 @@ stan_bike_sim <-
 
 The model will return 5000 x nb of chains simulation of our parameters. Rstanarm will change their name: 
 
-- $\beta_{0} \rightarrow (intercept)$ (I think it is $\beta_{0}$ and not $\beta_{0c}$)
+- $\beta_{0} \rightarrow (intercept)$ (Note that this *is* $\beta_{0}$ even though prior is specified for $\beta_{0c}$)
 
 - $\beta_{1} \rightarrow temp\_feel$
 
@@ -227,21 +227,21 @@ But $\sigma$ stay sigma.
 We need to check if the simulation went well for that we can?    
 
 <details class="details-example">
-    <summary> Stop teasing us! </summary>
+    <summary> Answer: </summary>
 
-[X] check the effective sample size: `neff_ratio`
+[X] Check the effective sample size: `neff_ratio`
 
-[X] rhat 
+[X] Compute rhat 
 
-[X] trace plot (*fuzzy moustach*)
+[X] Examine trace plot  
 
-[X] overlay the density of each chains
+[X] Overlay the density plots of each chains
 
 </details>
 
 ## Interpreting the posterior 
 
-What we have is the density of each parameters. 
+What we have is samples of each of the parameters. 
 
 ```{r, eval=FALSE}
 # Posterior summary statistics
@@ -275,8 +275,7 @@ head(bike_model_df, 3)
 2       -2188     83.01  1323
 3       -1984     81.54  1363
 
-
-# and use add_fiited_draws() from tidybayes
+# and use add_fitted_draws() from tidybayes
 
 # 50 simulated model lines
 bikes %>%
@@ -285,15 +284,16 @@ bikes %>%
     geom_line(aes(y = .value, group = .draw), alpha = 0.15) + 
     geom_point(data = bikes, size = 0.05)
 # I did not evaluate the code here 
-# you should test with more than 50 lines
 ```
 
+![Figure 9.7](image/fig.9.7.png)
+ 
 #### Quiz!
 
 Do we have ample posterior evidence that there's a positive association between ridership and temperature ?
 
 <details class="details-example">
-    <summary> Stop teasing us! </summary>
+    <summary> Answer: </summary>
     
 - Visual evidence : 50 or more posterior scenarios that display positive relationship
 
@@ -313,9 +313,6 @@ bike_model_df %>%
 
 </details>   
 
-Finally we can also use `tidybayes::add_predicted_draws` to simulate X data set that make good use of plausible value of $\sigma$
-
-
 ## Posterior prediction
 
 ### Quiz!
@@ -323,13 +320,13 @@ Finally we can also use `tidybayes::add_predicted_draws` to simulate X data set 
 > Suppose a weather report indicates that tomorrow will be a 75-degree day in D.C. What’s your posterior guess of the number of riders that Capital Bikeshare should anticipate?
 
 <details class="details-example">
-    <summary> Stop teasing us! </summary>
+    <summary> Answer: </summary>
 
 One option is 
 
 $$ -2194.24 + 82.16 * 75 = 3967.76 $$ 
 
-But this do not take into account : 
+But this does not take into account : 
 
 - Sampling variability  
 
@@ -337,7 +334,7 @@ But this do not take into account :
 
 </details>
 
-The posterior predictive nodel take that into account. We have an overall chance to observe $Y_{new}$ and its parameters. We can *approximate* this posterior predictive model with our 20 000 sets of parameters.  
+The posterior predictive model takes into account both kinds of variability. We can *approximate* this posterior predictive model with our 20 000 samples of parameters.  
 
 ### Building a posterior predictive model
 
@@ -355,7 +352,7 @@ head(predict_75, 3)
 ```
 
 
-Interesting point is `mu` ($\mu$) Vs. `y_new` ($Y_{new}$).
+Interesting point is `mu` ($\mu$) vs. `y_new` ($Y_{new}$).
 
 ```{r, eval=FALSE}
 # Construct 80% posterior credible intervals
@@ -377,7 +374,7 @@ $Y_new$ is for a specific day (with 75 degree)
 
 ### Posterior with rstanarm
 
-We have done it from "scatch" but we can use `rstanarm::posterior_predict()`
+We have done it from "scratch" but we can use `rstanarm::posterior_predict()`
 
 ```{r, eval=FALSE}
 # Simulate a set of predictions
@@ -401,7 +398,7 @@ phase_3 <- bikes
 
 ## Using default rstanarm priors
 
-Authors recommend to you the default prior from rstanarm: 
+Authors recommend using the default prior from rstanarm: 
 
 ```{r, eval=FALSE}
 bike_model_default <- rstanarm::stan_glm(
@@ -439,57 +436,32 @@ Auxiliary (sigma)
 See help('prior_summary.stanreg') for more details
 ```
 
-It enforce **weakly informative priors** using the **scale** of the data. 
+It uses **weakly informative priors** using the **scale** of the data. 
 
-```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="Fig9.5 and 9.14 from Bayes Rules!"}
+```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="Fig 9.5 and 9.14 from Bayes Rules!"}
 knitr::include_graphics(
   c("image/fig9.5.png",
     "image/fig9.14.png")
 )
 ```
 
+
+## You are not done yet!
+
+- We have learned just enough to be dangerous! 
+
+- Review next chapter on evaluating the model before applying this new tool!
+
 ## Summary 
 
-- Build a simple Bayesian Normal regression with reesponse and predictor quantitative 
+- Built a simple Bayesian Normal regression with response and predictor quantitative 
 
-- We noved fron global mean to local mean with the help of linear dependence
+- First example of a case where Markov Chain Monte Carlo simulation was really needed!
 
+- Used simulated samples to summarize our posterior understanding of the relationship between response and predictor.
 
-1. Build models
-
-    - data model
-    - priors models
-    
-2. Tuning priors models fro regressions parameters
-
-    - rstanarm::stanglm(autoscale = TRUE)
-    - rstantools::prior_summary()
-
-3. Posterior simulation 
-
-    a. Simulation
-
-      - rstanarm::stan_glm()
-      - rstan::stan()
-    
-    b. Check the simulation
-
-      - bayesplot::neff_ratio()
-      - rstan::rhat()
-      - bayesplot::mcmc_trace()
-      - bayesplot::mcmc_dens_overlay()
-    
-4.  Interpreting the posterior
-
-      - broom.mixed::tidy()
-      - tidybayes::add_fitted_draws()
-      - tidybayes::add_predicted_draws()
-
-5. Posterior predictions
-
-    a. By hand (dplyr mutate and summarize)
-    b. `rstanarm::posterio_predict()` + `rstantools::posterior_interval()`  
-
+- Used simulated samples for posterior prediction.
+ 
 ## Resources: 
 
 - [Rstanarm vignette](https://mc-stan.org/rstanarm/articles/)
