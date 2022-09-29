@@ -1,13 +1,525 @@
 # (Normal) Hierarchical Models without Predictors
 
+```{r lodainglib, echo=FALSE, include=FALSE, warning=FALSE, message=FALSE}
+library(bayesrules)
+library(tidyverse)
+library(rstanarm)
+library(bayesplot)
+library(tidybayes)
+library(broom.mixed)
+library(forcats)
+```
+
+
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- *Build* a hierarchical model of variabl $Y$ with no predictors $X$  
+- *Simulate* and analyze this hierarchical model with **rstanarm**  
+- Utilize hierarchical models for predicting $Y$
 
-## SLIDE 1
+## Data Set!
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+```{r LoadingData}
+data(spotify, package = "bayesrules")
+```
+
+
+We are going to use a subset Spotify data set from #TidyTuesday: 
+
+- 44 artists
+  -> 350 songs
+
+
+```{r}
+spotify <- spotify |> 
+  select(artist, title, popularity) |> 
+  mutate(artist = fct_reorder(artist, popularity, .fun = 'mean'))
+```
+
+```{r}
+table(spotify$artist) |> hist(xlab = "Songs/artist", col = 4)
+```
+
+We are going to illustrate the 3 approaches seen in chapter 15: 
+
+* Complete pooling  
+* No pooling
+* Partial pooling
+
+
+Btw my top 3 most listening song/group from last week are: 
+
+- Dina Summer - Passion (cover)
+- The Do - Anita No
+- Purrrple cat - stream 
+
+
+## Complete pooled model
+
+Notations:
+
+$j$ will indicate *artist*, $j \in {1, 2 ..., 44}$
+
+$i$ will indicate *song* for artist $j$
+
+$n_j$ Number of song we have for artist $j$
+
+Example: Mia X, the first artist in our data set, has 4 songs -> $n_1 = 4$ 
+
+
+```{r}
+ggplot(spotify, aes(x = popularity)) + 
+  geom_density()
+```
+
+Even if the distribution is left skewed we will go with a **Normal-Normal complete pooled model** 
+
+$$Y_{ij}|\mu,\sigma \sim N (\mu, \sigma²)$$
+
+$$\mu \sim N(50, 52^2)$$
+
+$$\sigma  \sim Exp(0.048)$$
+
+$\mu$ and $\sigma$ are **global parameter**: they do not vary by artist: 
+
+- $\mu$: global mean popularity
+
+- $\sigma$ : global standard deviation in popularity from song to song
+
+
+```{r, results='hide'}
+spotify_complete_pooled <- stan_glm(
+  popularity ~ 1,  # trick is here \mu = beta_0 (intercept) with no X
+  data = spotify, family = gaussian, 
+  prior_intercept = normal(50, 2.5, # I do not understand 2.5
+                           autoscale = TRUE),
+  prior_aux = exponential(1, autoscale = TRUE),
+  chains = 4, iter = 5000*2, seed = 84735)
+```
+
+
+```{r}
+complete_summary <- tidy(spotify_complete_pooled, 
+                         effects = c("fixed", "aux"), 
+                         conf.int = TRUE, conf.level = 0.80)
+complete_summary
+```
+
+### Quiz!!
+
+3 artist: 
+
+* Mia X, artist with the lowest mean popularity in our data set  
+* Beyoncé, artist with nearly the highest mean popularity in our data set
+* Mohsen Beats, an artist not in out data set
+
+Using complete pooled model, what would be the approximate posterior predictive mean for a new song from this 3 artists?
+
+
+```{r}
+artist_means <- spotify |> 
+  group_by(artist) |> 
+  summarize(count = n(), popularity = mean(popularity))
+
+set.seed(84735)
+predictions_complete <- posterior_predict(spotify_complete_pooled,
+                                          newdata = artist_means)
+
+ppc_intervals(artist_means$popularity, yrep = predictions_complete,
+              prob_outer = 0.80) +
+  ggplot2::scale_x_continuous(labels = artist_means$artist,
+                              breaks = 1:nrow(artist_means)) +
+  xaxis_text(angle = 90, hjust = 1)
+```
+
+
+## No pooled model
+
+```{r}
+ggplot(spotify, aes(x = popularity, group = artist)) + 
+  geom_density()
+```
+
+Key points: 
+
+- popularity can differ from one artist to an other
+
+- some artist have a "stable" popularity across their song and some not
+
+Let change our model to reflect that: 
+
+$$Y_{ij}|\mu_j, \sigma \sim N(\mu_{j}, \sigma^2 ) $$
+$\mu_{j}$ : mean song popularity for artist $j$
+
+$\sigma$ : standard deviation in popularity from song to song **within each artist**
+
+
+
+```{r, results='hide'}
+spotify_no_pooled <- stan_glm(
+  popularity ~ artist - 1, 
+  data = spotify, family = gaussian, 
+  prior = normal(50, 2.5, autoscale = TRUE),
+  prior_aux = exponential(1, autoscale = TRUE),
+  chains = 4, iter = 5000*2, seed = 84735)
+```
+
+### Same Quiz but with no pooling!!
+
+3 artist: 
+
+* Mia X, artist with the lowest mean popularity in our data set  
+* Beyoncé, artist with nearly the highest mean popularity in our data set
+* Mohsen Beats, an artist not in out data set
+
+
+```{r}
+set.seed(84735)
+predictions_no <- posterior_predict(
+  spotify_no_pooled, newdata = artist_means)
+  
+# Plot the posterior predictive intervals
+ppc_intervals(artist_means$popularity, yrep = predictions_no, 
+              prob_outer = 0.80) +
+  ggplot2::scale_x_continuous(labels = artist_means$artist, 
+                              breaks = 1:nrow(artist_means)) +
+  xaxis_text(angle = 90, hjust = 1)
+```
+Two drawbacks: 
+
+1. Ignoring other artist when modeling for one specific artist (what happens when fewer data point)
+
+2. If we assume no other artists help us understanding popularity of a specific artist we can not generalize to artist outside of our data set.
+
+
+## Building the hierarchical model 
+
+### The hierarchy
+
+Layer 1:  $Y_{ij} | \mu_j , \sigma_y$ how song popularity varies WITHIN artist $j$
+
+Layer 2: $\mu_{j}|\mu, \sigma_\mu$ how typical popularity $\mu_{j}$ varies BETWEEN artists
+
+Layer 3: $\mu, \sigma_y, \sigma_{\mu}$ prior models for shared global parameters
+
+(order do not necessarily matter)
+
+**Layer 1**: 
+
+$$Y_{ij}|\mu_j, \sigma_j \sim N(\mu_j, \sigma_y^2)$$
+
+$\mu_j$ mean song popularity for artist j
+
+$\sigma_y$ **within group variability** sd in popularity from song to song within each artist
+
+-> if we stop here we have a "no pooled"
+
+**Layer 2**:
+
+$$\mu_{j}|\mu_{j}. \sigma_\mu \overset{ind}{\sim} N(\mu, \sigma_\mu^2)$$
+$\mu$ global average: the means popularity ratings for the most average artist 
+
+$\sigma_{u}$ $between-group variability$, the standard deviation in mean popularity $μj$
+from artist to artist.
+
+```{r}
+#Normal is not too bad
+ggplot(artist_means, aes(x = popularity)) + 
+  geom_density()
+```
+
+*Layer 3* : Priors
+
+$$\mu \sim N(50, 52^2)$$
+(this 52 ???)
+
+$$\sigma_y \sim Exp(0.048) $$
+
+$$ \sigma  \sim Exp(1)$$ 
+
+![\@realHollanders](image/pc_prior.jpeg)
+
+This is a one way analyis of variance (ANOVA)
+
+An other way to think about it: 
+
+$$Y_{ij}|\mu_j, \sigma_j \sim N(\mu_j, \sigma_y^2) \quad with \quad \mu_j = \mu +b_j$$
+
+$$b_j | \sigma_\mu \overset{ind}{\sim} N(0, \sigma_\mu^2) $$
+
+Example: if $\mu$ = 55 and $\mu_j$ = 65 $b_j$ = 10   
+
+### within- vs -between-group variability
+
+Before we analyse just one source of variability (the individual level), now we have two sources ($\sigma_\mu, \sigma_y$). The first one is the sqrt(variance) **within** the group (song of an artist) and the second is the sqrt(variance) **between** group.  
+
+The total variance is : 
+
+$$Var(Y_{ij} = \sigma²_y  + \sigma^2_u) $$
+Other way of thinking about is: 
+
+$\frac{\sigma^2_y}{\sigma^2_\mu + \sigma^2_y}$ proportion of total variance explained by difference within each group
+
+$\frac{\sigma^2_\mu}{\sigma^2_\mu + \sigma^2_y}$ proportion of total variance explained by difference between groups
+
+You have correlation in song popularity of the same artist (within group). And assuming each groups are independant we get: 
+
+$$Cor(Y_{ij}, Y_{kj}) =  \frac{\sigma^2_\mu}{\sigma^2_\mu + \sigma^2_y}$$
+## Posterior analysis
+
+### Posterior simulation
+
+47 parameters:
+
+- 44 artists specific parameters ($\mu_{j}$)   
+- 3 global parameters ($\mu, \sigma_j, sigma_\mu$)
+
+
+```{r, results='hide'}
+spotify_hierarchical <- stan_glmer(
+  popularity ~ (1 | artist), # this  is the part that tell that artist is a group not a predictor
+  data = spotify, family = gaussian,
+  prior_intercept = normal(50, 2.5, autoscale = TRUE),
+  prior_aux = exponential(1, autoscale = TRUE),
+  prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1), # stuff we will learn chapter 17 suppose to be equivalent to Exp(1)
+  chains = 4, iter = 5000*2, seed = 84735)
+
+```
+```{r}
+# Confirm the prior tunings
+prior_summary(spotify_hierarchical)
+```
+
+We need to check the success of MCMC (saving you time here)
+
+```{r}
+bayesplot::pp_check(spotify_hierarchical) + xlab("popularity")
+```
+
+Let inspect our simulation:
+
+```{r}
+spotify_hierarchical_df <- as.data.frame(spotify_hierarchical)
+dim(spotify_hierarchical_df)
+```
+
+### Posterior analysis of global parameters
+
+* $\mu = (intercept)$  
+* $\sigma_y = sigma$  
+* $\sigma_\mu² = Sigma[artist:(intercep),(Intercept)]$ Attention! here this is the variance 
+
+```{r}
+tidy(spotify_hierarchical, effects = "fixed" # for getting global
+     , conf.int = TRUE, conf.level = 0.80)
+```
+
+```{r}
+tidy(spotify_hierarchical, 
+     effects = "ran_pars") # PARameters and RANdomness or variability)
+```
+
+An other way: 
+
+```{r}
+15.1^2 / (15.1^2 + 14.0^2) # sigma_mu^2 / sigma_mu^2 + sigma_y^2 
+
+14.0^2 / (15.1^2 + 14.0^2) # sigma_y^2 / sigma_mu^2 + sigma_y^2
+```
+### posterior analysis of group specific 
+
+If you recall that $\mu_j = \mu + b_{j}$ 
+
+We have $\mu$ and $b_j$ (check `spotify_hierarchical_df`)
+
+```{r}
+ # RANdom Values
+artist_summary <- tidy(spotify_hierarchical, effects = "ran_vals"
+                       , conf.int = TRUE, conf.level = 0.80)
+
+# Check out the results for the first & last 2 artists
+# 80% intervall
+# this produce a summary
+artist_summary %>% 
+  select(level, conf.low, conf.high) %>% 
+  slice(1:2, 43:44)
+```
+
+
+```{r}
+dim(artist_summary)
+```
+
+
+Other way: combining simulations to simulate posterior of $\mu_j$ 
+
+$$\mu_j = \mu + b_{j} = (Intercept) + b[(Intercept) \quad artist:j]$$
+```{r}
+artist_chains <- spotify_hierarchical |>
+  spread_draws(`(Intercept)`, b[,artist]) |> 
+  mutate(mu_j = `(Intercept)` + b) 
+
+dim(artist_chains)
+```
+```{r}
+artist_chains |>
+  select(artist, `(Intercept)`, b, mu_j) |> 
+  head(4)
+```
+
+```{r}
+# Get posterior summaries for mu_j
+artist_summary_scaled <- artist_chains |> 
+  select(-`(Intercept)`, -b) |> 
+  mean_qi(.width = 0.80) |> 
+  mutate(artist = fct_reorder(artist, mu_j))
+
+# Check out the results
+artist_summary_scaled |> 
+  select(artist, mu_j, .lower, .upper) |>
+  head(4)
+```
+
+```{r }
+ggplot(artist_summary_scaled, 
+       aes(x = artist, y = mu_j, ymin = .lower, ymax = .upper)) +
+  geom_pointrange() +
+  xaxis_text(angle = 90, hjust = 1)
+```
+
+
+#### QUiz !
+
+Similar posterior mean but different 80%CI ?
+
+## Posterior prediction
+
+What will be the popularity of new song of artist j (two cases: artist in the data / unknown artist)? 
+
+`posterior_predict()` exist but first we do it by "hand"!
+
+### First case: Frank Ocean (j=39)
+
+$$Y^{i}_{new,j} | \mu_j, \sigma_y \sim N(\mu_j^{i}, (\sigma^{(i)}_y)^2)$$
+
+We have plenty of $\mu^{i}_j$ and $\sigma^{(i)}_y$ with two sources of variability :
+
+- Not all song of Ocean are eqully popular (*within-group sampling variability*)
+
+- we do not know the exact mean and variability of Ocean song (*posterior variability*)
+
+```{r}
+# Simulate Ocean's posterior predictive model
+set.seed(84735)
+ocean_chains <- spotify_hierarchical_df |>
+  rename(b = `b[(Intercept) artist:Frank_Ocean]`) |> 
+  select(`(Intercept)`, b, sigma) |> 
+  mutate(mu_ocean = `(Intercept)` + b,
+         y_ocean = rnorm(20000, mean = mu_ocean, sd = sigma)) # stuff that I always forget
+
+# Check it out
+head(ocean_chains, 3)
+```
+
+Then you summarize it: 
+
+```{r}
+ocean_chains |> 
+  mean_qi(y_ocean, .width = 0.80) 
+
+# to put into context 
+# the range of a new song is wider tham the average of ocean
+artist_summary_scaled |>
+  filter(artist == "artist:Frank_Ocean")
+```
+
+### Posterior prediction for an observed group
+
+We do not have $\mu_j$ but we know new artist is an artist! And we now the range of mean popularity level among artist $N(\mu, \sigma_u)$ and we have 44 artists. 
+
+- step 1: simulate $\mu_{new_artist}$ bt drawing into layer 2 of MCMC
+
+- step 2: simulate song popularity with Layer 1 and $\mu_{new_artist}$
+
+We are adding a new source of variability (not all artist are equally popular : *between group*)
+
+```{r}
+set.seed(84735)
+mohsen_chains <- spotify_hierarchical_df |>
+  mutate(sigma_mu = sqrt(`Sigma[artist:(Intercept),(Intercept)]`),
+         mu_mohsen = rnorm(20000, `(Intercept)`, sigma_mu), # new stuff
+         y_mohsen = rnorm(20000, mu_mohsen, sigma))
+
+# Posterior predictive summaries
+mohsen_chains |> 
+  mean_qi(y_mohsen, .width = 0.80)
+```
+
+### posterior_predict()
+
+```{r}
+set.seed(84735)
+prediction_shortcut <- posterior_predict(
+  spotify_hierarchical,
+  newdata = data.frame(artist = c("Frank Ocean", "Mohsen Beats")))
+
+# Posterior predictive model plots
+mcmc_areas(prediction_shortcut, prob = 0.8) +
+  ggplot2::scale_y_discrete(labels = c("Frank Ocean", "Mohsen Beats"))
+```
+
+
+## Shrinkage & bias_variance trade-off
+
+```{r}
+set.seed(84735)
+predictions_hierarchical <- posterior_predict(spotify_hierarchical, 
+                                              newdata = artist_means)
+
+# Posterior predictive plots
+ppc_intervals(artist_means$popularity, yrep = predictions_hierarchical, 
+              prob_outer = 0.80) +
+  ggplot2::scale_x_continuous(labels = artist_means$artist, 
+                              breaks = 1:nrow(artist_means)) +
+  xaxis_text(angle = 90, hjust = 1) + 
+  geom_hline(yintercept = 58.4, linetype = "dashed")
+```
+
+**Quizz** What is shringage in this example ? 
+
+**Shrinkage** refers to the phenomenon in which the group-specific local trends in a hierarchical model are pulled or shrunk toward the global trends.
+
+> Shrinkage increases as the number of observations on group j, nj, decreases. That is, we rely more and more on global trends to understand a group for which we have little data.
+
+> Shrinkage increases when the variability within groups, σy, is large in comparison to the variability between groups, σμ. That is, we rely more and more on global trends to understand a group when there is little distinction in the patterns from one group to the next
+
+> The artists that shrunk the most are those with smaller sample sizes nj and popularity levels at the extremes of the spectrum.
+
+### Quizzz!
+
+With no pooled, complete pooled and hierarchical: 
+
+1. Same population, other sample: which would be the most/least variable?
+
+2. Most biased/least estinating artist mean popularity levels? 
+
+## Not everything is hierarchical 
+
+Distinction between a *predictor* and a *grouping variable* can only be made if we understand how data was collected. 
+
+## Summary 
+
+First model with groups!
+
+* observations on one group are independent to another group but correlated in the same group
+
+* New parameters : group-specific 
+
+* global parameters 
+
+* learning for one group to another will lead to some shrinkage 
+
+* this models are less variable than no pooling and less biased than complete pooling
 
 ## Meeting Videos
 
