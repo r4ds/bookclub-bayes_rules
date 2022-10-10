@@ -237,7 +237,7 @@ $$\sigma_y \sim Exp(0.048) $$
 
 $$ \sigma  \sim Exp(1)$$ 
 
-![\@realHollanders](image/pc_prior.jpeg)
+![\@realHollanders](images/pc_prior.jpeg)
 
 This is a one way analyis of variance (ANOVA)
 

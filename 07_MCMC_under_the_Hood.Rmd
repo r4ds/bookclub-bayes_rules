@@ -44,7 +44,7 @@ We do *know* that $f(u|y = 6.25) \propto f(\mu)L(u|y = 6.25)$
 
 For step 1 we can use an other model or distribution to generate *proposals*
 
-![](image/uniform_model_andpropt.png)
+![](images/uniform_model_andpropt.png)
 
 $$ \mu_{proposal}|\mu \sim Unif(\mu - w, \mu, + w)   $$
 
@@ -144,7 +144,7 @@ ggplot(mh_simulation_1, aes(x = mu)) +
 
 w = 0.01 or w = 100, or w = 1
 
-![](image/various_w.png)
+![](images/various_w.png)
 
 ## A Beta-Binomial example
 
