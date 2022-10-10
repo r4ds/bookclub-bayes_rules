@@ -2,12 +2,545 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- Build hierarchical (H) *regression* models of response variable $Y$ by predictors $X$
 
-## SLIDE 1
+- Evaluate and compare H and non H models
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+- Use H models for posterior prediction
+
+
+### Data set
+
+We are returning on a subset of the Cherry Blossom 10 mile running race analysis 
+
+![](image/CherryBlossom10MileRunlogo.png)
+
+```{r,message=FALSE}
+# Load packages
+library(bayesrules)
+library(tidyverse)
+library(rstanarm)
+library(bayesplot)
+library(tidybayes)
+library(broom.mixed)
+```
+
+
+```{r}
+# Load data
+data(cherry_blossom_sample)
+running <- cherry_blossom_sample
+```
+
+
+A bit of data wrangling: 
+
+```{r}
+running <- running |> 
+  select(runner, age, net) |> 
+  na.omit()
+
+nrow(running)
+unique(running$runner)
+```
+
+
+We have 36 runners and 185 rows.
+
+
+## Quick: complete pooling option
+
+
+$$Y_{ij} | \beta_0, \beta_1, \sigma \sim N(\mu_i, \sigma^2)$$
+$Y_{ij}$ running time with $j$ runner and $i$ race
+
+$$\mu_i = \beta_0 + \beta_1X_{ij}$$
+$X_{ij}$ Age 
+
+Then we have global parameters (also here priors)
+
+$$\beta_{0c} \sim N (0, 35^2)$$
+This is the intercept centered
+
+$$\beta_1 \sim N(0, 15^2)$$
+
+$$\sigma \sim Exp(0,072)$$
+
+If we go with this model: no relationship between age and running time.
+
+```{r}
+complete_pooled_model <- stan_glm(
+  net ~ age, 
+  data = running, family = gaussian, 
+  prior_intercept = normal(0, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  prior_aux = exponential(1, autoscale = TRUE),
+  chains = 4, iter = 5000*2, seed = 84735)
+```
+
+
+
+## Hierarchical Model with **varying intercept**
+
+### Model buildings
+
+#### Layer 1 Within-group: within runner
+
+$$Y_{ij} | \beta_0, \beta_1, \sigma_j \sim N(\mu_{ij}, \sigma_j^2)$$
+
+We added a bunch of $j$! So now we have runner specific mean ($\mu_{ij}$) and the variance with a runner ($\sigma_j$)
+
+
+$$\mu_{ij} = \beta_{0j} + \beta_1X_{ij}$$
+Here we are using a specific intercept for each runner ($\beta_{oj}$) but we are still using a global age coefficient ($\beta_1$). 
+
+#### Layer 2: Between Runners 
+
+Quizz!
+
+![](image/Quzz.jpeg)
+
+Which of our current parameters ($\beta_{0j}, \beta_1, \sigma_y$) do we need to model in the next layer? (hint:title)
+
+$$\beta_{0j} | \beta_{0}, \sigma_0 \overset{\text{ind}}{\sim} N(\beta_0, \sigma_0^2)$$
+
+$\beta_{0j}$ is our intercept for each runner and it follow a normal distribution with the global average of intercept ($\beta_0$) and the between-group variability ($\sigma_0$).
+
+
+Now quiz!
+
+![](image/Quizz2.jpg)
+
+For Which model parameters must we specify priors in the final layer of our hierarchical regression model?
+
+
+$$\beta_{0c}  \sim N(m_0, s_0^2)$$
+
+$$\beta_1 \sim N(m_1, s_1^2)$$
+
+$$\sigma_y \sim Exp(l_y)$$
+
+$$\sigma_0 \sim Exp(l_0)$$
+
+Normal hierarchical regression assumptions:
+
+- **structure of the data**: conditioned on $X_{ij}$, $Y_{ij}$ on any group j is *independant* of other group k but different data point within the same group are *correlated*
+
+- **structure of the relationship**: Linear relation 
+
+- **structure of variability within groups**: Within any group j at any predictor value $X_{ij}$ the observed values of $Y_{ij}$ will vary normally 
+
+- **Structure of variability between groups** 
+
+#### Tuning the prior
+
+$$\beta_{0c}  \sim N(100, 10^2)$$
+runing tine is around 80 - 120 mins
+
+$$\beta_1 \sim N(2.5, 1^2)$$
+We just know that it increase and it can range from 0.5 to 4.5 mins / year (on average)
+
+$$\sigma_y \sim Exp(0.078)$$
+
+$$\sigma_0 \sim Exp(1)$$
+
+Then we use weakly informative priors.
+
+
+```{r}
+running_model_1_prior <- stan_glmer(
+  net ~ age + (1 | runner),  # formula
+  data = running, family = gaussian,
+  prior_intercept = normal(100, 10),
+  prior = normal(2.5, 1), 
+  prior_aux = exponential(1, autoscale = TRUE),
+  prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1),
+  chains = 4, iter = 5000*2, seed = 84735, 
+  prior_PD = TRUE) # just the prior
+```
+
+
+```{r}
+running |>
+  # here we just used 100 sims
+  add_predicted_draws(running_model_1_prior, n = 100) |>
+  ggplot(aes(x = net)) +
+    geom_density(aes(x = .prediction, group = .draw)) +
+    xlim(-100,300)
+```
+
+
+## Posterior simulation and analysis
+
+```{r}
+# Simulate the posterior !!! new command you can set/update
+running_model_1 <- update(running_model_1_prior, prior_PD = FALSE)
+
+# Check the prior specifications
+prior_summary(running_model_1)
+
+# Markov chain diagnostics
+# mcmc_trace(running_model_1)
+# mcmc_dens_overlay(running_model_1)
+# mcmc_acf(running_model_1)
+# neff_ratio(running_model_1)
+# rhat(running_model_1)
+```
+
+Data output and model:
+
+* (Intercept) = $\beta_0$
+
+* age - $\beta_1$
+
+* b[(intercept) runner:j] = $b_{0j} = \beta_{0j} - \beta_0$
+
+* sigma = $\sigma_y$
+
+* Sigma[runner:(Intercept), (Intercept)] = $\sigma_0^2$
+
+#### Posterior analysis of the global relationship
+
+$$\beta_0 + \beta_1X$$
+```{r}
+tidy_summary_1 <- tidy(running_model_1, effects = "fixed",
+                       conf.int = TRUE, conf.level = 0.80)
+tidy_summary_1
+```
+
+So runners are slowing down with age! 
+
+#### Posterior analysis of group-specific relationships
+
+$$\beta_{0j} + \beta_1X_{ij} = (\beta_0 + b_{0j}) + \beta_1X_{ij} $$
+
+```{r}
+# Posterior summaries of runner-specific intercepts
+# we go from wide to long 
+runner_summaries_1 <- running_model_1 |>
+  spread_draws(`(Intercept)`, b[,runner]) |> 
+  mutate(runner_intercept = `(Intercept)` + b) |> 
+  select(-`(Intercept)`, -b) |> 
+  median_qi(.width = 0.80) |> 
+  select(runner, runner_intercept, .lower, .upper)
+runner_summaries_1
+```
+
+```{r}
+running |>
+  filter(runner %in% c("4", "5")) |> 
+  add_fitted_draws(running_model_1, n = 100) |>
+  ggplot(aes(x = age, y = net)) +
+    geom_line(
+      aes(y = .value, group = paste(runner, .draw), color = runner),
+      alpha = 0.1) +
+    geom_point(aes(color = runner))
+```
+
+
+#### Posterior analysis of within- and between group variability
+
+```{r}
+tidy_sigma <- tidy(running_model_1, effects = "ran_pars")
+tidy_sigma
+```
+
+```{r}
+sigma_0 <- tidy_sigma[1,3]
+sigma_y <- tidy_sigma[2,3]
+sigma_0^2 / (sigma_0^2 + sigma_y^2) # between
+sigma_y^2 / (sigma_0^2 + sigma_y^2) # within
+```
+
+
+## Hierarchical model with varying intercepts & slopes
+
+```{r}
+ggplot(running, aes(x = age, y = net, group = runner)) + 
+  geom_smooth(method = "lm", se = FALSE, size = 0.5)
+```
+
+
+Quiz! 
+
+![source:thebrain187](image/weird_cat.gif)
+
+How can we modify our random intercepts models to recognize that the rate at which running time change with age might vary from runner to runner?
+
+### Model building
+
+$$Y_{ij} | \beta_{0j}, \beta_{1j}, \sigma_y \sim N(\mu_{ij}, \sigma_y^2)$$
+
+$$\mu_{ij} = \beta_{0j} + \beta_{1j}X_{ij}$$
+
+$$\beta_{0j} | \beta_{0}, \sigma_0 \sim N(\beta_0, \sigma_0^2)$$
+
+$$\beta_{1j} | \beta_{1}, \sigma_1 \sim N(\beta_1, \sigma_1^2)$$
+But $\beta_{0j}$ and $\beta_{1j}$ are correlated for runner j. Let $\rho \in [-1,1]$ represent the correlation between $\beta_{0j}$ and $\beta_(1j)$. We will need to do a joint Normal model of both: 
+
+$$\begin{pmatrix} \beta_{0j} \\ \beta_{1j} \end{pmatrix} | \beta_0, \beta_1, \sigma_0, \sigma_1  \sim N \begin{pmatrix}\begin{pmatrix} \beta_0 \\ \beta_1 \end{pmatrix}, \Sigma \end{pmatrix}$$
+
+$$ \Sigma = \begin{pmatrix} \sigma_0² & \rho\sigma_0\sigma_1 \\ \rho\sigma_0\sigma_1 & \sigma_1^2 \end{pmatrix} $$
+
+$\Sigma$ is our covariance matrix
+
+Let me google it for you: 
+
+$$\rho(X,Y) = \frac{Cov(X,Y)}{\sigma_X\sigma_y} \in [-1, 1]$$
+
+Examples: 
+
+- strong negative correlation between $\beta_{0j}$ and $\beta_{1j}$ with small intercept: smaller you start higher you go 
+
+- strong positive correlation with small intercept : smaller you start lower you go 
+
+- no correlation : X and Y do their life 
+
+**Quiz!** 
+
+1. $\beta_{0j}$ and $\beta_{1j}$ are negatively correlated: 
+
+  a. Runners that start out slower (i.e., with a higher baseline), also tend to slow down at a more rapid rate.
+  b.  The rate at which runners slow down over time isn’t associated with how fast they start out.
+  c.  Runners that start out faster (i.e., with a lower baseline), tend to slow down at a more rapid rate.
+
+2. $\beta_{0j}$ and $\beta_{1j}$ are positively correlated: 
+
+If $\sigma_1 = 0$, age will not differ group to group we are back to the random intercepts model.
+
+But how do we get our *Joint prior model*?
+
+We are using a decomposition of covariance model and the function `decov()` (rememver the `prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1)` in our `stan_glmer` call)
+
+We can decompose our matrix in 3 components: 
+
+$$R = \begin{pmatrix} 1 & \rho \\ \rho & 1 \end{pmatrix}$$
+
+$$ \tau = \sqrt{\sigma^2_0 + \sigma^2_1}$$
+
+$$ \pi = \begin{pmatrix} \pi_0 \\ \pi_1 \end{pmatrix} =  \begin{pmatrix}\frac{\sigma_0^2}{\sigma_0^2 + \sigma_1^2} \\ \frac{\sigma_1^2}{\sigma_0^2 + \sigma_1^2}   \end{pmatrix}$$
+
+$$R \sim LKJ(\eta)$$
+
+Lewandowski-Kurowicka-Joe (LKJ) distribution with $\eta$ as ***regularization hyperparameter* 
+
+* if $\eta < 1$  prior with strong correlation unsure of postive or negative
+
+* if $\eta = 1$ flat prior between - 1 and 1
+
+* if $\eta > 1$ prior indicating low correlation
+
+
+For $\tau$ we can use a Gamma prior (or here the exponential special case). It use two parameters : **shape** and **scale**.
+
+
+Finaly for $\pi$ we know that the sum of them will be one (remember they are the relative proportion of the variability between group). This means we will be able to use a symmetric Dirichlet($2, \delta$). $\delta$ is called a **concentration** hyperparameter.  
+
+In this case with two group it can be define as a Beta distribution with both ($\delta$). 
+
+* if $\delta < 1$ more prior on $\pi_0$ on 0, 1 -> either a lot of few of the variability between group is explained with intercept
+
+* $\delta  = 1$ flat prior on $\pi_0$ variability of the intercept  can explain from 0 to all the variability between groups
+
+* $\delta > 1$ our prior is that around half of the variability between group is explained by differences in intercepts and rest with slopes.
+
+To sum it up when we use *rstanarm* `decov()`: 
+
+- `reg = 1` is for $R \sim LKJ(1)$
+
+- `shape = 1 , scale = 1` is for $\tau \sim Gamma(1,1)$ or $Exp(1)$
+
+- `conc = 1` is for $Dirichlet(2,1)$ (two parameters with $\delta = 1$)
+
+### Posterior simulation and anlysis
+
+```{r, eval=FALSE}
+running_model_2 <- stan_glmer(
+  net ~ age + (age | runner),
+  data = running, family = gaussian,
+  prior_intercept = normal(100, 10),
+  prior = normal(2.5, 1), 
+  prior_aux = exponential(1, autoscale = TRUE),
+  prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1),
+  chains = 4, iter = 5000*2, seed = 84735, adapt_delta = 0.99999 # change here 
+)
+```
+
+Now we have 78 parameters (36 for intercepts / 36 age coefficient and 6 global parameters) !
+
+![](image/numbers.gif)
+
+My poor laptop have done it in 33 minutes!
+
+#### Global / Group specific parameters :
+
+$$\beta_0 + \beta_1 X $$
+```{r, eval=FALSE}
+# Quick summary of global regression parameters
+tidy(running_model_2, effects = "fixed", conf.int = TRUE, conf.level = 0.80)
+# A tibble: 2 x 5
+  term        estimate std.error conf.low conf.high
+  <chr>          <dbl>     <dbl>    <dbl>     <dbl>
+1 (Intercept)    18.5     11.6       3.61     33.6 
+2 age             1.32     0.217     1.04      1.59
+```
+
+We need to move the MCMC simulations result into a friendlier objet: 
+
+```{r}
+# str(running_model_2) try it!
+```
+
+
+```{r,eval=FALSE}
+runner_chains_2 <- running_model_2 |>
+  spread_draws(`(Intercept)`, b[term, runner], `age`) |> 
+  pivot_wider(names_from = term, names_glue = "b_{term}",
+              values_from = b) |> 
+  mutate(runner_intercept = `(Intercept)` + `b_(Intercept)`,
+         runner_age = age + b_age)
+dim(runner_chains_2)
+```
+
+We need to summarize a bit: 
+
+```{r, eval=FALSE}
+runner_summaries_2 <- runner_chains_2 |> 
+  group_by(runner) |> 
+  summarize(runner_intercept = median(runner_intercept),
+            runner_age = median(runner_age))
+
+# Check it out
+head(runner_summaries_2, 3)
+saveRDS(runner_summaries_2, "data/ch17/runner_summaries_2")
+```
+
+
+```{r}
+runner_summaries_2 <- readRDS("data/ch17/runner_summaries_2")
+ggplot(running, aes(y = net, x = age, group = runner)) + 
+  geom_abline(data = runner_summaries_2, color = "gray",
+              aes(intercept = runner_intercept, slope = runner_age)) + 
+  lims(x = c(50, 61), y = c(50, 135))
+```
+
+They slopes differ but no so much -> *shrinkage* the model is still trying to balance between a complete pooled models and a no pooled one (see fig 17.16).
+
+#### Within- and between-group variability 
+
+is it worth it ?
+
+```{r, eval=FALSE}
+tidy(running_model_2, effects = "ran_pars")
+# A tibble: 4 x 3
+  term                       group    estimate
+  <chr>                      <chr>       <dbl>
+1 sd_(Intercept).runner      runner     1.34  
+2 sd_age.runner              runner     0.251 
+3 cor_(Intercept).age.runner runner    -0.0955
+4 sd_Observation.Residual    Residual   5.17  
+
+```
+
+We had 5.25 as $\sigma_y$ before, We have very slight correlation between $\beta_0j$ and $\beta_1j$.
+
+## Model evaluation and selection 
+
+1. How fair is each model?
+
+2. How wrong is each model?
+
+3. How accurate are each model posterior prediction? 
+
+
+For 2:
+
+```{r}
+pp_check(complete_pooled_model) + 
+  labs(x = "net", title = "complete pooled model")
+pp_check(running_model_1) + 
+  labs(x = "net", title = "running model 1")
+# Not displaying because MCMC of running_model_2 is to slow
+# pp_check(running_model_2) + 
+#  labs(x = "net", title = "running model 2")
+```
+
+We can drop the complete pooled model.
+
+```{r, eval=FALSE}
+# Calculate prediction summaries
+set.seed(84735)
+prediction_summary(model = running_model_1, data = running)
+    mae mae_scaled within_50 within_95
+1 2.626      0.456    0.6865     0.973
+prediction_summary(model = running_model_2, data = running)
+   mae mae_scaled within_50 within_95
+1 2.53     0.4424    0.7027     0.973
+```
+
+they are very close!
+
+But what about "unknown data"?
+
+We will use CV but here we divide *runners*. 
+
+(I did not run it as I was afraid of computation time!)
+
+Using expected log-predictive densities (ELPD) we do not find significant difference in posterior accuracy for the two models. 
+
+Is the additional complexity worth it? Here no. 
+
+## Posterior prediction
+
+We will use `running_model_1`.
+
+We will try to predict for runner1, runner10 and Miles (one of the authors) when they will be 61 years old.
+
+```{r}
+running |> 
+  filter(runner %in% c("1", "10")) |> 
+  ggplot(data = _ , aes(x = age, y = net)) + 
+    geom_point() + 
+    facet_grid(~ runner) + 
+    lims(x = c(54, 61))
+```
+
+We will have two sources of uncertainty in runner 1 and 10 (**within-group sampling variability** $\sigma_y$, **posterior variability**, $\beta_{0j}$, $\beta_1$ and $\sigma_y$) and for Miles we need to add the **between-group sampling variability** ($\sigma_0$).  
+
+```{r}
+set.seed(84735)
+predict_next_race <- posterior_predict(
+  running_model_1, 
+  newdata = data.frame(runner = c("1", "Miles", "10"),
+                       age = c(61, 61, 61)))
+
+apply(predict_next_race, 2, median)
+```
+
+```{r}
+mcmc_areas(predict_next_race, prob = 0.8) +
+ ggplot2::scale_y_discrete(labels = c("runner 1", "Miles", "runner 10"))
+```
+
+## Details: Longitudinal data
+
+We observe each runner over time are are interest in effect of time: age is **longitudinal**. We are making the assumptions that our correlation will be the same across all ages we do not take into account that age close to each other tend to be more correlated. It is possible to add that into our model for that see [bayeslongitudinal R package](https://cran.r-project.org/web/packages/bayeslongitudinal/index.html).
+
+## Example Danceability
+
+Next week ?
+
+
+## Chapter summary 
+
+- $Y_{ij}|\beta_j, \sigma_y \sim N(\mu_{ij}, \sigma²_y)$ : regression model within group $j$
+
+- $\beta_j|\beta, \sigma \sim N(\beta, \sigma^2)$ : variability in regression parameters between group
+
+- $\beta, \sigma_y, \sigma, ... \sim ...$ priors models on global parameters 
+
+Either we go with a random intercepts models or we use a random intercepts and slopes model. 
+
 
 ## Meeting Videos
 
