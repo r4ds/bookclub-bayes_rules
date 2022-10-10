@@ -98,7 +98,7 @@ Here we are using a specific intercept for each runner ($\beta_{oj}$) but we are
 
 Quizz!
 
-![](image/Quzz.jpeg)
+![](images/Quzz.jpeg)
 
 Which of our current parameters ($\beta_{0j}, \beta_1, \sigma_y$) do we need to model in the next layer? (hint:title)
 
@@ -109,7 +109,7 @@ $\beta_{0j}$ is our intercept for each runner and it follow a normal distributio
 
 Now quiz!
 
-![](image/Quizz2.jpg)
+![](images/Quizz2.jpg)
 
 For Which model parameters must we specify priors in the final layer of our hierarchical regression model?
 
@@ -263,7 +263,7 @@ ggplot(running, aes(x = age, y = net, group = runner)) +
 
 Quiz! 
 
-![source:thebrain187](image/weird_cat.gif)
+![source:thebrain187](images/weird_cat.gif)
 
 How can we modify our random intercepts models to recognize that the rate at which running time change with age might vary from runner to runner?
 
@@ -368,7 +368,7 @@ running_model_2 <- stan_glmer(
 
 Now we have 78 parameters (36 for intercepts / 36 age coefficient and 6 global parameters) !
 
-![](image/numbers.gif)
+![](images/numbers.gif)
 
 My poor laptop have done it in 33 minutes!
 

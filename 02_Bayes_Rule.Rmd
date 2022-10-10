@@ -96,7 +96,7 @@ knitr::kable(joint_p)
 
 We can also summarize it like that : 
 
-![](image/proba-1.vsg)
+![](images/proba-1.vsg)
 
 
 ### Posterior probability via Bayes' Rule!
