@@ -27,10 +27,52 @@ Hierarchical models for hierarchical (grouped) data
 
 ## Pooled / Grouped data
 
+- Why do we need hierachical models ? 
 
+- We will use the `cherry_blossom_sample` data:
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+# Load packages
+library(bayesrules)
+library(tidyverse)
+library(rstanarm)
+library(broom.mixed)
+
+# Load data
+data(cherry_blossom_sample)
+running <- cherry_blossom_sample %>% 
+  select(runner, age, net)
+
+ggplot(running, aes(x = runner, y = net)) + 
+  geom_boxplot()
+```
+
+- Many runners ran multiple races as they aged 
+
+**GOAL: understand relationship between running time and age.**
 
 ## Complete Pooling
 
+- Complete pooling just combines all the observations, ignoring which runner they came from
+
+- No clear trend appears, book performs linear regression and finds slope consistent with zero.
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+ggplot(running, aes(y = net, x = age)) + 
+  geom_point()
+```
+
+## Drawbacks of complete pooling
+
+- Violates assumption of independence! 
+
+- Produce misleading conclusions of the relationship between predictor and response
+
+## No pooling
+
+* Treat each runner separately, with a seperate fit for each.
+
+* Multiple fits
 
 
 ## Meeting Videos
