@@ -28,7 +28,9 @@ cohort-2
 bayes-rule
 building-a-bayesian-model-for-events
 workflow
+conditional-probability-likelihood
 normalizing-constant
+posterior-probability-via-bayes-rule
 posterior-simulation
 example-pop-vs-soda-vs-coke
 building-a-bayesian-model-for-random-variables-1n
