@@ -4,7 +4,15 @@
 
 **Welcome to Unit 4 - The final *unit* !**
 
-Hierarchical models for hierarchical (grouped) data
+Hierarchical models expand our toolbox for hierarchical (grouped / pooled) data:
+
+ - a sampled group of schools and data $y$ on multiple individual students within each school
+ 
+ - a sampled group of labs and data $y$ from multiple individual experiments within each lab
+
+ - a sampled group of people on whom we make multiple individual observations of information $y$ over time.
+ 
+Unit four will explore these techniques in these final chapters:
 
 - Chapter 15: Introduce the concepts
 
@@ -55,18 +63,20 @@ ggplot(running, aes(x = runner, y = net)) +
 
 - Complete pooling just combines all the observations, ignoring which runner they came from
 
-- No clear trend appears, book performs linear regression and finds slope consistent with zero.
+
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
 ggplot(running, aes(y = net, x = age)) + 
   geom_point()
 ```
 
-### Drawbacks of complete pooling
 
-- Violates assumption of independence! 
 
-- Produce misleading conclusions of the relationship between predictor and response
+- No clear trend appears, book performs linear regression and finds slope consistent with zero.
+
+- This seems strange: dont we get slower as we age?
+
+- Zoom in on three runners:
 
 ```{r, message=FALSE,warning=FALSE}
 # Select an example subset
@@ -82,11 +92,19 @@ ggplot(examples, aes(x = age, y = net)) +
 
 
 
+### Drawbacks of complete pooling
+
+- Violates assumption of independence! Observations within a runner are correlated.
+
+- Ignores information about individual runners: people age differently!
+
+- Produce misleading conclusions of the relationship between predictor and response
+
 ## No pooling
 
 * Treat each runner separately, with a separate fit for each.
 
-* Multiple fits, deal with each of the 36 runner *seperately*
+* Multiple fits, deal with each of the 36 runners *seperately*
 
 Example for 3 runners:
 
@@ -129,9 +147,11 @@ ggplot(examples, aes(x = age, y = net)) +
 
 * Provides insight into both
 
-    1. Within-group variability
+    1. Within-group variability  
     
-    2. Between-group variability.
+    2. Between-group variability 
+    
+ 
 
 ## Partial pooling
 
@@ -139,11 +159,24 @@ ggplot(examples, aes(x = age, y = net)) +
 
 * Example results (we will see *how* to do this next week)
 
-`r knitr::include_graphics(rep("images/runners-ch-15-1.png"))`
+```{r, echo=FALSE,  out.width = "100%", fig.cap= "Posterior median models of the no pooled (blue), complete pooled (black), and hierarchical (dashed) models of running time vs age for three example runners and you."}
 
-* TODO: Add legend
+knitr::include_graphics(rep("images/runners-ch-15-1.png"))
 
-* Note for example that the fit no longer predicts the first runner getting better with age..  information from other runners informed this fit.
+```
+
+
+* Note the fit no longer predicts the first runner getting better with age..  information from other runners informed this fit.
+
+* Also note that partial pooling allows us to make predictions for new groups... like YOU! 
+
+## Summary
+
+* We (I hope) motivated the need for hierarchical models. 
+
+* Explored briefly complete pooling, no pooling and partial poolign models.
+
+
 
 ## Meeting Videos
 
