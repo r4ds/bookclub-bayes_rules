@@ -62,18 +62,88 @@ ggplot(running, aes(y = net, x = age)) +
   geom_point()
 ```
 
-## Drawbacks of complete pooling
+### Drawbacks of complete pooling
 
 - Violates assumption of independence! 
 
 - Produce misleading conclusions of the relationship between predictor and response
 
+```{r, message=FALSE,warning=FALSE}
+# Select an example subset
+examples <- running %>% 
+  filter(runner %in% c("1", "20", "22"))
+
+ggplot(examples, aes(x = age, y = net)) + 
+  geom_point() + 
+  facet_wrap(~ runner) + 
+  geom_abline(aes(intercept = 75.2242, slope = 0.2678), 
+              color = "blue")
+```
+
+
+
 ## No pooling
 
-* Treat each runner separately, with a seperate fit for each.
+* Treat each runner separately, with a separate fit for each.
 
-* Multiple fits
+* Multiple fits, deal with each of the 36 runner *seperately*
 
+Example for 3 runners:
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+ 
+
+
+ggplot(examples, aes(x = age, y = net)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) + 
+  facet_wrap(~ runner) + 
+  xlim(52, 62)
+```
+
+* Seems great at first glance....
+
+* However some significant drawbacks:
+ 
+    - Cannot reliably generalize to groups outside our sample. 
+    
+    - Assumes one group doesnt contain any information about another, ignores potentially useful information! (For example, do we really think that first runner gets faster with age?)
+    
+## Hierarchical data
+
+
+
+* Cherry Blossom data presents a new challenge: Hierachical data. 
+
+`r knitr::include_graphics(rep("images/partial_pool_diagram.png"))`
+
+* Hierarchical structure - each group is unique but also connected. Common structure:
+
+    * Groups could be schools and observations students within each school
+    
+    * Groups could be labs, observations multiple experiments in each lab
+    
+    * Groups could be subjects, observations are a series of tests (Exercise 15.3ff)
+    
+* Middle ground between complete and no pooling: Partial pooling.
+
+* Provides insight into both
+
+    1. Within-group variability
+    
+    2. Between-group variability.
+
+## Partial pooling
+
+ 
+
+* Example results (we will see *how* to do this next week)
+
+`r knitr::include_graphics(rep("images/runners-ch-15-1.png"))`
+
+* TODO: Add legend
+
+* Note for example that the fit no longer predicts the first runner getting better with age..  information from other runners informed this fit.
 
 ## Meeting Videos
 
