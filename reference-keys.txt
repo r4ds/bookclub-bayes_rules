@@ -1,6 +1,7 @@
 fig:unnamed-chunk-1
 fig:unnamed-chunk-3
 fig:unnamed-chunk-38
+fig:unnamed-chunk-43
 bayesian-statistics
 tips-and-tricks-from-the-authors
 set-up
@@ -176,7 +177,13 @@ meeting-videos-13
 cohort-1-13
 cohort-2-13
 hierarchical-models-are-exciting
-slide-1-8
+pooled-grouped-data
+complete-pooling
+drawbacks-of-complete-pooling
+no-pooling
+hierarchical-data
+partial-pooling
+summary-4
 meeting-videos-14
 cohort-1-14
 cohort-2-14
@@ -200,7 +207,7 @@ posterior_predict
 shrinkage-bias_variance-trade-off
 quizzz
 not-everything-is-hierarchical
-summary-4
+summary-5
 meeting-videos-15
 cohort-1-15
 cohort-2-15
@@ -230,12 +237,12 @@ meeting-videos-16
 cohort-1-16
 cohort-2-16
 non-normal-hierarchical-regression-classification
-slide-1-9
+slide-1-8
 meeting-videos-17
 cohort-1-17
 cohort-2-17
 adding-more-layers
-slide-1-10
+slide-1-9
 meeting-videos-18
 cohort-1-18
 cohort-2-18
