@@ -174,7 +174,7 @@ knitr::include_graphics(rep("images/runners-ch-15-1.png"))
 
 * We (I hope) motivated the need for hierarchical models. 
 
-* Explored briefly complete pooling, no pooling and partial poolign models.
+* Explored briefly complete pooling, no pooling and partial pooling models.
 
 
 
