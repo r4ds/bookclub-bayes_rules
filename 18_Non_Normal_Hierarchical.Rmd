@@ -215,20 +215,14 @@ climb_model <- stan_glmer(
   chains = 4, iter = 5000*2, seed = 84735
 )
 ```
-```{r 18-climb_model_save, eval = FALSE, include = FALSE}
-# Run this manually if you change the model.
-saveRDS(climb_model, "data/ch18/climb_model.rds", compress = "xz")
-saveRDS(prior_summary(climb_model), "data/ch18/climb_models_prior_summary.rds")
-```
-
-```{r 18-load_climb_model, include = FALSE}
-climb_model <- readRDS("data/ch18/climb_model.rds")
-```
 
 **Confirm prior specifications**
 
 ```{r 18-prior_summmary_climb_model, eval = FALSE}
 prior_summary(climb_model)
+```
+```{r 18-prior_summary_climb_model_save, include = FALSE, eval = FALSE}
+saveRDS(prior_summary(climb_model), "data/ch18/climb_models_prior_summary.rds")
 ```
 ```{r 18-prior_summary_climb_model_eval, include = FALSE}
 readRDS("data/ch18/climb_models_prior_summary.rds")
