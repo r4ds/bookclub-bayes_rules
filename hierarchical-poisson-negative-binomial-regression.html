@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>18.3 Hierarchical Poisson &amp; Negative Binomial regression | Bayes Rules! Book Club</title>
+  <meta name="description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="18.3 Hierarchical Poisson &amp; Negative Binomial regression | Bayes Rules! Book Club" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
+  <meta name="github-repo" content="r4ds/bookclub-bayes_rules" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="18.3 Hierarchical Poisson &amp; Negative Binomial regression | Bayes Rules! Book Club" />
+  
+  <meta name="twitter:description" content="This is the product of the R4DS Online Learning Community’s Bayes Rules! Book Club." />
+  
+
+<meta name="author" content="The R4DS Online Learning Community" />
+
+
+<meta name="date" content="2022-10-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="hierarchical-logistic-regression.html"/>
+<link rel="next" href="meeting-videos-17.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/viz-1.8.2/viz.js"></script>
+<link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="libs/grViz-binding-1.0.9/grViz.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Bayes Rules! Book Club</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
+<ul>
+<li class="chapter" data-level="" data-path="book-club-meetings.html"><a href="book-club-meetings.html"><i class="fa fa-check"></i>Book club meetings</a></li>
+<li class="chapter" data-level="" data-path="pace.html"><a href="pace.html"><i class="fa fa-check"></i>Pace</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
+<li class="chapter" data-level="0.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html"><i class="fa fa-check"></i><b>0.1</b> Bayesian statistics?</a></li>
+<li class="chapter" data-level="0.2" data-path="tips-and-tricks-from-the-authors.html"><a href="tips-and-tricks-from-the-authors.html"><i class="fa fa-check"></i><b>0.2</b> Tips and tricks from the authors</a></li>
+<li class="chapter" data-level="0.3" data-path="set-up.html"><a href="set-up.html"><i class="fa fa-check"></i><b>0.3</b> Set up</a></li>
+<li class="chapter" data-level="0.4" data-path="the-authors.html"><a href="the-authors.html"><i class="fa fa-check"></i><b>0.4</b> The authors:</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="the-big-bayesian-picture.html"><a href="the-big-bayesian-picture.html"><i class="fa fa-check"></i><b>1</b> The Big (Bayesian) Picture</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="thinking-like-a-bayesian-14.html"><a href="thinking-like-a-bayesian-14.html"><i class="fa fa-check"></i><b>1.1</b> Thinking like a Bayesian 1/4</a></li>
+<li class="chapter" data-level="1.2" data-path="quiz-time.html"><a href="quiz-time.html"><i class="fa fa-check"></i><b>1.2</b> Quiz time!</a></li>
+<li class="chapter" data-level="1.3" data-path="thinking-like-a-bayesian-24.html"><a href="thinking-like-a-bayesian-24.html"><i class="fa fa-check"></i><b>1.3</b> Thinking like a Bayesian 2/4</a>
+<ul>
+<li class="chapter" data-level="1.3.1" data-path="thinking-like-a-bayesian-24.html"><a href="thinking-like-a-bayesian-24.html#interpreting-probability"><i class="fa fa-check"></i><b>1.3.1</b> Interpreting probability:</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="thinking-like-a-bayesian-34.html"><a href="thinking-like-a-bayesian-34.html"><i class="fa fa-check"></i><b>1.4</b> Thinking like a Bayesian 3/4</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="thinking-like-a-bayesian-34.html"><a href="thinking-like-a-bayesian-34.html#bayesian-balancing-act"><i class="fa fa-check"></i><b>1.4.1</b> Bayesian balancing act</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="thinking-like-a-bayesian-44.html"><a href="thinking-like-a-bayesian-44.html"><i class="fa fa-check"></i><b>1.5</b> Thinking like a Bayesian 4/4</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="thinking-like-a-bayesian-44.html"><a href="thinking-like-a-bayesian-44.html#asking-question"><i class="fa fa-check"></i><b>1.5.1</b> Asking question</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="quick-history-lesson.html"><a href="quick-history-lesson.html"><i class="fa fa-check"></i><b>1.6</b> Quick history lesson</a></li>
+<li class="chapter" data-level="1.7" data-path="look-ahead.html"><a href="look-ahead.html"><i class="fa fa-check"></i><b>1.7</b> Look ahead</a>
+<ul>
+<li class="chapter" data-level="1.7.1" data-path="look-ahead.html"><a href="look-ahead.html#units"><i class="fa fa-check"></i><b>1.7.1</b> 4 units</a></li>
+</ul></li>
+<li class="chapter" data-level="1.8" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i><b>1.8</b> Summary</a></li>
+<li class="chapter" data-level="1.9" data-path="resources-mentioned.html"><a href="resources-mentioned.html"><i class="fa fa-check"></i><b>1.9</b> Resources mentioned</a>
+<ul>
+<li class="chapter" data-level="1.9.1" data-path="resources-mentioned.html"><a href="resources-mentioned.html#other-bayesian-books"><i class="fa fa-check"></i><b>1.9.1</b> Other Bayesian books:</a></li>
+<li class="chapter" data-level="1.9.2" data-path="resources-mentioned.html"><a href="resources-mentioned.html#drawing-dag-directed-acyclic-graph"><i class="fa fa-check"></i><b>1.9.2</b> Drawing DAG (Directed Acyclic Graph)</a></li>
+<li class="chapter" data-level="1.9.3" data-path="resources-mentioned.html"><a href="resources-mentioned.html#podcast"><i class="fa fa-check"></i><b>1.9.3</b> Podcast</a></li>
+</ul></li>
+<li class="chapter" data-level="1.10" data-path="meeting-videos.html"><a href="meeting-videos.html"><i class="fa fa-check"></i><b>1.10</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="1.10.1" data-path="meeting-videos.html"><a href="meeting-videos.html#cohort-1"><i class="fa fa-check"></i><b>1.10.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="1.10.2" data-path="meeting-videos.html"><a href="meeting-videos.html#cohort-2"><i class="fa fa-check"></i><b>1.10.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="bayes-rule.html"><a href="bayes-rule.html"><i class="fa fa-check"></i><b>2</b> Bayes’ Rule</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="building-a-bayesian-model-for-events.html"><a href="building-a-bayesian-model-for-events.html"><i class="fa fa-check"></i><b>2.1</b> Building a Bayesian model for events</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="building-a-bayesian-model-for-events.html"><a href="building-a-bayesian-model-for-events.html#workflow"><i class="fa fa-check"></i><b>2.1.1</b> Workflow:</a></li>
+<li class="chapter" data-level="2.1.2" data-path="building-a-bayesian-model-for-events.html"><a href="building-a-bayesian-model-for-events.html#conditional-probability-likelihood"><i class="fa fa-check"></i><b>2.1.2</b> Conditional probability &amp; likelihood</a></li>
+<li class="chapter" data-level="2.1.3" data-path="building-a-bayesian-model-for-events.html"><a href="building-a-bayesian-model-for-events.html#normalizing-constant"><i class="fa fa-check"></i><b>2.1.3</b> Normalizing constant</a></li>
+<li class="chapter" data-level="2.1.4" data-path="building-a-bayesian-model-for-events.html"><a href="building-a-bayesian-model-for-events.html#posterior-probability-via-bayes-rule"><i class="fa fa-check"></i><b>2.1.4</b> Posterior probability via Bayes’ Rule!</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="posterior-simulation.html"><a href="posterior-simulation.html"><i class="fa fa-check"></i><b>2.2</b> Posterior simulation</a></li>
+<li class="chapter" data-level="2.3" data-path="example-pop-vs-soda-vs-coke.html"><a href="example-pop-vs-soda-vs-coke.html"><i class="fa fa-check"></i><b>2.3</b> Example Pop vs Soda vs Coke</a></li>
+<li class="chapter" data-level="2.4" data-path="building-a-bayesian-model-for-random-variables-1n.html"><a href="building-a-bayesian-model-for-random-variables-1n.html"><i class="fa fa-check"></i><b>2.4</b> Building a Bayesian model for random variables (1/n)</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="building-a-bayesian-model-for-random-variables-1n.html"><a href="building-a-bayesian-model-for-random-variables-1n.html#first-step-prior"><i class="fa fa-check"></i><b>2.4.1</b> First step prior</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="building-a-bayesian-model-for-random-variables-1n-1.html"><a href="building-a-bayesian-model-for-random-variables-1n-1.html"><i class="fa fa-check"></i><b>2.5</b> Building a Bayesian model for random variables (1/n)</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="building-a-bayesian-model-for-random-variables-1n-1.html"><a href="building-a-bayesian-model-for-random-variables-1n-1.html#binomial-data-model"><i class="fa fa-check"></i><b>2.5.1</b> Binomial data model</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html"><i class="fa fa-check"></i><b>2.6</b> Building a Bayesian model for random variables (1/n)</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#binomial-likelihood-function"><i class="fa fa-check"></i><b>2.6.1</b> Binomial likelihood function</a></li>
+<li class="chapter" data-level="2.6.2" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#probability-mass-functions-vs-likelihood-functions"><i class="fa fa-check"></i><b>2.6.2</b> Probability mass functions vs likelihood functions</a></li>
+<li class="chapter" data-level="2.6.3" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#normalizing-constant-1"><i class="fa fa-check"></i><b>2.6.3</b> Normalizing constant</a></li>
+<li class="chapter" data-level="2.6.4" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#posterior-probability-model"><i class="fa fa-check"></i><b>2.6.4</b> Posterior probability model</a></li>
+<li class="chapter" data-level="2.6.5" data-path="building-a-bayesian-model-for-random-variables-1n-2.html"><a href="building-a-bayesian-model-for-random-variables-1n-2.html#posterior-shortcut"><i class="fa fa-check"></i><b>2.6.5</b> Posterior shortcut</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="links-shared-in-the-second-meeting.html"><a href="links-shared-in-the-second-meeting.html"><i class="fa fa-check"></i><b>2.7</b> Links shared in the second meeting</a></li>
+<li class="chapter" data-level="2.8" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html"><i class="fa fa-check"></i><b>2.8</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="2.8.1" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html#cohort-1-1"><i class="fa fa-check"></i><b>2.8.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="2.8.2" data-path="meeting-videos-1.html"><a href="meeting-videos-1.html#cohort-2-1"><i class="fa fa-check"></i><b>2.8.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="the-beta-binomial-bayesian-model.html"><a href="the-beta-binomial-bayesian-model.html"><i class="fa fa-check"></i><b>3</b> The Beta-Binomial Bayesian Model</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="slide-1.html"><a href="slide-1.html"><i class="fa fa-check"></i><b>3.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="3.2" data-path="meeting-videos-2.html"><a href="meeting-videos-2.html"><i class="fa fa-check"></i><b>3.2</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="meeting-videos-2.html"><a href="meeting-videos-2.html#cohort-1-2"><i class="fa fa-check"></i><b>3.2.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="3.2.2" data-path="meeting-videos-2.html"><a href="meeting-videos-2.html#cohort-2-2"><i class="fa fa-check"></i><b>3.2.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="balance-and-sequentiality-in-bayesian-analyses.html"><a href="balance-and-sequentiality-in-bayesian-analyses.html"><i class="fa fa-check"></i><b>4</b> Balance and Sequentiality in Bayesian Analyses</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="slide-1-1.html"><a href="slide-1-1.html"><i class="fa fa-check"></i><b>4.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="4.2" data-path="meeting-videos-3.html"><a href="meeting-videos-3.html"><i class="fa fa-check"></i><b>4.2</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="meeting-videos-3.html"><a href="meeting-videos-3.html#cohort-1-3"><i class="fa fa-check"></i><b>4.2.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="4.2.2" data-path="meeting-videos-3.html"><a href="meeting-videos-3.html#cohort-2-3"><i class="fa fa-check"></i><b>4.2.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="conjugate-families.html"><a href="conjugate-families.html"><i class="fa fa-check"></i><b>5</b> Conjugate Families</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="greek-letters.html"><a href="greek-letters.html"><i class="fa fa-check"></i><b>5.1</b> Greek letters</a></li>
+<li class="chapter" data-level="5.2" data-path="revisiting-choice-of-prior.html"><a href="revisiting-choice-of-prior.html"><i class="fa fa-check"></i><b>5.2</b> Revisiting choice of prior</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="revisiting-choice-of-prior.html"><a href="revisiting-choice-of-prior.html#reminder-the-beta-binomial-model"><i class="fa fa-check"></i><b>5.2.1</b> <strong>Reminder</strong> the Beta-Binomial Model:</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="joy.html"><a href="joy.html"><i class="fa fa-check"></i><b>5.3</b> Joy!</a></li>
+<li class="chapter" data-level="5.4" data-path="gamma-poisson-conjugate-family-18.html"><a href="gamma-poisson-conjugate-family-18.html"><i class="fa fa-check"></i><b>5.4</b> Gamma-Poisson conjugate family 1/8</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="gamma-poisson-conjugate-family-18.html"><a href="gamma-poisson-conjugate-family-18.html#prior"><i class="fa fa-check"></i><b>5.4.1</b> Prior:</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="gamma-poisson-conjugate-family-28.html"><a href="gamma-poisson-conjugate-family-28.html"><i class="fa fa-check"></i><b>5.5</b> Gamma-Poisson conjugate family 2/8</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="gamma-poisson-conjugate-family-28.html"><a href="gamma-poisson-conjugate-family-28.html#poisson-data-model"><i class="fa fa-check"></i><b>5.5.1</b> Poisson <strong>data</strong> model:</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="gamma-poisson-conjugate-family-38.html"><a href="gamma-poisson-conjugate-family-38.html"><i class="fa fa-check"></i><b>5.6</b> Gamma-Poisson conjugate family 3/8</a>
+<ul>
+<li class="chapter" data-level="5.6.1" data-path="gamma-poisson-conjugate-family-38.html"><a href="gamma-poisson-conjugate-family-38.html#poisson-pmfs-with-different-tau"><i class="fa fa-check"></i><b>5.6.1</b> Poisson pmfs with different <span class="math inline">\(\tau\)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="gamma-poisson-conjugate-family-48.html"><a href="gamma-poisson-conjugate-family-48.html"><i class="fa fa-check"></i><b>5.7</b> Gamma-Poisson conjugate family 4/8</a>
+<ul>
+<li class="chapter" data-level="5.7.1" data-path="gamma-poisson-conjugate-family-48.html"><a href="gamma-poisson-conjugate-family-48.html#joint-probability-mass-function"><i class="fa fa-check"></i><b>5.7.1</b> Joint probability mass function</a></li>
+</ul></li>
+<li class="chapter" data-level="5.8" data-path="gamma-poisson-conjugate-family-58.html"><a href="gamma-poisson-conjugate-family-58.html"><i class="fa fa-check"></i><b>5.8</b> Gamma-Poisson conjugate family 5/8</a>
+<ul>
+<li class="chapter" data-level="5.8.1" data-path="gamma-poisson-conjugate-family-58.html"><a href="gamma-poisson-conjugate-family-58.html#potential-priors"><i class="fa fa-check"></i><b>5.8.1</b> Potential priors?</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9" data-path="gamma-poisson-conjugate-family-68.html"><a href="gamma-poisson-conjugate-family-68.html"><i class="fa fa-check"></i><b>5.9</b> Gamma-Poisson conjugate family 6/8</a>
+<ul>
+<li class="chapter" data-level="5.9.1" data-path="gamma-poisson-conjugate-family-68.html"><a href="gamma-poisson-conjugate-family-68.html#gamma-prior-gamma-and-exponential-models"><i class="fa fa-check"></i><b>5.9.1</b> Gamma prior : Gamma and Exponential models</a></li>
+</ul></li>
+<li class="chapter" data-level="5.10" data-path="gamma-poisson-conjugate-family-6n.html"><a href="gamma-poisson-conjugate-family-6n.html"><i class="fa fa-check"></i><b>5.10</b> Gamma-Poisson conjugate family 6/n</a>
+<ul>
+<li class="chapter" data-level="5.10.1" data-path="gamma-poisson-conjugate-family-6n.html"><a href="gamma-poisson-conjugate-family-6n.html#quiz"><i class="fa fa-check"></i><b>5.10.1</b> Quiz!</a></li>
+</ul></li>
+<li class="chapter" data-level="5.11" data-path="gamma-poisson-conjugate-family-78.html"><a href="gamma-poisson-conjugate-family-78.html"><i class="fa fa-check"></i><b>5.11</b> Gamma-Poisson conjugate family 7/8</a>
+<ul>
+<li class="chapter" data-level="5.11.1" data-path="gamma-poisson-conjugate-family-78.html"><a href="gamma-poisson-conjugate-family-78.html#applications"><i class="fa fa-check"></i><b>5.11.1</b> Applications!</a></li>
+</ul></li>
+<li class="chapter" data-level="5.12" data-path="gamma-poisson-conjugate-family-88.html"><a href="gamma-poisson-conjugate-family-88.html"><i class="fa fa-check"></i><b>5.12</b> Gamma-Poisson conjugate family 8/8</a>
+<ul>
+<li class="chapter" data-level="5.12.1" data-path="gamma-poisson-conjugate-family-88.html"><a href="gamma-poisson-conjugate-family-88.html#gamma-poisson-conjugacy"><i class="fa fa-check"></i><b>5.12.1</b> Gamma-Poisson conjugacy</a></li>
+</ul></li>
+<li class="chapter" data-level="5.13" data-path="normal-normal-conjugate-family.html"><a href="normal-normal-conjugate-family.html"><i class="fa fa-check"></i><b>5.13</b> Normal-Normal conjugate family</a></li>
+<li class="chapter" data-level="5.14" data-path="why-no-simulation-in-this-chapter.html"><a href="why-no-simulation-in-this-chapter.html"><i class="fa fa-check"></i><b>5.14</b> Why no simulation in this chapter?</a></li>
+<li class="chapter" data-level="5.15" data-path="critiques-of-conjugate-family.html"><a href="critiques-of-conjugate-family.html"><i class="fa fa-check"></i><b>5.15</b> Critiques of conjugate family</a></li>
+<li class="chapter" data-level="5.16" data-path="summary-1.html"><a href="summary-1.html"><i class="fa fa-check"></i><b>5.16</b> Summary</a></li>
+<li class="chapter" data-level="5.17" data-path="slide-1-2.html"><a href="slide-1-2.html"><i class="fa fa-check"></i><b>5.17</b> SLIDE 1</a></li>
+<li class="chapter" data-level="5.18" data-path="meeting-videos-4.html"><a href="meeting-videos-4.html"><i class="fa fa-check"></i><b>5.18</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="5.18.1" data-path="meeting-videos-4.html"><a href="meeting-videos-4.html#cohort-1-4"><i class="fa fa-check"></i><b>5.18.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="5.18.2" data-path="meeting-videos-4.html"><a href="meeting-videos-4.html#cohort-2-4"><i class="fa fa-check"></i><b>5.18.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="approximating-the-posterior.html"><a href="approximating-the-posterior.html"><i class="fa fa-check"></i><b>6</b> Approximating the Posterior</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="motivation-for-approximations.html"><a href="motivation-for-approximations.html"><i class="fa fa-check"></i><b>6.1</b> Motivation for approximations</a></li>
+<li class="chapter" data-level="6.2" data-path="grid-approximaiton.html"><a href="grid-approximaiton.html"><i class="fa fa-check"></i><b>6.2</b> Grid Approximaiton</a></li>
+<li class="chapter" data-level="6.3" data-path="beta-binomial-example-grid.html"><a href="beta-binomial-example-grid.html"><i class="fa fa-check"></i><b>6.3</b> Beta Binomial Example (Grid)</a></li>
+<li class="chapter" data-level="6.4" data-path="mcmc.html"><a href="mcmc.html"><i class="fa fa-check"></i><b>6.4</b> MCMC</a></li>
+<li class="chapter" data-level="6.5" data-path="beta-binomial-mcmc.html"><a href="beta-binomial-mcmc.html"><i class="fa fa-check"></i><b>6.5</b> Beta-Binomial (MCMC)</a></li>
+<li class="chapter" data-level="6.6" data-path="markov-chain-diagnostics.html"><a href="markov-chain-diagnostics.html"><i class="fa fa-check"></i><b>6.6</b> Markov chain diagnostics</a></li>
+<li class="chapter" data-level="6.7" data-path="summary-2.html"><a href="summary-2.html"><i class="fa fa-check"></i><b>6.7</b> Summary</a></li>
+<li class="chapter" data-level="6.8" data-path="meeting-videos-5.html"><a href="meeting-videos-5.html"><i class="fa fa-check"></i><b>6.8</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="6.8.1" data-path="meeting-videos-5.html"><a href="meeting-videos-5.html#cohort-1-5"><i class="fa fa-check"></i><b>6.8.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="6.8.2" data-path="meeting-videos-5.html"><a href="meeting-videos-5.html#cohort-2-5"><i class="fa fa-check"></i><b>6.8.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="mcmc-under-the-hood.html"><a href="mcmc-under-the-hood.html"><i class="fa fa-check"></i><b>7</b> MCMC under the Hood</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="the-big-idea-12.html"><a href="the-big-idea-12.html"><i class="fa fa-check"></i><b>7.1</b> The big idea 1/2</a></li>
+<li class="chapter" data-level="7.2" data-path="the-big-idea-22.html"><a href="the-big-idea-22.html"><i class="fa fa-check"></i><b>7.2</b> The big idea 2/2</a></li>
+<li class="chapter" data-level="7.3" data-path="the-metropolis-hastings-algorithm.html"><a href="the-metropolis-hastings-algorithm.html"><i class="fa fa-check"></i><b>7.3</b> The Metropolis-Hastings algorithm</a></li>
+<li class="chapter" data-level="7.4" data-path="implementing-the-metropolis-hastings.html"><a href="implementing-the-metropolis-hastings.html"><i class="fa fa-check"></i><b>7.4</b> Implementing the Metropolis-Hastings</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="implementing-the-metropolis-hastings.html"><a href="implementing-the-metropolis-hastings.html#quiz-1"><i class="fa fa-check"></i><b>7.4.1</b> Quiz!</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="a-beta-binomial-example.html"><a href="a-beta-binomial-example.html"><i class="fa fa-check"></i><b>7.5</b> A Beta-Binomial example</a></li>
+<li class="chapter" data-level="7.6" data-path="why-the-algorithm-works.html"><a href="why-the-algorithm-works.html"><i class="fa fa-check"></i><b>7.6</b> Why the algorithm works</a></li>
+<li class="chapter" data-level="7.7" data-path="chapter-summary.html"><a href="chapter-summary.html"><i class="fa fa-check"></i><b>7.7</b> Chapter summary</a></li>
+<li class="chapter" data-level="7.8" data-path="meeting-videos-6.html"><a href="meeting-videos-6.html"><i class="fa fa-check"></i><b>7.8</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="7.8.1" data-path="meeting-videos-6.html"><a href="meeting-videos-6.html#cohort-1-6"><i class="fa fa-check"></i><b>7.8.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="7.8.2" data-path="meeting-videos-6.html"><a href="meeting-videos-6.html#cohort-2-6"><i class="fa fa-check"></i><b>7.8.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="posterior-inference-prediction.html"><a href="posterior-inference-prediction.html"><i class="fa fa-check"></i><b>8</b> Posterior Inference &amp; Prediction</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="slide-1-3.html"><a href="slide-1-3.html"><i class="fa fa-check"></i><b>8.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="8.2" data-path="meeting-videos-7.html"><a href="meeting-videos-7.html"><i class="fa fa-check"></i><b>8.2</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="meeting-videos-7.html"><a href="meeting-videos-7.html#cohort-1-7"><i class="fa fa-check"></i><b>8.2.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="8.2.2" data-path="meeting-videos-7.html"><a href="meeting-videos-7.html#cohort-2-7"><i class="fa fa-check"></i><b>8.2.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="simple-normal-regression.html"><a href="simple-normal-regression.html"><i class="fa fa-check"></i><b>9</b> Simple Normal Regression</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="begining-of-unit-3.html"><a href="begining-of-unit-3.html"><i class="fa fa-check"></i><b>9.1</b> Begining of Unit 3!</a></li>
+<li class="chapter" data-level="9.2" data-path="new-terms.html"><a href="new-terms.html"><i class="fa fa-check"></i><b>9.2</b> New terms</a></li>
+<li class="chapter" data-level="9.3" data-path="building-the-regression-model.html"><a href="building-the-regression-model.html"><i class="fa fa-check"></i><b>9.3</b> Building the regression model</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="building-the-regression-model.html"><a href="building-the-regression-model.html#data-model"><i class="fa fa-check"></i><b>9.3.1</b> Data model</a></li>
+<li class="chapter" data-level="9.3.2" data-path="building-the-regression-model.html"><a href="building-the-regression-model.html#specifying-the-priors"><i class="fa fa-check"></i><b>9.3.2</b> Specifying the priors</a></li>
+<li class="chapter" data-level="9.3.3" data-path="building-the-regression-model.html"><a href="building-the-regression-model.html#putting-it-all-together"><i class="fa fa-check"></i><b>9.3.3</b> Putting it all together</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="tuning-prior-models-for-regression-parameters.html"><a href="tuning-prior-models-for-regression-parameters.html"><i class="fa fa-check"></i><b>9.4</b> Tuning prior models for regression parameters</a></li>
+<li class="chapter" data-level="9.5" data-path="posterior-simulatiion.html"><a href="posterior-simulatiion.html"><i class="fa fa-check"></i><b>9.5</b> Posterior simulatiion</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="posterior-simulatiion.html"><a href="posterior-simulatiion.html#simulation-via-rstanarm"><i class="fa fa-check"></i><b>9.5.1</b> Simulation via rstanarm</a></li>
+<li class="chapter" data-level="9.5.2" data-path="posterior-simulatiion.html"><a href="posterior-simulatiion.html#simulation-directly-with-rstan"><i class="fa fa-check"></i><b>9.5.2</b> Simulation directly with rstan</a></li>
+</ul></li>
+<li class="chapter" data-level="9.6" data-path="interpreting-the-posterior.html"><a href="interpreting-the-posterior.html"><i class="fa fa-check"></i><b>9.6</b> Interpreting the posterior</a></li>
+<li class="chapter" data-level="9.7" data-path="posterior-prediction.html"><a href="posterior-prediction.html"><i class="fa fa-check"></i><b>9.7</b> Posterior prediction</a>
+<ul>
+<li class="chapter" data-level="9.7.1" data-path="posterior-prediction.html"><a href="posterior-prediction.html#quiz-4"><i class="fa fa-check"></i><b>9.7.1</b> Quiz!</a></li>
+<li class="chapter" data-level="9.7.2" data-path="posterior-prediction.html"><a href="posterior-prediction.html#building-a-posterior-predictive-model"><i class="fa fa-check"></i><b>9.7.2</b> Building a posterior predictive model</a></li>
+<li class="chapter" data-level="9.7.3" data-path="posterior-prediction.html"><a href="posterior-prediction.html#posterior-with-rstanarm"><i class="fa fa-check"></i><b>9.7.3</b> Posterior with rstanarm</a></li>
+</ul></li>
+<li class="chapter" data-level="9.8" data-path="sequential-regression-modeling.html"><a href="sequential-regression-modeling.html"><i class="fa fa-check"></i><b>9.8</b> Sequential regression modeling</a></li>
+<li class="chapter" data-level="9.9" data-path="using-default-rstanarm-priors.html"><a href="using-default-rstanarm-priors.html"><i class="fa fa-check"></i><b>9.9</b> Using default rstanarm priors</a></li>
+<li class="chapter" data-level="9.10" data-path="you-are-not-done-yet.html"><a href="you-are-not-done-yet.html"><i class="fa fa-check"></i><b>9.10</b> You are not done yet!</a></li>
+<li class="chapter" data-level="9.11" data-path="summary-3.html"><a href="summary-3.html"><i class="fa fa-check"></i><b>9.11</b> Summary</a></li>
+<li class="chapter" data-level="9.12" data-path="resources.html"><a href="resources.html"><i class="fa fa-check"></i><b>9.12</b> Resources:</a></li>
+<li class="chapter" data-level="9.13" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html"><i class="fa fa-check"></i><b>9.13</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="9.13.1" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-1-8"><i class="fa fa-check"></i><b>9.13.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="9.13.2" data-path="meeting-videos-8.html"><a href="meeting-videos-8.html#cohort-2-8"><i class="fa fa-check"></i><b>9.13.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html"><i class="fa fa-check"></i><b>10</b> Evaluating Regression Models</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="more-question-to-ask.html"><a href="more-question-to-ask.html"><i class="fa fa-check"></i><b>10.1</b> More question to ask</a></li>
+<li class="chapter" data-level="10.2" data-path="verifying-normal-regression-assumptions.html"><a href="verifying-normal-regression-assumptions.html"><i class="fa fa-check"></i><b>10.2</b> Verifying Normal regression assumptions</a></li>
+<li class="chapter" data-level="10.3" data-path="our-model-case-is-made-of.html"><a href="our-model-case-is-made-of.html"><i class="fa fa-check"></i><b>10.3</b> Our model-case is made of:</a></li>
+<li class="chapter" data-level="10.4" data-path="posterior-predictive-check.html"><a href="posterior-predictive-check.html"><i class="fa fa-check"></i><b>10.4</b> Posterior predictive check</a></li>
+<li class="chapter" data-level="10.5" data-path="how-accurate-are-the-posterior-predictive-models.html"><a href="how-accurate-are-the-posterior-predictive-models.html"><i class="fa fa-check"></i><b>10.5</b> How accurate are the posterior predictive models?</a></li>
+<li class="chapter" data-level="10.6" data-path="improving-posterior-predictive-accuracy.html"><a href="improving-posterior-predictive-accuracy.html"><i class="fa fa-check"></i><b>10.6</b> Improving posterior predictive accuracy</a></li>
+<li class="chapter" data-level="10.7" data-path="how-good-is-the-mcmc-simulation-vs-how-good-is-the-model.html"><a href="how-good-is-the-mcmc-simulation-vs-how-good-is-the-model.html"><i class="fa fa-check"></i><b>10.7</b> How good is the MCMC simulation vs how good is the model?</a></li>
+<li class="chapter" data-level="10.8" data-path="extra-resources.html"><a href="extra-resources.html"><i class="fa fa-check"></i><b>10.8</b> Extra resources:</a></li>
+<li class="chapter" data-level="10.9" data-path="meeting-videos-9.html"><a href="meeting-videos-9.html"><i class="fa fa-check"></i><b>10.9</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="10.9.1" data-path="meeting-videos-9.html"><a href="meeting-videos-9.html#cohort-1-9"><i class="fa fa-check"></i><b>10.9.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="10.9.2" data-path="meeting-videos-9.html"><a href="meeting-videos-9.html#cohort-2-9"><i class="fa fa-check"></i><b>10.9.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="extending-the-normal-regression-model.html"><a href="extending-the-normal-regression-model.html"><i class="fa fa-check"></i><b>11</b> Extending the Normal Regression Model</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="slide-1-4.html"><a href="slide-1-4.html"><i class="fa fa-check"></i><b>11.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="11.2" data-path="meeting-videos-10.html"><a href="meeting-videos-10.html"><i class="fa fa-check"></i><b>11.2</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="meeting-videos-10.html"><a href="meeting-videos-10.html#cohort-1-10"><i class="fa fa-check"></i><b>11.2.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="11.2.2" data-path="meeting-videos-10.html"><a href="meeting-videos-10.html#cohort-2-10"><i class="fa fa-check"></i><b>11.2.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="poisson-negative-binomial-regression.html"><a href="poisson-negative-binomial-regression.html"><i class="fa fa-check"></i><b>12</b> Poisson &amp; Negative Binomial Regression</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="slide-1-5.html"><a href="slide-1-5.html"><i class="fa fa-check"></i><b>12.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="12.2" data-path="meeting-videos-11.html"><a href="meeting-videos-11.html"><i class="fa fa-check"></i><b>12.2</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="meeting-videos-11.html"><a href="meeting-videos-11.html#cohort-1-11"><i class="fa fa-check"></i><b>12.2.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="12.2.2" data-path="meeting-videos-11.html"><a href="meeting-videos-11.html#cohort-2-11"><i class="fa fa-check"></i><b>12.2.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i><b>13</b> Logistic Regression</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="slide-1-6.html"><a href="slide-1-6.html"><i class="fa fa-check"></i><b>13.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="13.2" data-path="meeting-videos-12.html"><a href="meeting-videos-12.html"><i class="fa fa-check"></i><b>13.2</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="13.2.1" data-path="meeting-videos-12.html"><a href="meeting-videos-12.html#cohort-1-12"><i class="fa fa-check"></i><b>13.2.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="13.2.2" data-path="meeting-videos-12.html"><a href="meeting-videos-12.html#cohort-2-12"><i class="fa fa-check"></i><b>13.2.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="naive-bayes-classification.html"><a href="naive-bayes-classification.html"><i class="fa fa-check"></i><b>14</b> Naive Bayes Classification</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="slide-1-7.html"><a href="slide-1-7.html"><i class="fa fa-check"></i><b>14.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="14.2" data-path="meeting-videos-13.html"><a href="meeting-videos-13.html"><i class="fa fa-check"></i><b>14.2</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="14.2.1" data-path="meeting-videos-13.html"><a href="meeting-videos-13.html#cohort-1-13"><i class="fa fa-check"></i><b>14.2.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="14.2.2" data-path="meeting-videos-13.html"><a href="meeting-videos-13.html#cohort-2-13"><i class="fa fa-check"></i><b>14.2.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="hierarchical-models-are-exciting.html"><a href="hierarchical-models-are-exciting.html"><i class="fa fa-check"></i><b>15</b> Hierarchical Models are Exciting</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="pooled-grouped-data.html"><a href="pooled-grouped-data.html"><i class="fa fa-check"></i><b>15.1</b> Pooled / Grouped data</a></li>
+<li class="chapter" data-level="15.2" data-path="complete-pooling.html"><a href="complete-pooling.html"><i class="fa fa-check"></i><b>15.2</b> Complete Pooling</a>
+<ul>
+<li class="chapter" data-level="15.2.1" data-path="complete-pooling.html"><a href="complete-pooling.html#drawbacks-of-complete-pooling"><i class="fa fa-check"></i><b>15.2.1</b> Drawbacks of complete pooling</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="no-pooling.html"><a href="no-pooling.html"><i class="fa fa-check"></i><b>15.3</b> No pooling</a></li>
+<li class="chapter" data-level="15.4" data-path="hierarchical-data.html"><a href="hierarchical-data.html"><i class="fa fa-check"></i><b>15.4</b> Hierarchical data</a></li>
+<li class="chapter" data-level="15.5" data-path="partial-pooling.html"><a href="partial-pooling.html"><i class="fa fa-check"></i><b>15.5</b> Partial pooling</a></li>
+<li class="chapter" data-level="15.6" data-path="summary-4.html"><a href="summary-4.html"><i class="fa fa-check"></i><b>15.6</b> Summary</a></li>
+<li class="chapter" data-level="15.7" data-path="meeting-videos-14.html"><a href="meeting-videos-14.html"><i class="fa fa-check"></i><b>15.7</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="15.7.1" data-path="meeting-videos-14.html"><a href="meeting-videos-14.html#cohort-1-14"><i class="fa fa-check"></i><b>15.7.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="15.7.2" data-path="meeting-videos-14.html"><a href="meeting-videos-14.html#cohort-2-14"><i class="fa fa-check"></i><b>15.7.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="normal-hierarchical-models-without-predictors.html"><a href="normal-hierarchical-models-without-predictors.html"><i class="fa fa-check"></i><b>16</b> (Normal) Hierarchical Models without Predictors</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="data-set.html"><a href="data-set.html"><i class="fa fa-check"></i><b>16.1</b> Data Set!</a></li>
+<li class="chapter" data-level="16.2" data-path="complete-pooled-model.html"><a href="complete-pooled-model.html"><i class="fa fa-check"></i><b>16.2</b> Complete pooled model</a>
+<ul>
+<li class="chapter" data-level="16.2.1" data-path="complete-pooled-model.html"><a href="complete-pooled-model.html#quiz-5"><i class="fa fa-check"></i><b>16.2.1</b> Quiz!!</a></li>
+</ul></li>
+<li class="chapter" data-level="16.3" data-path="no-pooled-model.html"><a href="no-pooled-model.html"><i class="fa fa-check"></i><b>16.3</b> No pooled model</a>
+<ul>
+<li class="chapter" data-level="16.3.1" data-path="no-pooled-model.html"><a href="no-pooled-model.html#same-quiz-but-with-no-pooling"><i class="fa fa-check"></i><b>16.3.1</b> Same Quiz but with no pooling!!</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="building-the-hierarchical-model.html"><a href="building-the-hierarchical-model.html"><i class="fa fa-check"></i><b>16.4</b> Building the hierarchical model</a>
+<ul>
+<li class="chapter" data-level="16.4.1" data-path="building-the-hierarchical-model.html"><a href="building-the-hierarchical-model.html#the-hierarchy"><i class="fa fa-check"></i><b>16.4.1</b> The hierarchy</a></li>
+<li class="chapter" data-level="16.4.2" data-path="building-the-hierarchical-model.html"><a href="building-the-hierarchical-model.html#within--vs--between-group-variability"><i class="fa fa-check"></i><b>16.4.2</b> within- vs -between-group variability</a></li>
+<li class="chapter" data-level="16.4.3" data-path="building-the-hierarchical-model.html"><a href="building-the-hierarchical-model.html#posterior-simulation-1"><i class="fa fa-check"></i><b>16.4.3</b> Posterior simulation</a></li>
+<li class="chapter" data-level="16.4.4" data-path="building-the-hierarchical-model.html"><a href="building-the-hierarchical-model.html#posterior-analysis-of-global-parameters"><i class="fa fa-check"></i><b>16.4.4</b> Posterior analysis of global parameters</a></li>
+<li class="chapter" data-level="16.4.5" data-path="building-the-hierarchical-model.html"><a href="building-the-hierarchical-model.html#posterior-analysis-of-group-specific"><i class="fa fa-check"></i><b>16.4.5</b> posterior analysis of group specific</a></li>
+</ul></li>
+<li class="chapter" data-level="16.5" data-path="posterior-prediction-1.html"><a href="posterior-prediction-1.html"><i class="fa fa-check"></i><b>16.5</b> Posterior prediction</a>
+<ul>
+<li class="chapter" data-level="16.5.1" data-path="posterior-prediction-1.html"><a href="posterior-prediction-1.html#first-case-frank-ocean-j39"><i class="fa fa-check"></i><b>16.5.1</b> First case: Frank Ocean (j=39)</a></li>
+<li class="chapter" data-level="16.5.2" data-path="posterior-prediction-1.html"><a href="posterior-prediction-1.html#posterior-prediction-for-an-observed-group"><i class="fa fa-check"></i><b>16.5.2</b> Posterior prediction for an observed group</a></li>
+<li class="chapter" data-level="16.5.3" data-path="posterior-prediction-1.html"><a href="posterior-prediction-1.html#posterior_predict"><i class="fa fa-check"></i><b>16.5.3</b> posterior_predict()</a></li>
+</ul></li>
+<li class="chapter" data-level="16.6" data-path="shrinkage-bias_variance-trade-off.html"><a href="shrinkage-bias_variance-trade-off.html"><i class="fa fa-check"></i><b>16.6</b> Shrinkage &amp; bias_variance trade-off</a>
+<ul>
+<li class="chapter" data-level="16.6.1" data-path="shrinkage-bias_variance-trade-off.html"><a href="shrinkage-bias_variance-trade-off.html#quizzz"><i class="fa fa-check"></i><b>16.6.1</b> Quizzz!</a></li>
+</ul></li>
+<li class="chapter" data-level="16.7" data-path="not-everything-is-hierarchical.html"><a href="not-everything-is-hierarchical.html"><i class="fa fa-check"></i><b>16.7</b> Not everything is hierarchical</a></li>
+<li class="chapter" data-level="16.8" data-path="summary-5.html"><a href="summary-5.html"><i class="fa fa-check"></i><b>16.8</b> Summary</a></li>
+<li class="chapter" data-level="16.9" data-path="meeting-videos-15.html"><a href="meeting-videos-15.html"><i class="fa fa-check"></i><b>16.9</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="16.9.1" data-path="meeting-videos-15.html"><a href="meeting-videos-15.html#cohort-1-15"><i class="fa fa-check"></i><b>16.9.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="16.9.2" data-path="meeting-videos-15.html"><a href="meeting-videos-15.html#cohort-2-15"><i class="fa fa-check"></i><b>16.9.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="normal-hierarchical-models-with-predictors.html"><a href="normal-hierarchical-models-with-predictors.html"><i class="fa fa-check"></i><b>17</b> (Normal) Hierarchical Models with Predictors</a>
+<ul>
+<li class="chapter" data-level="17.0.1" data-path="normal-hierarchical-models-with-predictors.html"><a href="normal-hierarchical-models-with-predictors.html#data-set-1"><i class="fa fa-check"></i><b>17.0.1</b> Data set</a></li>
+<li class="chapter" data-level="17.1" data-path="quick-complete-pooling-option.html"><a href="quick-complete-pooling-option.html"><i class="fa fa-check"></i><b>17.1</b> Quick: complete pooling option</a></li>
+<li class="chapter" data-level="17.2" data-path="hierarchical-model-with-varying-intercept.html"><a href="hierarchical-model-with-varying-intercept.html"><i class="fa fa-check"></i><b>17.2</b> Hierarchical Model with <strong>varying intercept</strong></a>
+<ul>
+<li class="chapter" data-level="17.2.1" data-path="hierarchical-model-with-varying-intercept.html"><a href="hierarchical-model-with-varying-intercept.html#model-buildings"><i class="fa fa-check"></i><b>17.2.1</b> Model buildings</a></li>
+</ul></li>
+<li class="chapter" data-level="17.3" data-path="posterior-simulation-and-analysis.html"><a href="posterior-simulation-and-analysis.html"><i class="fa fa-check"></i><b>17.3</b> Posterior simulation and analysis</a></li>
+<li class="chapter" data-level="17.4" data-path="hierarchical-model-with-varying-intercepts-slopes.html"><a href="hierarchical-model-with-varying-intercepts-slopes.html"><i class="fa fa-check"></i><b>17.4</b> Hierarchical model with varying intercepts &amp; slopes</a>
+<ul>
+<li class="chapter" data-level="17.4.1" data-path="hierarchical-model-with-varying-intercepts-slopes.html"><a href="hierarchical-model-with-varying-intercepts-slopes.html#model-building"><i class="fa fa-check"></i><b>17.4.1</b> Model building</a></li>
+<li class="chapter" data-level="17.4.2" data-path="hierarchical-model-with-varying-intercepts-slopes.html"><a href="hierarchical-model-with-varying-intercepts-slopes.html#posterior-simulation-and-anlysis"><i class="fa fa-check"></i><b>17.4.2</b> Posterior simulation and anlysis</a></li>
+</ul></li>
+<li class="chapter" data-level="17.5" data-path="model-evaluation-and-selection.html"><a href="model-evaluation-and-selection.html"><i class="fa fa-check"></i><b>17.5</b> Model evaluation and selection</a></li>
+<li class="chapter" data-level="17.6" data-path="posterior-prediction-2.html"><a href="posterior-prediction-2.html"><i class="fa fa-check"></i><b>17.6</b> Posterior prediction</a></li>
+<li class="chapter" data-level="17.7" data-path="details-longitudinal-data.html"><a href="details-longitudinal-data.html"><i class="fa fa-check"></i><b>17.7</b> Details: Longitudinal data</a></li>
+<li class="chapter" data-level="17.8" data-path="example-danceability.html"><a href="example-danceability.html"><i class="fa fa-check"></i><b>17.8</b> Example Danceability</a></li>
+<li class="chapter" data-level="17.9" data-path="chapter-summary-1.html"><a href="chapter-summary-1.html"><i class="fa fa-check"></i><b>17.9</b> Chapter summary</a></li>
+<li class="chapter" data-level="17.10" data-path="meeting-videos-16.html"><a href="meeting-videos-16.html"><i class="fa fa-check"></i><b>17.10</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="17.10.1" data-path="meeting-videos-16.html"><a href="meeting-videos-16.html#cohort-1-16"><i class="fa fa-check"></i><b>17.10.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="17.10.2" data-path="meeting-videos-16.html"><a href="meeting-videos-16.html#cohort-2-16"><i class="fa fa-check"></i><b>17.10.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="non-normal-hierarchical-regression-classification.html"><a href="non-normal-hierarchical-regression-classification.html"><i class="fa fa-check"></i><b>18</b> Non-Normal Hierarchical Regression &amp; Classification</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>18.1</b> Introduction</a></li>
+<li class="chapter" data-level="18.2" data-path="hierarchical-logistic-regression.html"><a href="hierarchical-logistic-regression.html"><i class="fa fa-check"></i><b>18.2</b> Hierarchical logistic regression</a>
+<ul>
+<li class="chapter" data-level="18.2.1" data-path="hierarchical-logistic-regression.html"><a href="hierarchical-logistic-regression.html#model-building-simulation"><i class="fa fa-check"></i><b>18.2.1</b> Model building &amp; simulation</a></li>
+<li class="chapter" data-level="18.2.2" data-path="hierarchical-logistic-regression.html"><a href="hierarchical-logistic-regression.html#posterior-analysis"><i class="fa fa-check"></i><b>18.2.2</b> Posterior analysis</a></li>
+<li class="chapter" data-level="18.2.3" data-path="hierarchical-logistic-regression.html"><a href="hierarchical-logistic-regression.html#posterior-classification"><i class="fa fa-check"></i><b>18.2.3</b> Posterior classification</a></li>
+<li class="chapter" data-level="18.2.4" data-path="hierarchical-logistic-regression.html"><a href="hierarchical-logistic-regression.html#model-evaluation"><i class="fa fa-check"></i><b>18.2.4</b> Model evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="18.3" data-path="hierarchical-poisson-negative-binomial-regression.html"><a href="hierarchical-poisson-negative-binomial-regression.html"><i class="fa fa-check"></i><b>18.3</b> Hierarchical Poisson &amp; Negative Binomial regression</a>
+<ul>
+<li class="chapter" data-level="18.3.1" data-path="hierarchical-poisson-negative-binomial-regression.html"><a href="hierarchical-poisson-negative-binomial-regression.html#model-building-simulation-1"><i class="fa fa-check"></i><b>18.3.1</b> Model building &amp; simulation</a></li>
+<li class="chapter" data-level="18.3.2" data-path="hierarchical-poisson-negative-binomial-regression.html"><a href="hierarchical-poisson-negative-binomial-regression.html#posterior-analysis-1"><i class="fa fa-check"></i><b>18.3.2</b> Posterior analysis</a></li>
+<li class="chapter" data-level="18.3.3" data-path="hierarchical-poisson-negative-binomial-regression.html"><a href="hierarchical-poisson-negative-binomial-regression.html#model-evaluation-1"><i class="fa fa-check"></i><b>18.3.3</b> Model evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="18.4" data-path="meeting-videos-17.html"><a href="meeting-videos-17.html"><i class="fa fa-check"></i><b>18.4</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="18.4.1" data-path="meeting-videos-17.html"><a href="meeting-videos-17.html#cohort-1-17"><i class="fa fa-check"></i><b>18.4.1</b> Cohort 1</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="adding-more-layers.html"><a href="adding-more-layers.html"><i class="fa fa-check"></i><b>19</b> Adding More Layers</a>
+<ul>
+<li class="chapter" data-level="19.1" data-path="slide-1-8.html"><a href="slide-1-8.html"><i class="fa fa-check"></i><b>19.1</b> SLIDE 1</a></li>
+<li class="chapter" data-level="19.2" data-path="meeting-videos-18.html"><a href="meeting-videos-18.html"><i class="fa fa-check"></i><b>19.2</b> Meeting Videos</a>
+<ul>
+<li class="chapter" data-level="19.2.1" data-path="meeting-videos-18.html"><a href="meeting-videos-18.html#cohort-1-18"><i class="fa fa-check"></i><b>19.2.1</b> Cohort 1</a></li>
+<li class="chapter" data-level="19.2.2" data-path="meeting-videos-18.html"><a href="meeting-videos-18.html#cohort-2-17"><i class="fa fa-check"></i><b>19.2.2</b> Cohort 2</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Bayes Rules! Book Club</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="hierarchical-poisson-negative-binomial-regression" class="section level2 hasAnchor" number="18.3">
+<h2><span class="header-section-number">18.3</span> Hierarchical Poisson &amp; Negative Binomial regression<a href="hierarchical-poisson-negative-binomial-regression.html#hierarchical-poisson-negative-binomial-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb218-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb218-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb218-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(airbnb)</span>
+<span id="cb218-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb218-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb218-4"><a href="hierarchical-poisson-negative-binomial-regression.html#cb218-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of listings</span></span>
+<span id="cb218-5"><a href="hierarchical-poisson-negative-binomial-regression.html#cb218-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(airbnb)</span></code></pre></div>
+<pre><code>## [1] 1561</code></pre>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb220-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of neighborhoods</span></span>
+<span id="cb220-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb220-2" aria-hidden="true" tabindex="-1"></a>airbnb <span class="sc">%&gt;%</span> </span>
+<span id="cb220-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb220-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">nlevels</span>(neighborhood))</span></code></pre></div>
+<pre><code>##   nlevels(neighborhood)
+## 1                    43</code></pre>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb222-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># nlevels(neighborhood)</span></span></code></pre></div>
+<div id="model-building-simulation-1" class="section level3 hasAnchor" number="18.3.1">
+<h3><span class="header-section-number">18.3.1</span> Model building &amp; simulation<a href="hierarchical-poisson-negative-binomial-regression.html#model-building-simulation-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb223-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(airbnb, <span class="fu">aes</span>(<span class="at">x =</span> reviews)) <span class="sc">+</span> </span>
+<span id="cb223-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb223-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">color =</span> <span class="st">&quot;white&quot;</span>, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">200</span>, <span class="at">by =</span> <span class="dv">10</span>))</span></code></pre></div>
+<p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-115-1.png" width="672" /></p>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb224-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(airbnb, <span class="fu">aes</span>(<span class="at">y =</span> reviews, <span class="at">x =</span> rating)) <span class="sc">+</span> </span>
+<span id="cb224-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb224-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()</span></code></pre></div>
+<p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-115-2.png" width="672" /></p>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(airbnb, <span class="fu">aes</span>(<span class="at">y =</span> reviews, <span class="at">x =</span> room_type)) <span class="sc">+</span> </span>
+<span id="cb225-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb225-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>()</span></code></pre></div>
+<p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-115-3.png" width="672" /></p>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb226-1" aria-hidden="true" tabindex="-1"></a>airbnb <span class="sc">%&gt;%</span> </span>
+<span id="cb226-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb226-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(neighborhood <span class="sc">%in%</span> </span>
+<span id="cb226-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb226-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">c</span>(<span class="st">&quot;Albany Park&quot;</span>, <span class="st">&quot;East Garfield Park&quot;</span>, <span class="st">&quot;The Loop&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb226-4"><a href="hierarchical-poisson-negative-binomial-regression.html#cb226-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> reviews, <span class="at">x =</span> rating, <span class="at">color =</span> room_type)) <span class="sc">+</span> </span>
+<span id="cb226-5"><a href="hierarchical-poisson-negative-binomial-regression.html#cb226-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_jitter</span>() <span class="sc">+</span> </span>
+<span id="cb226-6"><a href="hierarchical-poisson-negative-binomial-regression.html#cb226-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> neighborhood)</span></code></pre></div>
+<p><img src="bookclub-bayes_rules_files/figure-html/unnamed-chunk-116-1.png" width="672" /></p>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb227-1" aria-hidden="true" tabindex="-1"></a>airbnb_model_1 <span class="ot">&lt;-</span> <span class="fu">stan_glmer</span>(</span>
+<span id="cb227-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb227-2" aria-hidden="true" tabindex="-1"></a>  reviews <span class="sc">~</span> rating <span class="sc">+</span> room_type <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> neighborhood), </span>
+<span id="cb227-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb227-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> airbnb, <span class="at">family =</span> poisson,</span>
+<span id="cb227-4"><a href="hierarchical-poisson-negative-binomial-regression.html#cb227-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior_intercept =</span> <span class="fu">normal</span>(<span class="dv">3</span>, <span class="fl">2.5</span>, <span class="at">autoscale =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb227-5"><a href="hierarchical-poisson-negative-binomial-regression.html#cb227-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> <span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">2.5</span>, <span class="at">autoscale =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb227-6"><a href="hierarchical-poisson-negative-binomial-regression.html#cb227-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior_covariance =</span> <span class="fu">decov</span>(<span class="at">reg =</span> <span class="dv">1</span>, <span class="at">conc =</span> <span class="dv">1</span>, <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">scale =</span> <span class="dv">1</span>),</span>
+<span id="cb227-7"><a href="hierarchical-poisson-negative-binomial-regression.html#cb227-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">5000</span><span class="sc">*</span><span class="dv">2</span>, <span class="at">seed =</span> <span class="dv">84735</span></span>
+<span id="cb227-8"><a href="hierarchical-poisson-negative-binomial-regression.html#cb227-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb228-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb228-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(airbnb_model_1) <span class="sc">+</span> </span>
+<span id="cb228-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb228-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">200</span>) <span class="sc">+</span> </span>
+<span id="cb228-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb228-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;reviews&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb229-1" aria-hidden="true" tabindex="-1"></a>airbnb_model_2 <span class="ot">&lt;-</span> <span class="fu">stan_glmer</span>(</span>
+<span id="cb229-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb229-2" aria-hidden="true" tabindex="-1"></a>  reviews <span class="sc">~</span> rating <span class="sc">+</span> room_type <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> neighborhood), </span>
+<span id="cb229-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb229-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> airbnb, <span class="at">family =</span> neg_binomial_2,</span>
+<span id="cb229-4"><a href="hierarchical-poisson-negative-binomial-regression.html#cb229-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior_intercept =</span> <span class="fu">normal</span>(<span class="dv">3</span>, <span class="fl">2.5</span>, <span class="at">autoscale =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb229-5"><a href="hierarchical-poisson-negative-binomial-regression.html#cb229-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> <span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">2.5</span>, <span class="at">autoscale =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb229-6"><a href="hierarchical-poisson-negative-binomial-regression.html#cb229-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior_aux =</span> <span class="fu">exponential</span>(<span class="dv">1</span>, <span class="at">autoscale =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb229-7"><a href="hierarchical-poisson-negative-binomial-regression.html#cb229-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior_covariance =</span> <span class="fu">decov</span>(<span class="at">reg =</span> <span class="dv">1</span>, <span class="at">conc =</span> <span class="dv">1</span>, <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">scale =</span> <span class="dv">1</span>),</span>
+<span id="cb229-8"><a href="hierarchical-poisson-negative-binomial-regression.html#cb229-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">5000</span><span class="sc">*</span><span class="dv">2</span>, <span class="at">seed =</span> <span class="dv">84735</span></span>
+<span id="cb229-9"><a href="hierarchical-poisson-negative-binomial-regression.html#cb229-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb230-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(airbnb_model_2) <span class="sc">+</span> </span>
+<span id="cb230-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb230-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">200</span>) <span class="sc">+</span> </span>
+<span id="cb230-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb230-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;reviews&quot;</span>)</span></code></pre></div>
+</div>
+<div id="posterior-analysis-1" class="section level3 hasAnchor" number="18.3.2">
+<h3><span class="header-section-number">18.3.2</span> Posterior analysis<a href="hierarchical-poisson-negative-binomial-regression.html#posterior-analysis-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb231-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(airbnb_model_2, <span class="at">effects =</span> <span class="st">&quot;fixed&quot;</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.80</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb232-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(<span class="st">&quot;data/ch18/airbnb2_tidy1.rds&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb233-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(airbnb_model_2, <span class="at">effects =</span> <span class="st">&quot;ran_vals&quot;</span>, </span>
+<span id="cb233-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb233-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.80</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb233-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb233-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(level, estimate, conf.low, conf.high) <span class="sc">%&gt;%</span> </span>
+<span id="cb233-4"><a href="hierarchical-poisson-negative-binomial-regression.html#cb233-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(level <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Albany_Park&quot;</span>, <span class="st">&quot;East_Garfield_Park&quot;</span>, <span class="st">&quot;The_Loop&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb234-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(<span class="st">&quot;data/ch18/airbnb2_tidy2.rds&quot;</span>)</span></code></pre></div>
+<p><strong>Posterior predictions of reviews</strong></p>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb235-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">84735</span>)</span>
+<span id="cb235-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb235-2" aria-hidden="true" tabindex="-1"></a>predicted_reviews <span class="ot">&lt;-</span> <span class="fu">posterior_predict</span>(</span>
+<span id="cb235-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb235-3" aria-hidden="true" tabindex="-1"></a>  airbnb_model_2, </span>
+<span id="cb235-4"><a href="hierarchical-poisson-negative-binomial-regression.html#cb235-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb235-5"><a href="hierarchical-poisson-negative-binomial-regression.html#cb235-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rating =</span> <span class="fu">rep</span>(<span class="dv">5</span>, <span class="dv">3</span>), </span>
+<span id="cb235-6"><a href="hierarchical-poisson-negative-binomial-regression.html#cb235-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">room_type =</span> <span class="fu">rep</span>(<span class="st">&quot;Entire home/apt&quot;</span>, <span class="dv">3</span>), </span>
+<span id="cb235-7"><a href="hierarchical-poisson-negative-binomial-regression.html#cb235-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">neighborhood =</span> <span class="fu">c</span>(<span class="st">&quot;Albany Park&quot;</span>, <span class="st">&quot;East Garfield Park&quot;</span>, <span class="st">&quot;The Loop&quot;</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb236-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(predicted_reviews, <span class="at">prob =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb236-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb236-2" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_y_discrete</span>(</span>
+<span id="cb236-3"><a href="hierarchical-poisson-negative-binomial-regression.html#cb236-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Albany Park&quot;</span>, <span class="st">&quot;East Garfield Park&quot;</span>, <span class="st">&quot;The Loop&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb236-4"><a href="hierarchical-poisson-negative-binomial-regression.html#cb236-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">150</span>) <span class="sc">+</span> </span>
+<span id="cb236-5"><a href="hierarchical-poisson-negative-binomial-regression.html#cb236-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;reviews&quot;</span>)</span></code></pre></div>
+<pre><code>## Scale for &#39;y&#39; is already present. Adding another scale for &#39;y&#39;, which will
+## replace the existing scale.</code></pre>
+<pre><code>## Scale for &#39;x&#39; is already present. Adding another scale for &#39;x&#39;, which will
+## replace the existing scale.</code></pre>
+<pre><code>## Warning: Removed 3 rows containing missing values (geom_segment).</code></pre>
+<p><img src="bookclub-bayes_rules_files/figure-html/18-airbnb2_predict_plot-1.png" width="672" /></p>
+</div>
+<div id="model-evaluation-1" class="section level3 hasAnchor" number="18.3.3">
+<h3><span class="header-section-number">18.3.3</span> Model evaluation<a href="hierarchical-poisson-negative-binomial-regression.html#model-evaluation-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb240-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">84735</span>)</span>
+<span id="cb240-2"><a href="hierarchical-poisson-negative-binomial-regression.html#cb240-2" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">prediction_summary</span>(<span class="at">model =</span> airbnb_model_2, <span class="at">data =</span> airbnb)</span></code></pre></div>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb241-1"><a href="hierarchical-poisson-negative-binomial-regression.html#cb241-1" aria-hidden="true" tabindex="-1"></a>pred</span></code></pre></div>
+<pre><code>##        mae mae_scaled within_50 within_95
+## 1 17.66115  0.6740938 0.5188981 0.9577194</code></pre>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="hierarchical-logistic-regression.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="meeting-videos-17.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/r4ds/bookclub-bayes_rules/edit/main/18_Non_Normal_Hierarchical.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
