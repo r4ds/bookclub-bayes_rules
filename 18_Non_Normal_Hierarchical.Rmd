@@ -2,28 +2,561 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
 
-## SLIDE 1
+- Get familiar with basic modeling building blocks 
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+- Expand generalized hierarchical regression model by combining hierarchical regression techniques with
+Poisson and Negative Binomial regression models and logistic regression models 
+
+- learn more about mountain climber success in Himalaya
+
+
+
+## Introduction
+
+
+In this chapter we will be looking at applying bayes rules on **Himalayan data** for the Himalayan Climbing Expeditions.
+
+
+
+
+```{r echo=FALSE, fig.cap="[The himalayan database: mountain climber success](https://www.himalayandatabase.com/)", fig.align='center'}
+knitr::include_graphics("images/18_himalayan.png")
+```
+
+
+
+## Hierarchical logistic regression
+
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# Load packages
+library(bayesrules)
+library(tidyverse)
+library(bayesplot)
+library(rstanarm)
+library(tidybayes)
+library(broom.mixed)
+library(janitor)
+
+climbers <- climbers_sub %>% 
+  select(expedition_id, member_id, success, year, season,
+         age, expedition_role, oxygen_used)
+```
+
+
+Data are from [The Himalayan Database](https://www.himalayandatabase.com/), Himalayan Climbing Expeditions data shared through the #tidytuesday project [R for Data Science 2020b](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-09-22), made of 2076 climbers, dating back to 1978.
+
+```{r}
+# Import, rename, & clean data
+data(climbers_sub)
+climbers <- climbers_sub %>% 
+  select(expedition_id, member_id, success, year, season,
+         age, expedition_role, oxygen_used)
+nrow(climbers)
+```
+
+
+```{r eval=TRUE, comment=""}
+climbers%>%head
+```
+
+
+To generate a frequency table we use the `tabyl()` function:
+
+    ?janitor::tabyl
+
+
+```{r comment=""}
+climbers %>% 
+  janitor::tabyl(success)
+```
+
+
+
+```{r}
+# Size per expedition
+climbers_per_expedition <- climbers %>% count(expedition_id)
+
+# Number of expeditions
+nrow(climbers_per_expedition)
+```
+
+The individual climber outcomes are independent.
+
+```{r}
+climbers_per_expedition %>% 
+  head(3)
+```
+
+
+More than 75 of our 200 expeditions had a 0% success rate. In contrast, nearly 20 expeditions had a 100% success rate. 
+
+There’s quite a bit of variability in expedition success rates.
+
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# Calculate the success rate for each exhibition
+expedition_success <- climbers %>% 
+  group_by(expedition_id) %>% 
+  summarize(success_rate = mean(success))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE,fig.cap="Histogram of the success rates for the 200 climbing expeditions"}
+# Plot the success rates across exhibitions
+ggplot(expedition_success, aes(x = success_rate,fill=factor(success_rate))) + 
+  geom_histogram(show.legend = FALSE,size=0.05,color="grey90") +
+  labs(x="Success rate",title="Success rates for the 200 climbing expeditions") +
+  theme_bw(base_size = 14,base_family = "Roboto Condensed")
+```
+
+
+###  Model building & simulation
+
+
+We use the **Bernoulli model** for binary response variable: **expedtion success**
+
+$$Y_{ij}=\left\{\begin{matrix}
+ 0 & \text{yes} \\ 
+ 1 & \text{no}
+\end{matrix}\right.$$
+
+
+
+
+$$X_{ij1}= \text{age of climber j in expedition j}$$
+$$X_{ij2}= \text{climber i received oxygen in expedition j}$$
+
+**Bayesian model**
+
+$$Y_{ij}|\pi_{ij}\sim Bern(\pi_{ij})$$
+**Complete pooling** expands this simple model into a **logistic regression model**
+
+$$Y_{ij}|\beta_0,\beta_1,\beta_2\overset{ind}\sim Bern(\pi_{ij})$$
+
+with
+
+ 
+- $\beta_0$ the **typical baseline success rate** across all expeditions
+- $\beta_1$ the global relationship between success and age when **controlling for oxygen use**
+- $\beta_2$ the global relationship between success and oxygen use when **controlling for age
+
+
+$$log(\frac{\pi_{ij}}{1-\pi_{ij}})=\beta_0+\beta_1X_{ij1}+\beta_2X_{ij2}$$
+We need to take account for the grouping structure of our data.
+
+
+
+```{r}
+# Calculate the success rate by age and oxygen use
+data_by_age_oxygen <- climbers %>% 
+  group_by(age, oxygen_used) %>% 
+  summarize(success_rate = mean(success),.groups="drop")
+```
+
+```{r echo=FALSE, fig.cap="Scatterplot of the success rate among climbers by age and oxygen use", fig.align="center"}
+# Plot this relationship
+ggplot(data_by_age_oxygen, aes(x = age, y = success_rate, 
+                               color = oxygen_used)) + 
+  geom_point()+
+  scale_color_viridis_d()+
+  labs(color="Oxygen used",y="success rate",
+       title="Success rate among climbers by age and oxygen use") +
+  theme_bw()+
+  theme(legend.position = "top",
+        legend.key = element_blank(),
+        legend.key.width = unit(0.1,units = "pt"),
+        legend.background = element_blank(),
+        plot.background = element_rect(color="grey95",fill="grey95"))
+```
+
+We substitute $\beta_0$ with the centered intercept $\beta_{0c}$.
+
+$$\beta_{0c}\sim N(m_0,s_0^2)$$
+
+
+$m_0=0$ and $s_0^2=2.5^2$, $s_1^2=0.24^2$, $s_2^2=5.51^2$
+
+
+
+$$\beta_{0j}|\beta_0,\sigma_0\overset{ind}\sim N(\beta_0,s_0^2)$$
+
+and,
+
+$$\sigma_0\sim Exp(1)$$
+
+
+Reframe the **random intercepts logistic regression model** as a **tweaks** to the global intercept:
+
+
+$$log(\frac{\pi_{ij}}{1-\pi_{ij}})=(\beta_0+b_{0j})+\beta_1X_{ij1}+\beta_2X_{ij2}$$
+
+
+
+- $b_{0j}$ depends on the variability
+
+$$b_{0j}|\sigma_0\overset{ind}\sim N(0,\sigma_0^2)$$
+
+
+- $\sigma_0$ captures the **between-group variability** in success rates from expedition to expedition 
+
+
+Set the model formula to **hierarchical grouping structure**:
+
+    success ~ age + oxygen_used + (1 | expedition_id)
+
+```{r eval=FALSE}
+climb_model <- stan_glmer(
+  success ~ age + oxygen_used + (1 | expedition_id), 
+  data = climbers, family = binomial,
+  prior_intercept = normal(0, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1),
+  chains = 4, iter = 5000*2, seed = 84735
+)
+```
+
+**Confirm prior specifications**
+
+```{r 18-prior_summmary_climb_model, eval = FALSE}
+prior_summary(climb_model)
+```
+```{r 18-prior_summary_climb_model_save, include = FALSE, eval = FALSE}
+saveRDS(prior_summary(climb_model), "data/ch18/climb_models_prior_summary.rds")
+```
+```{r 18-prior_summary_climb_model_eval, include = FALSE}
+readRDS("data/ch18/climb_models_prior_summary.rds")
+```
+
+
+**MCMC diagnostics**
+```{r eval=FALSE}
+mcmc_trace(climb_model, size = 0.1)
+mcmc_dens_overlay(climb_model)
+mcmc_acf(climb_model)
+neff_ratio(climb_model)
+rhat(climb_model)
+```
+
+
+**Define success rate function**
+```{r 18-succes_rate}
+success_rate <- function(x){mean(x == 1)}
+```
+
+
+**Posterior predictive check**
+```{r eval = FALSE}
+pp_check(climb_model, nreps = 100,
+         plotfun = "stat", stat = "success_rate") + 
+  xlab("success rate")
+```
+```{r 18-save_pp_check, include = FALSE, eval = FALSE}
+# Save manually if you change this.
+climb_model_pp_check <- pp_check(
+  climb_model, nreps = 100, plotfun = "stat", stat = "success_rate"
+) + 
+  xlab("success rate")
+
+ggsave(
+  filename = "18_climb_model_pp_check.png", 
+  plot = climb_model_pp_check,
+  device = "png",
+  path = "images",
+  width = 6,
+  height = 4,
+  units = "in"
+)
+```
+```{r 18-pp_check_fig, echo=FALSE, fig.cap="The histogram displays the proportion of climbers that were successful in each of 100 posterior simulated datasets", fig.align='center'}
+knitr::include_graphics("images/18_climb_model_pp_check.png")
+```
+
+### Posterior analysis
+
+
+**Posterior summaries for our global regression parameters** reveal that the likelihood of success decreases with age.
+
+```{r 18-tidy_climb_model, eval = FALSE}
+tidy(climb_model, 
+     effects = "fixed",
+     conf.int = TRUE, 
+     conf.level = 0.80)
+```
+```{r 18-tidy_climb_model_save, include = FALSE, eval = FALSE}
+tidy_climb_model <- tidy(climb_model, 
+     effects = "fixed",
+     conf.int = TRUE, 
+     conf.level = 0.80)
+saveRDS(tidy_climb_model, "data/ch18/tidy_climb_model.rds")
+```
+```{r 18-tidy_climb_model_load, include = FALSE}
+readRDS("data/ch18/tidy_climb_model.rds")
+```
+
+**Confidence intervals** are expressed as the log(odds) to the odds scale, so will be converted to:
+
+$$(e^{-conf.low},e^{-conf.high})=(a,b)$$
+
+
+**On the probability of success scale**
+
+$$\pi=\frac{e^{-\beta_0-\beta_1X_1+\beta_2X_2}}{1+e^{-\beta_0-\beta_1X_1+\beta_2X_2}}$$
+
+Results are: both with oxygen and without, the probability of success decreases with age.
+
+```{r eval=FALSE}
+climbers %>%
+  add_fitted_draws(climb_model, n = 100, re_formula = NA) %>%
+  ggplot(aes(x = age, y = success, color = oxygen_used)) +
+    geom_line(aes(y = .value, group = paste(oxygen_used, .draw)), 
+              alpha = 0.1) + 
+    labs(y = "probability of success")
+```
+
+
+
+### Posterior classification
+
+**New expedition**
+```{r}
+new_expedition <- data.frame(
+  age = c(20, 20, 60, 60), oxygen_used = c(FALSE, TRUE, FALSE, TRUE), 
+  expedition_id = rep("new", 4))
+
+new_expedition
+```
+
+
+**Posterior predictions of binary outcome**
+```{r 18-predict, eval = FALSE}
+set.seed(84735)
+binary_prediction <- posterior_predict(climb_model, newdata = new_expedition)
+```
+```{r 18-predict-save, eval = FALSE, include = FALSE}
+set.seed(84735)
+binary_prediction <- posterior_predict(climb_model, newdata = new_expedition)
+saveRDS(binary_prediction, "data/ch18/binary_prediction.rds")
+```
+```{r 18-predict-load, include = FALSE}
+binary_prediction <- readRDS("data/ch18/binary_prediction.rds")
+```
+```{r 18-predict-head}
+# First 3 prediction sets
+head(binary_prediction, 3)
+```
+
+**Summarize the posterior predictions of Y**
+```{r}
+colMeans(binary_prediction)
+```
+
+
+
+###  Model evaluation
+
+
+```{r 18-classification_summaries, eval = FALSE}
+set.seed(84735)
+classification_summary(data = climbers, model = climb_model, cutoff = 0.5)
+set.seed(84735)
+classification_summary(data = climbers, model = climb_model, cutoff = 0.65)
+```
+```{r 18-classification_summaries_save, include = FALSE, eval = FALSE}
+# Run this if you change anything
+set.seed(84735)
+summary_0_5 <- classification_summary(
+  data = climbers, model = climb_model, cutoff = 0.5
+)
+set.seed(84735)
+summary_0_65 <- classification_summary(
+  data = climbers, model = climb_model, cutoff = 0.65
+)
+saveRDS(summary_0_5, "data/ch18/summary_0_5.rds")
+saveRDS(summary_0_65, "data/ch18/summary_0_65.rds")
+```
+```{r 18-classification_summaries_load, include = FALSE}
+readRDS("data/ch18/summary_0_5.rds")
+readRDS("data/ch18/summary_0_65.rds")
+```
+
+
+
+## Hierarchical Poisson & Negative Binomial regression
+
+
+```{r}
+# Load data
+data(airbnb)
+
+# Number of listings
+nrow(airbnb)
+
+# Number of neighborhoods
+airbnb %>% 
+  summarize(nlevels(neighborhood))
+ # nlevels(neighborhood)
+```
+
+### Model building & simulation
+
+```{r}
+ggplot(airbnb, aes(x = reviews)) + 
+  geom_histogram(color = "white", breaks = seq(0, 200, by = 10))
+ggplot(airbnb, aes(y = reviews, x = rating)) + 
+  geom_jitter()
+ggplot(airbnb, aes(y = reviews, x = room_type)) + 
+  geom_violin()
+```
+
+
+
+
+
+```{r}
+airbnb %>% 
+  filter(neighborhood %in% 
+           c("Albany Park", "East Garfield Park", "The Loop")) %>% 
+  ggplot(aes(y = reviews, x = rating, color = room_type)) + 
+    geom_jitter() + 
+    facet_wrap(~ neighborhood)
+```
+
+
+
+```{r eval=FALSE}
+airbnb_model_1 <- stan_glmer(
+  reviews ~ rating + room_type + (1 | neighborhood), 
+  data = airbnb, family = poisson,
+  prior_intercept = normal(3, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1),
+  chains = 4, iter = 5000*2, seed = 84735
+)
+```
+
+```{r 18-airbnb1_pp_check, eval = FALSE}
+pp_check(airbnb_model_1) + 
+  xlim(0, 200) + 
+  xlab("reviews")
+```
+```{r 18-airbnb1_pp_check_save, include = FALSE, eval = FALSE}
+airbnb1_pp_check <- pp_check(airbnb_model_1) + 
+  xlim(0, 200) + 
+  xlab("reviews")
+saveRDS(airbnb1_pp_check, "data/ch18/airbnb1_pp_check.rds")
+```
+```{r 18-airbnb1_pp_check_load, include = FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+readRDS("data/ch18/airbnb1_pp_check.rds")
+```
+
+
+```{r eval=FALSE}
+airbnb_model_2 <- stan_glmer(
+  reviews ~ rating + room_type + (1 | neighborhood), 
+  data = airbnb, family = neg_binomial_2,
+  prior_intercept = normal(3, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  prior_aux = exponential(1, autoscale = TRUE),
+  prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1),
+  chains = 4, iter = 5000*2, seed = 84735
+)
+```
+
+```{r 18-airbnb2_pp_check, eval = FALSE}
+pp_check(airbnb_model_2) + 
+  xlim(0, 200) + 
+  xlab("reviews")
+```
+```{r 18-airbnb2_pp_check_save, include = FALSE, eval = FALSE}
+airbnb2_pp_check <- pp_check(airbnb_model_2) + 
+  xlim(0, 200) + 
+  xlab("reviews")
+saveRDS(airbnb2_pp_check, "data/ch18/airbnb2_pp_check.rds")
+```
+```{r 18-airbnb2_pp_check_load, include = FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+readRDS("data/ch18/airbnb2_pp_check.rds")
+```
+
+### Posterior analysis
+
+```{r 18-airbnb2_tidy1, eval = FALSE}
+tidy(airbnb_model_2, effects = "fixed", conf.int = TRUE, conf.level = 0.80)
+```
+```{r 18-airbnb2_tidy1_save, eval = FALSE, include = FALSE}
+airbnb2_tidy1 <- tidy(
+  airbnb_model_2, effects = "fixed", conf.int = TRUE, conf.level = 0.80
+)
+saveRDS(airbnb2_tidy1, "data/ch18/airbnb2_tidy1.rds")
+```
+```{r 18-airbnb2_tidy1_load, eval = FALSE}
+readRDS("data/ch18/airbnb2_tidy1.rds")
+```
+
+```{r 18-airbnb2_tidy2, eval = FALSE}
+tidy(airbnb_model_2, effects = "ran_vals", 
+     conf.int = TRUE, conf.level = 0.80) %>% 
+  select(level, estimate, conf.low, conf.high) %>% 
+  filter(level %in% c("Albany_Park", "East_Garfield_Park", "The_Loop"))
+```
+```{r 18-airbnb2_tidy2_save, eval = FALSE, include = FALSE}
+airbnb2_tidy2 <- tidy(airbnb_model_2, effects = "ran_vals", 
+     conf.int = TRUE, conf.level = 0.80) %>% 
+  select(level, estimate, conf.low, conf.high) %>% 
+  filter(level %in% c("Albany_Park", "East_Garfield_Park", "The_Loop"))
+saveRDS(airbnb2_tidy2, "data/ch18/airbnb2_tidy2.rds")
+```
+```{r 18-airbnb2_tidy2_load, eval = FALSE}
+readRDS("data/ch18/airbnb2_tidy2.rds")
+```
+
+
+**Posterior predictions of reviews**
+```{r 18-airbnb2_predict, eval = FALSE}
+set.seed(84735)
+predicted_reviews <- posterior_predict(
+  airbnb_model_2, 
+  newdata = data.frame(
+    rating = rep(5, 3), 
+    room_type = rep("Entire home/apt", 3), 
+    neighborhood = c("Albany Park", "East Garfield Park", "The Loop")))
+```
+```{r 18-airbnb2_predict_save, eval = FALSE, include = FALSE}
+saveRDS(predicted_reviews, "data/ch18/predicted_reviews.rds")
+```
+```{r 18-airbnb2_predict_load, include = FALSE}
+predicted_reviews <- readRDS("data/ch18/predicted_reviews.rds")
+```
+
+```{r 18-airbnb2_predict_plot}
+mcmc_areas(predicted_reviews, prob = 0.8) +
+  ggplot2::scale_y_discrete(
+    labels = c("Albany Park", "East Garfield Park", "The Loop")) + 
+  xlim(0, 150) + 
+  xlab("reviews")
+```
+
+### Model evaluation
+
+```{r 18-airbnb2_summary, eval=FALSE}
+set.seed(84735)
+pred <- prediction_summary(model = airbnb_model_2, data = airbnb)
+```
+```{r 18-airbnb2_summary_save, eval = FALSE, include = FALSE}
+saveRDS(pred, "data/ch18/airbnb2_summary.rds")
+```
+```{r 18-airbnb2_summary_load, include = FALSE}
+pred <- readRDS("data/ch18/airbnb2_summary.rds")
+```
+```{r}
+pred
+```
+
+
 
 ## Meeting Videos
 
 ### Cohort 1
-
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
-
-### Cohort 2
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

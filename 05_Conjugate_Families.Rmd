@@ -38,7 +38,7 @@ This our last chapter on Bayesian foundations!
 
 ## Joy!
 
-![](image/marie_condo.png)
+![](images/marie_condo.png)
 
 (yes I know it was the other way!)
 
@@ -135,7 +135,7 @@ $$\tau \sim Exp(r)$$
 
 - More variability in Gamma(20, 20) or Gamma(20, 100) ? 
 
-![](image/gamme.png)
+![](images/gamme.png)
 
 dashed = modes
 
