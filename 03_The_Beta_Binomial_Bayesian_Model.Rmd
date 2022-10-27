@@ -8,7 +8,8 @@
 
 - Construct the fundamental Beta-Binomial model for proportion $\pi$
  
-To prepare for this chapter, note that we’ll be using three Greek letters throughout our analysis: $\pi$=pi, $\alpha$=alpha, and $\beta$=beta. Further load the packages below.
+To prepare for this chapter, note that we’ll be using three Greek letters throughout our analysis: $\pi$ = pi, $\alpha$ = alpha, and $\beta$ = beta. Further load the packages below.
+
 ```{r,message=FALSE,warning=FALSE}
 library(bayesrules)
 library(tidyverse)
