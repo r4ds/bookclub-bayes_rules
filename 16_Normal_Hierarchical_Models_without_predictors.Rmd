@@ -525,7 +525,11 @@ First model with groups!
 
 ### Cohort 1
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/p_zDuXV6mN4")`
+
+### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/417pysFrGGk")`
 
 <details>
 <summary> Meeting chat log </summary>
@@ -535,7 +539,8 @@ LOG
 ```
 </details>
 
-### Cohort 2
+
+### Cohort 3
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

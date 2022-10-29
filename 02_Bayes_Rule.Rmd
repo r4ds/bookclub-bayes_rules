@@ -285,8 +285,14 @@ Author: Marisa Eisenberg
 ```
 </details>
 
+
 ### Cohort 2
 
 `r knitr::include_url("https://www.youtube.com/embed/2gP7rLLLUsA")`
 
 `r knitr::include_url("https://www.youtube.com/embed/QirQynPol0k")`
+
+
+### Cohort 3
+
+`r knitr::include_url("https://www.youtube.com/embed/RygccxWeHSE")`

@@ -10,7 +10,7 @@ As we read, we are producing [notes about the book](https://r4ds.io/bayes_rules)
 
 If you would like to present, please see the sign-up sheet for your cohort (linked below, and pinned in the [#book_club-bayes_rules](https://rfordatascience.slack.com/archives/C03EK4FUMQX) channel on Slack)!
 
-- [Cohort 1](https://docs.google.com/spreadsheets/d/18IDSOU2bfkD55kOB18qCB7Idbpiyp4_9qeWjkvE-Syc/edit?usp=sharing) (started 2022-06-02): [Thursdays, 13:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20220602T180000&p1=24&p2=195&p3=1440) | [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGg3BSs7FW5_LPYfAyNft7I0)
+- Cohort 1 (ended 2022-10-20): [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGg3BSs7FW5_LPYfAyNft7I0)
 - [Cohort 2](https://docs.google.com/spreadsheets/d/1RENoDi6HNBw_l_OsOttl_3sA5CNVF6JExgnjwoSR5y4/edit?usp=sharing) (started 2022-06-15): [Wednesdays, 12:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20220615T170000&p1=24&p2=197&p3=1440) | [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGj_iXxIxkutG3rUzh-Z5vi7)
 - [Cohort 3](https://docs.google.com/spreadsheets/d/1a-jmLFb5Du5G9CoYmLdiPA8waNI6nLzoXkl6gsPdhmc/edit?usp=sharing) (started 2022-10-12): [Wednesdays, 15:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20221012T200000&p1=24&p2=1440) | [meeting videos](https://youtube.com/playlist?list=PL3x6DOfs2NGhtHrM2ZAQLzgDpvA-Bj2-m)
 

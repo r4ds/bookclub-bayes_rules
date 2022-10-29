@@ -324,6 +324,11 @@ model_elpd$estimates
 
 ### Cohort 2
 
+`r knitr::include_url("https://www.youtube.com/embed/lrjPCR4d1RI")`
+
+
+### Cohort 3
+
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>

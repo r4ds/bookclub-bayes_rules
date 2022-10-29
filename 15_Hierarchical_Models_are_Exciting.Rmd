@@ -182,7 +182,27 @@ knitr::include_graphics(rep("images/runners-ch-15-1.png"))
 
 ### Cohort 1
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/eT7x7ujjhxg")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:29:42	Brendan Lam:	Hes got a point
+00:31:21	Will Parbury:	https://en.wikipedia.org/wiki/Shrinkage_(statistics)
+00:31:56	Brendan Lam:	http://haines-lab.com/post/on-the-equivalency-between-the-lasso-ridge-regression-and-specific-bayesian-priors/
+00:32:03	Brendan Lam:	“On the equivalency between frequentist Ridge (and LASSO) regression and hierarchial Bayesian regression"
+00:33:45	defuneste:	https://docs.google.com/spreadsheets/d/18IDSOU2bfkD55kOB18qCB7Idbpiyp4_9qeWjkvE-Syc/edit#gid=0
+00:37:51	Erik Aa:	https://www.youtube.com/watch?v=SocRgsf202M
+00:38:02	Lisa Lau:	“hierarchical Bayesian models actually contain frequentist ridge and LASSO regression as a special case—namely, we can choose a prior distribution across the β weights that gives us a solution that is equivalent to that of the frequentist ridge or LASSO methods! Not only that, but Bayesian regression gives us a full posterior distribution for each parameter, thus circumventing problems with frequentist regularization that require the use of bootstrapping to estimate confidence intervals.” 😯
+00:38:17	Erik Aa:	wow
+00:39:20	Brendan Lam:	Good luck!
+```
+</details>
+
+### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/AydrtOASCUw")`
 
 <details>
 <summary> Meeting chat log </summary>
@@ -192,7 +212,8 @@ LOG
 ```
 </details>
 
-### Cohort 2
+
+### Cohort 3
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
