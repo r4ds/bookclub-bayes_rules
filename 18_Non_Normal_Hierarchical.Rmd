@@ -558,6 +558,35 @@ pred
 
 ### Cohort 1
 
+`r knitr::include_url("https://www.youtube.com/embed/McHy3nsORcs")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:32:12	Brendan Lam:	“glimmer” sounds good
+00:36:55	defuneste:	tue sound cools
+00:37:00	defuneste:	true*
+00:41:52	Federica Gazzelloni:	https://cran.r-project.org/web/packages/tidybayes/vignettes/tidy-rstanarm.html
+01:03:21	Brendan Lam:	Thank you!
+```
+</details>
+
+### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/URL")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+LOG
+```
+</details>
+
+
+### Cohort 3
+
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>

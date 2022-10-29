@@ -1,6 +1,6 @@
 Package: bookclub-bayes_rules
 Title: Bayes Rules! Book Club
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: c(
   person(
     "R4DS Online Learning Community",

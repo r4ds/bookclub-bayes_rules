@@ -35,6 +35,21 @@
 
 ### Cohort 2
 
+`r knitr::include_url("https://www.youtube.com/embed/RrqGRbonF8o")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:37:44	Ronald Legere:	2016 it was dem too (Minnesota)
+00:39:17	Ronald Legere:	All models are wrong
+00:39:20	Ronald Legere:	;)
+```
+</details>
+
+
+### Cohort 3
+
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>

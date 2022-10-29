@@ -472,7 +472,23 @@ knitr::include_graphics(
 
 `r knitr::include_url("https://www.youtube.com/embed/9n7IX3Y-6zw")`
 
+
 ### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/GYNdvwTJbSY")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:13:15	RH100398:	https://youtu.be/FlC0-3B1ZFk
+01:03:17	RH100398:	gotta jump on another call. see you next week!
+01:03:24	Robert Hilly:	Bye Ryan!
+```
+</details>
+
+
+### Cohort 3
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

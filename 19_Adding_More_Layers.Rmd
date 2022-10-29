@@ -13,6 +13,25 @@
 
 ### Cohort 1
 
+`r knitr::include_url("https://www.youtube.com/embed/fttQAPfB4Mw")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:13:18	defuneste:	no worries
+00:44:06	defuneste:	https://theeffectbook.net/
+00:44:26	Brendan Lam:	Looks interesting!
+00:47:58	Federica Gazzelloni:	https://www.paulamoraga.com/book-geospatial/
+00:48:25	defuneste:	https://www.paulamoraga.com/book-geospatial/
+00:49:17	Federica Gazzelloni:	Search: #book_club-geohealth
+00:50:50	Brendan Lam:	me too
+00:51:49	defuneste:	ROS regression and other stories
+```
+</details>
+
+### Cohort 2
+
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>
@@ -23,7 +42,8 @@ LOG
 ```
 </details>
 
-### Cohort 2
+
+### Cohort 3
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

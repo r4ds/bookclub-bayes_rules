@@ -252,8 +252,24 @@ PsychEd: Milgram’s Obedience Experiment https://www.youtube.com/watch?v=cBDkJ-
 ```
 </details>
 
+
 ### Cohort 2
 
 `r knitr::include_url("https://www.youtube.com/embed/HcX1PGArVO4")`
 
 `r knitr::include_url("https://www.youtube.com/embed/xKi_S9UBBpQ")`
+
+
+### Cohort 3
+
+`r knitr::include_url("https://www.youtube.com/embed/ol3BJTgS9NI")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:58:08	Matthew Efoli:	hello everyone
+00:58:19	Matthew Efoli:	my name is Matthew
+01:01:34	Matthew Efoli:	I am in the slack
+```
+</details>

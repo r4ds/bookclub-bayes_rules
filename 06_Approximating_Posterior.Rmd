@@ -188,6 +188,7 @@ Next chapter, MCMC **under the hood**
 
 `r knitr::include_url("https://www.youtube.com/embed/JwlQh3eVuB8")`
 
+
 ### Cohort 2
 
 `r knitr::include_url("https://www.youtube.com/embed/HOTwWnXWnLo")`
@@ -197,5 +198,18 @@ Next chapter, MCMC **under the hood**
 
 ```
 00:11:00	Ron:	6.12 through 6.18
+```
+</details>
+
+
+### Cohort 3
+
+`r knitr::include_url("https://www.youtube.com/embed/URL")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+LOG
 ```
 </details>
