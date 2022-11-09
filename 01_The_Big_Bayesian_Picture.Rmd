@@ -28,9 +28,12 @@ DiagrammeR::grViz("
   f-> g [style = dashed] e-> g [style = dashed]
   }")
 ```
-**Both Bayesian and frequentist share a common goal: learn from data about the world around** 
 
-Both use data to fit nodels, make predictions and evaluate hypothesis
+> In Bayesian analysis, the prior represents what you know before seeing the data. The posterior then represents what you know having seen the data.
+
+**Both Bayesian and frequentist share a common goal: learn from data about the world around. Both use data to fit nodels, make predictions and evaluate hypothesis** 
+
+
 
 ## Quiz time! 
 
@@ -44,7 +47,7 @@ TODO link to script and data in repo
 
 ###  Interpreting probability: 
 
-- Bayesian philosophy: relative plausibility of an event 
+- Bayesian philosophy: relative plausibility of an event
 
 - Frequentist philosophy: long-run relative frequency of a repeatable  event
 
