@@ -201,6 +201,32 @@ This is a list of resources mentioned in the first meeting!
 ```
 </details>
 
+
 ### Cohort 2
 
 `r knitr::include_url("https://www.youtube.com/embed/GvK98TXNb18")`
+
+
+### Cohort 3
+
+`r knitr::include_url("https://www.youtube.com/embed/Vy9ii3nCics")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:18:42	Mary EMERAGHI:	Hello Everyone... So, I will drop a brief on myself here since I am in a different timezone. I am a beginner with little or no knowledge of this subject save that I have knowledge of Basic Statistics and would want to advance deeper to use it for my plant breeding work on Rice and Cereals
+00:19:05	Mary EMERAGHI:	My Name though is Mary Emeraghi from Nigeria
+00:19:16	Mary EMERAGHI:	Currently in Cote d'Ivoire
+00:20:59	Mary EMERAGHI:	Could I get the full details of these books especially on Theoretical knowledge to help me
+00:21:01	Mary EMERAGHI:	?
+00:21:47	Mary EMERAGHI:	thanks Gabby
+00:21:54	Mary EMERAGHI:	By who please?
+00:21:55	Gabby Palomo:	Bayesian Models: A statistical primer for ecologists; Hobbs and Hooten
+00:22:21	Gabby Palomo:	Doing Bayesian Data Analysis: A tutorial with R, JAGS, and Stan. John Kruschke.
+00:22:56	Mary EMERAGHI:	much appreciated
+00:47:48	Mary EMERAGHI:	no
+00:47:55	Mary EMERAGHI:	sorry
+01:05:06	Oluwafemi Oyedele:	Thank you !!!
+```
+</details>

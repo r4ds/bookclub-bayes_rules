@@ -17,7 +17,7 @@ When we look at the Bayesian model results, it might be important to investigate
 - What biases might be baked into this analysis?
 
 ```{r 10.1, echo=FALSE, fig.cap="Credits: https://godcgo.com/a-bike-friendly-washington-dc/"}
-knitr::include_graphics("image/fig.10.1_dc_godcgo.png")
+knitr::include_graphics("images/fig.10.1_dc_godcgo.png")
 ```
 
 
@@ -41,7 +41,7 @@ knitr::include_graphics("image/fig.10.1_dc_godcgo.png")
 - temperature on day $i$: $X_{i}$
 
 ```{r 10.2, echo=FALSE, fig.cap="Credits: dezeen.com"}
-knitr::include_graphics("image/fig.10.2_weather_bikes.png")
+knitr::include_graphics("images/fig.10.2_weather_bikes.png")
 ```
 
 Starting from a Regression Model:
@@ -278,7 +278,7 @@ cv_procedure$cv
 
 All we want is:
 ```{r 10.21,fig.cap="Two hypothetical posterior predictive pdfs for Y new, the yet unobserved ridership on a new day. The eventual observed value of y new, is represented by a dashed vertical line", echo=FALSE}
-knitr::include_graphics("image/fig.10.10_ELPD.png")
+knitr::include_graphics("images/fig.10.10_ELPD.png")
 ```
 
 
@@ -323,6 +323,11 @@ model_elpd$estimates
 
 
 ### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/lrjPCR4d1RI")`
+
+
+### Cohort 3
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

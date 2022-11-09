@@ -6,8 +6,8 @@
     - conditional probability: Probability of A given B $P(A|B)$  
     - joint probability: Probability of A and B occuring  $P(A \cap B)$   
     - marginal probability:  Probability of an event $P(A)$
-    - Law of Total Probability: If a probability of an event is unknown it can be calculated using the know probability of other related event
-
+    - Law of Total Probability: If a probability of an event is unknown it can be calculated using the known probability of other related event   
+    
 - Conduct first formal Bayesian analysis  
 
 - Practice your Bayesian grammar  
@@ -40,8 +40,8 @@ DiagrammeR::grViz("
 ```
 
 Two variables:  
-- fake vs real  
-- ! or not  
+- fake or real  
+- presence of ! or not  
 
 ### Workflow: 
 
@@ -54,10 +54,12 @@ $$ P(B = 0.4 )  \quad and \quad  P(B^c = 0.6) $$
 
 Here $P(FakeNew)$ : prior probability of an article to be a fake news
 
-Valid probability model : 
-1. accounts all event  
-2. assign probabilities for each event
-3. sum to one
+Valid probability model :   
+1. accounts all event    
+2. assign probabilities for each event  
+3. sum to one  
+
+### Conditional probability & likelihood
 
 $P(ExClam)$ : probability that an article contains an exclamation mark in his title
 
@@ -67,34 +69,45 @@ $$ P(Exclam|FakeNew) = 0.2667 \quad and \quad P(Exclam|Real = 0.0222)  $$
 
 This is a **conditional probability**. Conditional probability help know if B give us insight in A. If it does not provide any information it means that A and B event are **independent** ($P(A|B) = P(A)$). 
 
-## Normalizing constant 
+If we get an new article with `!` in his title is it more *likely* to be fake or real news? Here we are checking that $P(Exclam|FakeNew) >>  P(Exclam|Real = 0.0222)$. We will call this procedure a **likelihood function** it allow us to evaluate the relative compatibility of data with event $B$ or $B^c$ (Real of Fake). 
 
-$P(Exclam|FakeNew) = 0.2667 \quad and \quad P(Exclam|Real) = 0.0222)$ are our likelihood, when we know A (!) we know that getting B (Fake news) is more likely. It is different that our prior probability.
 
-Then we need can calculate the **joint probability** (probability of observing A nd B for example), of each options (here it is half of them): 
+### Normalizing constant 
 
-$$ P(Exclam \cap FakeNew) = P(Exclam|FakeNew) P (Fakenew) = 0.2667 *0.4 = 0.1067 $$ 
+Then we need can calculate the **joint probability** (probability of observing A and B for example), of each options (here it is half of them): 
 
-$$ P(PasExclam \cap FakeNew ) = (1 - P(Exclam|FakeNew)) * P(FakeNew)) = (1 - 0.2667) * 0.4 = 0.2993  $$ 
+$$P(Exclam \cap FakeNew) = P(Exclam|FakeNew) P (Fakenew) = 0.2667 *0.4 = 0.1067$$ 
 
-Here $P(B)$ is the *marginal probability* of B
+ie: the joint probability of observing an exclamation point in the title in a fake news is equal of the probability of having an exclamation point given that the article is fake times the probability of the article to be fake. 
+
+
+$$P(PasExclam \cap FakeNew ) = (1 - P(Exclam|FakeNew)) * P(FakeNew)) = (1 - 0.2667) * 0.4 = 0.2993$$ 
+
+Here $P(B), P(B^c), P(A), P(A^c)$ cover the **marginal distributions**, they are the sum "marges" of the table. Inside of the contingency table we have the **joint probibilties**.  $P(Fake)$ will be the **marginal probability** of "Fake". 
 
 ```{r}
-B <- c(0.1067, 0.2933, 0.4)
-Bc <- c(0.0133, 0.5867, 0.6)
+Fake <- c(0.1067, 0.2933, 0.4)
+Real <- c(0.0133, 0.5867, 0.6)
 Total <- c(0.12, 0.88, 1)
-joint_p <- data.frame(B, Bc, Total, row.names = c("A", "Ac", "Total"))
+joint_p <- data.frame(Fake, Real, Total, row.names = c("Exclam", "No Exclam", "Total"))
 knitr::kable(joint_p)
 ```
 
+
+We can also summarize it like that : 
+
+![](images/proba-1.vsg)
+
+
+### Posterior probability via Bayes' Rule!
 
 $P(Exclam)$ is our normalizing constant.
 
 Ok but we want $P(FakeNew|exlam)$ ie $P(B|A)$
 
-$$ P(FakeNew|exclam) = \frac{P(exclam \cap FakeNew)}{P(Exclam)} = \frac{P(FakeNew)L(FakeNew|Exclam)}{P(Exclam)}  $$ 
+$$P(FakeNew|exclam) = \frac{P(exclam \cap FakeNew)}{P(Exclam)} = \frac{P(FakeNew)L(FakeNew|Exclam)}{P(Exclam)}$$ 
 
-$$ posterior = \frac{prior . likelihood}{normalizing \quad constant} = \frac{0.4 * 0.2667}{0.12} = 0.889  $$
+$$posterior = \frac{prior . likelihood}{normalizing \quad constant} = \frac{0.4 * 0.2667}{0.12} = 0.889$$
 
 ## Posterior simulation 
 
@@ -272,8 +285,14 @@ Author: Marisa Eisenberg
 ```
 </details>
 
+
 ### Cohort 2
 
 `r knitr::include_url("https://www.youtube.com/embed/2gP7rLLLUsA")`
 
 `r knitr::include_url("https://www.youtube.com/embed/QirQynPol0k")`
+
+
+### Cohort 3
+
+`r knitr::include_url("https://www.youtube.com/embed/RygccxWeHSE")`

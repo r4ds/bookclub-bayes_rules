@@ -15,9 +15,9 @@
 
 **Congratulations on our progress!** 
 
-![](image/baby_yes.jpeg)
+![](images/baby_yes.jpeg)
 
-![](image/bayesian_probaility_for_baby.jpeg)
+![](images/bayesian_probaility_for_baby.jpeg)
 
 ## New terms 
 
@@ -286,7 +286,7 @@ bikes %>%
 # I did not evaluate the code here 
 ```
 
-![Figure 9.7](image/fig.9.7.png)
+![Figure 9.7](images/fig.9.7.png)
  
 #### Quiz!
 
@@ -394,7 +394,7 @@ phase_2 <- bikes[1:60, ]
 phase_3 <- bikes
 ```
 
-![Bayes rules !figure 9.13](image/figure9_13.png)
+![Bayes rules !figure 9.13](images/figure9_13.png)
 
 ## Using default rstanarm priors
 
@@ -440,8 +440,8 @@ It uses **weakly informative priors** using the **scale** of the data.
 
 ```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="Fig 9.5 and 9.14 from Bayes Rules!"}
 knitr::include_graphics(
-  c("image/fig9.5.png",
-    "image/fig9.14.png")
+  c("images/fig9.5.png",
+    "images/fig9.14.png")
 )
 ```
 
@@ -472,7 +472,23 @@ knitr::include_graphics(
 
 `r knitr::include_url("https://www.youtube.com/embed/9n7IX3Y-6zw")`
 
+
 ### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/GYNdvwTJbSY")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:13:15	RH100398:	https://youtu.be/FlC0-3B1ZFk
+01:03:17	RH100398:	gotta jump on another call. see you next week!
+01:03:24	Robert Hilly:	Bye Ryan!
+```
+</details>
+
+
+### Cohort 3
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

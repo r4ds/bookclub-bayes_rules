@@ -7,12 +7,226 @@ output:
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- We will learn how to interpret and tune a continuous Beta prior model to reflect your prior information about $\pi$
 
-## SLIDE 1
+- We will learn how to interpret and communicate features of prior and posterior models using properties such as mean, mode, and variance
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+- Construct the fundamental Beta-Binomial model for proportion $\pi$
+ 
+To prepare for this chapter, note that we’ll be using three Greek letters throughout our analysis: $\pi$ = pi, $\alpha$ = alpha, and $\beta$ = beta. Further load the packages below.
+
+```{r,message=FALSE,warning=FALSE}
+library(bayesrules)
+library(tidyverse)
+```
+
+
+## What is a Beta Binomial model for ?
+- It is a model we use when we want to look at something with a proportion.
+
+- Examples of use: The proportion of people that use public transit, the proportion of trains that are delayed, the proportion of people that prefer cats to dogs, and so on.
+
+- The Beta-Binomial model provides the tools we need to study the proportion of interest,$\pi$, in each of these settings.
+
+## The Beta Prior Model
+- The first model we are going to construct is based on a scenario where you are a campaign manager for Michelle for president campaign in the state of Minnesota.
+
+- So far we have conducted 30 opinion pools. Michelle's support is generally around 45% but has been as low as 35% and as high as 55%. 
+
+This is going to form the basis for our prior.
+
+## Are we good so far ?
+![](image/Michelle.png)
+
+
+## How has the model changed from last week ?
+The example of Kasparov's probability of beating Deep Blue at chess was a discrete example.
+
+In that case, we greatly over-simplified reality to fit within the framework of introductory Bayesian models. Mainly, we assumed that $\pi$ could only be 0.2, 0.5, or 0.8, the corresponding chances of which were defined by a discrete probability model.
+
+- However, in the reality of Michelle's election support and Kasparov's chess skill, $\pi$ can be any value between 0 and 1. We can reflect this reality and conduct a more nuanced Bayesian analysis by constructing a continuous prior probability model.
+
+ So ....
+ 
+ - Probability density functions for continuous models
+ 
+ - rather than
+ 
+ - Probability mass functions  for discrete models
+ 
+## What quality does the probability density function have ?
+
+- The proportion has to be greater than or equal to zero
+
+- The area under the curve sums to 1
+
+- The area under the curve between a and b sums to the probability of pie being in that range.
+
+## Tuning the Beta Prior
+This is a process of trial and error
+
+**Plot the Beta(45,55) prior**
+
+```{r}
+plot_beta(45,55)
+```
+
+
+## The Binomial Data Model and Likelihood
+
+- This is where we gather some new data by conducting an opinion poll. on this occasion we ask 50 people who are they supporting and 30 of them are supporting Michelle.
+![](image/Michelle.png)
+
+ Binomial Data Model and Likelihood
+![](image/df.png)
+
+![](image/pdf1.png)
+
+The likelihood function, $L(\pi$|Y =30), of Michelle's election support $\pi$ given the observed poll in which Y = 30 of n=50 polled Minnesotans supported her. The vertical lines represent the likelihood evaluated at $\pi$ in {0.1,0.2,....0.9}.
+
+## Beta Posterior Model
+
+We now have two pieces of our Bayesian model in place – the Beta prior model for Michelle’s support $\pi$ and the Binomial model for the dependence of polling data Y on $\pi$:
+
+Y|$\pi$ ~ Bin(50,$\pi$)
+
+$\pi$ ~ Beta(45,55)
+
+- The prior and data, as captured by the likelihood, don’t completely agree. 
+
+- Constructed from old polls, the prior is a bit more pessimistic about Michelle’s election support than the data obtained from the latest poll. 
+
+- Yet both insights are valuable to our analysis. Just as much as we shouldn’t ignore the new poll in favor of the old, we also shouldn’t throw out our bank of prior information in favor of the newest thing (also great life advice). 
+
+- Thinking like Bayesians, we can construct a posterior model of $\pi$ which combines the information from the prior with that from the data.
+
+
+![](image/beta_posterior_model.png)
+The Posterior model of $\pi$ along with the (scaled) likelihood function of $\pi$ given the new poll results in which Y = 30 of n = 50 polled Minnesotans support Michelle.
+
+**What are we missing from this plot ?**
+
+**Which plot reflects the correct posterior model of Michelle’s election support $\pi$?**
+
+![](image/quiz1.png)
+
+## Plot of the Beta Posterior Model
+```{r,echo=TRUE,warning=FALSE,message=FALSE}
+plot_beta_binomial(alpha = 45, beta = 55, y = 30, n = 50)
+```
+
+**The beta posterior model is B**
+
+The prior pdf, scaled likelihood function, and posterior pdf of Michelle’s election support $\pi$.
+
+## Effects of New Data ?
+
+```{r}
+summarize_beta_binomial(alpha = 45, beta = 55, y = 30, n = 50)
+```
+- A comparison illuminates the polling data’s influence on the posterior model. Mainly, after observing the poll in which 30 of 50 people supported Michelle, the expected value of her underlying support $\pi$ nudged up from approximately 45% to 50%.
+
+## Simulating the Beta-Binomial
+
+- Here we are going to simulate the posterior model of Michelle's support $\pi$. We bigin by simulating **10,000** values of $\pi$ from **Beta(45,55)** prior using **rbeta()** and, subsequently, a potential Bin(50,$\pi$) poll result **Y** from each $\pi$ using **rbinom()**
+
+
+- The resulting 10,000 pairs of $\pi$ and Y values are shown below. In general, the greater Michelle’s support, the better her poll results tend to be. Further, the highlighted pairs illustrate that the eventual observed poll result, Y=30 of 50 polled voters supported Michelle, would most likely arise if her underlying support $\pi$ were somewhere in the range from 0.4 to 0.6.
+  
+
+```{r,message=FALSE,warning=FALSE}
+michelle_sim <- data.frame(pi = rbeta(10000,45,55)) |> 
+  mutate(y=rbinom(10000,size=50,prob=pi))
+
+ggplot(data=michelle_sim,aes(x=pi, y=y))+
+  geom_point(aes(color=(y==30)),size=0.1)
+```
+
+- Separate out from the simulation the results that match your new data where 30 out of 50 are supporting Michelle.
+
+```{r}
+# Keep the simulated pairs that match your data
+
+michelle_posterior <- michelle_sim |> 
+  filter(y==30)
+
+head(michelle_posterior)
+```
+
+## What does this show ?
+
+```{r}
+ggplot(data=michelle_posterior,aes(x=pi))+
+  geom_density()
+```
+```{r}
+michelle_posterior |> 
+  summarise(mean(pi),sd(pi))
+
+
+# We can also check the number of data points it is based on
+
+nrow(michelle_posterior)
+
+```
+
+## Milgram's behavior study of obedience
+
+- This is the famous study where the subjects were asked to deliver an electric shock to an actor under the ruse of a study on the effect of punishment on memory.
+
+- In reality what was being tested was obedience to authority and the conflict with personal conscience.
+
+## What do you think the prior beliefs were ?
+Given the Beta (1,10) prior model, what does that reveal about the psychologist's prior understanding of $\pi$
+
+- They don't have an informed opinion
+
+- They are fairly certain that a large proportion of people will do what authority tells them.
+
+- They are fairly certain that only a small proportion of people will do what authority tells them.
+
+## Let plot them to find out
+```{r}
+# Beta(1,10) prior
+
+plot_beta(alpha = 1,beta = 10)
+```
+
+## So what actually happened ?
+
+- Obedience to authority won out
+
+- The prior was not supported by the evidence
+
+- The data collected showed that 26 out of 40 participants inflicted the maximum electric shock.
+
+## What conclusions can we draw ?
+
+- Prior: though they started out with an understanding that fewer than ~25% of people would inflict the most service shock.
+
+- Data: given the strong counter evidence in the study area.
+
+- Posterior: they now understand this figure to be somewhere between ~30% and ~70%.
+
+## Let's plot the prior, likelihood and posterior
+
+```{r}
+plot_beta_binomial(alpha = 1, beta = 10, y = 26, n = 40)
+```
+
+## Summary
+We built a Beta-Binomial model for unknown proportion anywhere between 0 and 1
+
+Like every Bayesian analysis Beta-Binomial models have four common elements.
+
+- Prior model
+
+- Data model
+
+- Likelihood function
+
+- Posterior model
+
 
 ## Meeting Videos
 
@@ -43,8 +257,24 @@ PsychEd: Milgram’s Obedience Experiment https://www.youtube.com/watch?v=cBDkJ-
 ```
 </details>
 
+
 ### Cohort 2
 
 `r knitr::include_url("https://www.youtube.com/embed/HcX1PGArVO4")`
 
 `r knitr::include_url("https://www.youtube.com/embed/xKi_S9UBBpQ")`
+
+
+### Cohort 3
+
+`r knitr::include_url("https://www.youtube.com/embed/ol3BJTgS9NI")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:58:08	Matthew Efoli:	hello everyone
+00:58:19	Matthew Efoli:	my name is Matthew
+01:01:34	Matthew Efoli:	I am in the slack
+```
+</details>

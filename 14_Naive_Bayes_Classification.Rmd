@@ -13,7 +13,21 @@
 
 ### Cohort 1
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/HeCaORJNdJM")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:44:10	defuneste:	plant@net
+00:44:28	Lisa:	https://identify.plantnet.org/
+00:48:49	Brendan Lam:	Thanks everyone!
+```
+</details>
+
+### Cohort 2
+
+`r knitr::include_url("https://www.youtube.com/embed/6Yma6P5h0IA")`
 
 <details>
 <summary> Meeting chat log </summary>
@@ -23,7 +37,8 @@ LOG
 ```
 </details>
 
-### Cohort 2
+
+### Cohort 3
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
