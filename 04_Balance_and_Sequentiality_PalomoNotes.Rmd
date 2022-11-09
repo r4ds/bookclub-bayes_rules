@@ -10,13 +10,13 @@
 
 - First, let's remember: 
 
-![](./image/bayes_equation.png)
+![](./images/bayes_equation.png)
 
 - Three friends (**feminist, clueless, optimist**) discuss the proportion ($\pi$) of recent movies that pass the Bechdel test (representation of women in film).
 
 - Which Beta prior corresponds to each of the friends? 
 
-![](./image/Fig4_1.png)
+![](./images/Fig4_1.png)
 
 - The three friends agree to review a sample of *n* recet movies and record **Y**, the number of movies that pass the Bechdel test. 
 - **Y** is the number of 'successes' in a fixed number of independent trials.
@@ -78,22 +78,22 @@ bechdel_20 %>%
   tab_options(column_labels.font.weight = 'bold')
 ```
 
-![](./image/Quiz4_1.png)
+![](./images/Quiz4_1.png)
 
-![](./image/Quiz_results_4_1.png)
+![](./images/Quiz_results_4_1.png)
 
-![](./image/Fig_4__1_2.png)
+![](./images/Fig_4__1_2.png)
 
 ## Different data, different posteriors 
 
 - Now let's vary sample sizes. 
 
-![](./image/Fig_4_2_1.png)
+![](./images/Fig_4_2_1.png)
 
 - The larger the sample size *n*, the more 'insistent' the likelihood function. 
 - We see that the more insistent the likelihood, the more influence the data holds over the posterior. 
 
-![](./image/Fig_4_2_2.png)
+![](./images/Fig_4_2_2.png)
 
 ## Striking a balance between the prior and data 
 
@@ -104,7 +104,7 @@ bechdel_20 %>%
 - Naturally, the more informative the prior, the greater its influence on the posterior.
 - KEY UNDERSTANDING: no matter the strength of and discrepancies among their prior understanding of $\pi$, three analysts will come to a common posterior understanding in light of strong data.
 
-![](./image/Fig_4_3_1.png)
+![](./images/Fig_4_3_1.png)
 
 ```{r}
 # Plot the Beta-Binomial model
