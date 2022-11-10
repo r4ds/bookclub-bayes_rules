@@ -20,6 +20,7 @@ Imports:
     e1071,
     forcats,
     ggthemes,
+    gt,
     janitor,
     modelr,
     rmarkdown,
