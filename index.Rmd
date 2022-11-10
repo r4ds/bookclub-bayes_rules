@@ -38,7 +38,7 @@ This companion follows the [R4DS Online Learning Community Code of Conduct](http
 
 **Following the flow!** 
 
-![](image/flow.png){width="560" height="315"}
+![](images/flow.png){width="560" height="315"}
 
 Source: https://www.youtube.com/watch?v=zYYBtxHWE0A  
 From: Richard McElreath, Statistical Rethinking videos  
