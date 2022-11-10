@@ -31,7 +31,7 @@ library(tidyverse)
 This is going to form the basis for our prior.
 
 ## Are we good so far ?
-![](image/Michelle.png)
+![](images/Michelle.png)
 
 
 ## How has the model changed from last week ?
@@ -70,12 +70,12 @@ plot_beta(45,55)
 ## The Binomial Data Model and Likelihood
 
 - This is where we gather some new data by conducting an opinion poll. on this occasion we ask 50 people who are they supporting and 30 of them are supporting Michelle.
-![](image/Michelle.png)
+![](images/Michelle.png)
 
  Binomial Data Model and Likelihood
-![](image/df.png)
+![](images/df.png)
 
-![](image/pdf1.png)
+![](images/pdf1.png)
 
 The likelihood function, $L(\pi$|Y =30), of Michelle's election support $\pi$ given the observed poll in which Y = 30 of n=50 polled Minnesotans supported her. The vertical lines represent the likelihood evaluated at $\pi$ in {0.1,0.2,....0.9}.
 
@@ -96,14 +96,14 @@ $\pi$ ~ Beta(45,55)
 - Thinking like Bayesians, we can construct a posterior model of $\pi$ which combines the information from the prior with that from the data.
 
 
-![](image/beta_posterior_model.png)
+![](images/beta_posterior_model.png)
 The Posterior model of $\pi$ along with the (scaled) likelihood function of $\pi$ given the new poll results in which Y = 30 of n = 50 polled Minnesotans support Michelle.
 
 **What are we missing from this plot ?**
 
 **Which plot reflects the correct posterior model of Michelle’s election support $\pi$?**
 
-![](image/quiz1.png)
+![](images/quiz1.png)
 
 ## Plot of the Beta Posterior Model
 ```{r,echo=TRUE,warning=FALSE,message=FALSE}

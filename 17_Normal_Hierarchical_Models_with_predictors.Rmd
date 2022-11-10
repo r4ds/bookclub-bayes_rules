@@ -13,7 +13,7 @@
 
 We are returning on a subset of the Cherry Blossom 10 mile running race analysis 
 
-![](image/CherryBlossom10MileRunlogo.png)
+![](images/CherryBlossom10MileRunlogo.png)
 
 ```{r,message=FALSE}
 # Load packages
