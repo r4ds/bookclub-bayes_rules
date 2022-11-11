@@ -9,6 +9,25 @@
 - ADD SLIDES AS SECTIONS (`##`).
 - TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
 
+
+## Further reading
+
+- [Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R.](https://bookdown.org/roback/bookdown-BeyondMLR/)
+
+    - Julie Legler  and Paul Roback. 2021 A more traditional maxiumun likelyhood approach, but from my scans looks quite thorough. And is free online!
+
+- [Data Analysis Using Regression and Multilevel/Hierarchical Models](http://www.stat.columbia.edu/~gelman/arm/)
+
+    - Andrew Gelman and Jennifer Hill. 2006, Not available for free online, dont know what is in it.
+
+
+- [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/) 
+
+    - Andrew Gelman, Jennifer Hill, Aki Vehtari 2020
+This and the as yet unpublished "Advanced Regression and Multilevel Models" are intended to be the new version of the book mentioned above, as far as I can determine. 
+
+    - Book club starting soon!
+
 ## Meeting Videos
 
 ### Cohort 1
