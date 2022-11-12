@@ -1,14 +1,179 @@
 # Adding More Layers
 
+
+
+
+`r knitr::include_graphics("images/Theend.jpg")`
+
+
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- So far we have used individual-level predictors... how can we also utilize *group-level* predictors?
 
-## SLIDE 1
+- What happens with more then one grouping variable?
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+```{r,echo=FALSE, message = FALSE, warning=FALSE}
+# Load packages
+library(bayesrules)
+library(tidyverse)
+library(bayesplot)
+library(rstanarm)
+library(janitor)
+library(tidybayes)
+library(broom.mixed)
+library(gridExtra)
+```
 
+## Group-level predictors - Airbnb Data Revisited
+
+- Return to Airbnb data, this time look at (log) price.
+
+```{r}
+data(airbnb)
+airbnb %>% 
+  summarize(nlevels(neighborhood), min(price), max(price))
+```
+
+
+- Prices *look* lognormal:
+
+```{r, echo=FALSE}
+ggplot(airbnb) + 
+  geom_histogram(mapping= aes(x=log(price)),color = "white", binwidth = 0.5)
+```
+
+## Airbnb : Individual-level predictors
+
+```{r, echo=FALSE}
+p1 <- ggplot(airbnb, aes(y = log(price), x = bedrooms)) + 
+  geom_jitter()
+p2<-ggplot(airbnb, aes(y = log(price), x = rating)) + 
+  geom_jitter()
+p3<-ggplot(airbnb, aes(y = log(price), x = room_type)) + 
+  geom_boxplot()
+grid.arrange(p1,p2,p3,ncol=3)
+```
+
+## Air-bnb Hierachical structure
+
+```{r, echo=FALSE}
+ggplot(airbnb, aes(y = log(price), x = neighborhood)) + 
+  geom_boxplot() + 
+  scale_x_discrete(labels = c(1:44))
+```
+- Wide variation of variation of median price -> use neighborhood as grouping variable to account for this.
+
+## Air-bnb Group Level predictors
+
+- The data also contains group level predictors: walk_score and transit score
+
+- These are the same for each property in a given neighborhood.
+
+```{r}
+airbnb %>% 
+  select(price, neighborhood, walk_score, transit_score) %>% 
+  head(3)
+```
+- We can use this 'explain' some of the variation from neighborhood to neighborhood.
+
+```{r, echo= FALSE}
+
+nbhd_features <- airbnb %>% 
+  group_by(neighborhood, walk_score) %>% 
+  summarize(mean_log_price = mean(log(price)), n_listings = n(),.groups="drop")  
+
+
+ggplot(nbhd_features, aes(y = mean_log_price, x = walk_score)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+## Incorporating group predictors
+
+- Model ends up looking complicated 
+
+`r knitr::include_graphics("images/eqn19_4.png")`
+
+- But including it is relatively easy!
+
+```{r, eval=FALSE}
+airbnb_model_2 <- stan_glmer(
+  log(price) ~ walk_score + bedrooms + rating + room_type +
+    (1 | neighborhood), 
+  data = airbnb, family = gaussian,
+  prior_intercept = normal(4.6, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  prior_aux = exponential(1, autoscale = TRUE),
+  prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1),
+  chains = 4, iter = 5000*2, seed = 84735
+)
+```
+
+
+## Airbnb median model 
+
+```{r, eval=FALSE}
+tidy(airbnb_model_2, effects="fixed")
+```
+
+```
+  term                  estimate std.error
+  <chr>                    <dbl>     <dbl>
+1 (Intercept)             1.92     0.305  
+2 walk_score              0.0166   0.00342
+3 bedrooms                0.265    0.0139 
+4 rating                  0.221    0.0282 
+5 room_typePrivate room  -0.538    0.0224 
+6 room_typeShared room   -1.06     0.0583 
+```
+
+This leads to a median model:
+
+$$
+median(log(\text{price})) = (1.9 + 0.017 \text{ walk_score}) + 0.27 \text{ bedrooms} + \\
+0.22\text{ rating} - 0.54 \text{ private_room} - 1.1 \text{ shared_room}
+$$
+
+- For  example, the median log price increases by about 18% for every 10 points increase in walkability.
+
+
+```{r, eval = FALSE}
+tidy(airbnb_model_2, effects = "ran_pars")
+```
+```
+  term                        group        estimate
+  <chr>                       <chr>           <dbl>
+1 sd_(Intercept).neighborhood neighborhood    0.202
+2 sd_Observation.Residual     Residual        0.366
+```
+- These are estimates of the group level variation and within group variation
+
+- Book notes that the 'unexplained' neighborhood to neighborhood variation is less now that we have included the group-level predictor (makes sense!)
+
+
+
+## Airbnb posterior group-level analysis
+
+- This last section looks at neighborhood-level trends, focusing on two neighborhoods with mean log price but vastly different walk ability
+
+```{r, echo=FALSE}
+
+nbhd_features %>% 
+  filter(neighborhood %in% c("Edgewater", "Pullman"))
+
+```
+
+- Compare the group-level intercepts for models with (closed circle) and without (open circle) the `walk_score` group level indicator:
+
+`r knitr::include_graphics("images/fig19_6.png")`
+
+- The model with the `walk_score` predictor has pulled Pullman’s intercept down, closer to the trend
+
+- Note the small sample size for Pullman. Using group level predictors helps us to pool information across groups.
+
+
+
+## Two or more grouping variables
 
 ## Further reading
 
