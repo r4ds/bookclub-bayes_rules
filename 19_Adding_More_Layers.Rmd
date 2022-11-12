@@ -101,13 +101,11 @@ airbnb_model_2 <- stan_glmer(
   log(price) ~ walk_score + bedrooms + rating + room_type +
     (1 | neighborhood), 
   data = airbnb, family = gaussian,
-  prior_intercept = normal(4.6, 2.5, autoscale = TRUE),
-  prior = normal(0, 2.5, autoscale = TRUE), 
-  prior_aux = exponential(1, autoscale = TRUE),
-  prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1),
   chains = 4, iter = 5000*2, seed = 84735
 )
 ```
+
+
 
 
 ## Airbnb median model 
@@ -169,29 +167,216 @@ nbhd_features %>%
 
 - The model with the `walk_score` predictor has pulled Pullman’s intercept down, closer to the trend
 
-- Note the small sample size for Pullman. Using group level predictors helps us to pool information across groups.
+- Note the small sample size for Pullman. Using group level predictors helps us to pool information across groups, improving understanding of small sample size groups.
 
 
 
 ## Two or more grouping variables
 
+- Remember last chapter we used `climbers` to model success of a climber, grouped by expedition. 
+
+- However there is also peak_name as a possible grouping variable!
+
+```{r, echo=FALSE}
+data(climbers_sub)
+climbers <- climbers_sub %>% 
+  select(peak_name, expedition_id, member_id, success,
+         year, season, age, expedition_role, oxygen_used)
+
+expeditions <- climbers %>% 
+  group_by(peak_name, expedition_id) %>% 
+  summarize(n_climbers = n(),.groups="drop")
+
+head(expeditions,4)
+```
+- Dataset includes 2076 individual climbers, grouped together in 200 expeditions, to 46 different peaks
+
+## Hiearchical model 
+
+`r knitr::include_graphics("images/fig19_7.png")`
+
+- Just as different expeditions have related climber success probabilities, we expect the same for different peaks. 
+- We don't really care about the particular subset of peaks in the data, but we want to incorporate it -> Grouping variable.  
+
+- Now we have two 'tweaks',  $b_{0j}$ adjustment for expedition `j` and $p_{0k}$, adjustment for  peak `k`.
+
+`r knitr::include_graphics("images/fig19_8.png")`
+
+- $Y_{ijk}$ is the success of the i'th climber, who climbed the j'th peak in the k'th expedition. (nested structure of the data)
+
+- $\sigma_b$ is the variability of success rates from expedition to expedition (within a peak)
+
+- $\sigma_p$ is the variability between peaks.
+
+## Simulating the model
+
+- Model 1, doesn't include the peak id, as in Chapter 18
+
+```{r, eval=FALSE}
+climb_model_1 <- stan_glmer(
+  success ~ age + oxygen_used + (1 | expedition_id), 
+  data = climbers, family = binomial, 
+  chains = 4, iter = 5000*2, seed = 84735
+)
+```
+
+
+- Model 2, including the peak id is easy to specify!
+
+```{r, eval= FALSE}
+climb_model_2 <- stan_glmer(
+  success ~ age + oxygen_used + (1 | expedition_id) + (1 | peak_name), 
+  data = climbers, family = binomial, 
+  chains = 4, iter = 5000*2, seed = 84735
+)
+```
+
+- If this were real work we would check the priors and chain health etc...
+
+## Posterior summaries
+
+- The two models lead to similar conclusions for the relationship with age and oxygen use.
+
+```{r, eval=FALSE}
+# Get trend summaries for both models
+climb_model_1_mean <- tidy(climb_model_1, effects = "fixed")
+climb_model_2_mean <- tidy(climb_model_2, effects = "fixed")
+
+# Combine the summaries for both models
+climb_model_1_mean %>%
+  right_join(., climb_model_2_mean, by ="term",
+             suffix = c("_model_1", "_model_2")) %>%
+  select(-starts_with("std.error"))
+```
+
+```
+  term            estimate_model_1 estimate_model_2
+  <chr>                      <dbl>            <dbl>
+1 (Intercept)              -1.41            -1.53  
+2 age                      -0.0475          -0.0474
+3 oxygen_usedTRUE           5.79             6.18  
+
+```
+
+- Different accounting of the variability in success rates.
+
+```{r, eval=FALSE, echo=FALSE}
+climb_model_1_var <- tidy(climb_model_1, effects = "ran_pars")
+climb_model_2_var <- tidy(climb_model_2, effects = "ran_pars")
+
+# Combine the summaries for both models
+climb_model_1_var %>% 
+  right_join(., climb_model_2_var, by = "term",
+             suffix =c("_model_1", "_model_2")) %>%
+  select(-starts_with("group"))
+```
+
+```
+  term                         estimate_model_1 estimate_model_2
+  <chr>                                   <dbl>            <dbl>
+1 sd_(Intercept).expedition_id             3.63             3.09
+2 sd_(Intercept).peak_name                NA                1.85
+```
+
+- This makes sense, not only are some expeditions more successeful , some peaks are easier to climb.
+
+## Group specific parameters
+
+- Climb model 2:
+
+$$
+log(\frac{\pi_{ijk}}{1-\pi_{ijk}})=(\beta_0 + b_{0j} + p_{0k}) + \beta_1 X_{ijk1} + \beta_2 X_{ijk2}
+$$
+
+- For each of the 200 sampled expeditions and 46 sampled peaks, we have associated posterior distributions for the $b_{0j}$ and $p_{0k}$   
+
+```{r, eval=FALSE}
+group_levels_2 <- tidy(climb_model_2, effects = "ran_vals") %>% 
+  select(level, group, estimate)
+```
+
+
+- Example tweaks for peaks: 
+
+```{r, eval=FALSE}
+group_levels_2 %>% 
+  filter(group == "peak_name") %>% 
+  head(2)
+```
+
+```
+  level       group     estimate
+  <chr>       <chr>        <dbl>
+1 Ama_Dablam  peak_name     2.91
+2 Annapurna_I peak_name    -2.06
+```
+
+
+- Example tweaks for expedition:
+
+```{r, eval=FALSE}
+group_levels_2 %>% 
+  filter(group == "expedition_id") %>% 
+  head(2)
+```
+```
+  level     group         estimate
+  <chr>     <chr>            <dbl>
+1 AMAD03107 expedition_id -0.00294
+2 AMAD03327 expedition_id  3.31  
+```
+
+- For example, to predict success probability for a climber new expedition to an existing peak (say Ama_Dablam, an 'easy one'), we would would use $b=0$ and the appropriate $p_{0j}=2.91$.  If the climber were 30 years old but did not plan  to use oxygen:
+
+```{r}
+logit_p = -1.55 +  2.91 - .0475*30 
+
+invlogit(logit_p)
+```
+
+48% chance of success. Could also use `posterior_prediction`
+
+```{r, eval=FALSE}
+new_expedition <- data.frame(
+  age = c(30), oxygen_used = c(FALSE), 
+  expedition_id = c("new"), peak_name = c("Ama_Dablam") )
+
+binary_prediction <- posterior_predict(climb_model_2, newdata = new_expedition)
+
+mean(binary_prediction)
+
+# output: 0.494
+```
+ 
+
+
 ## Further reading
 
 - [Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R.](https://bookdown.org/roback/bookdown-BeyondMLR/)
 
-    - Julie Legler  and Paul Roback. 2021 A more traditional maxiumun likelyhood approach, but from my scans looks quite thorough. And is free online!
+    - Julie Legler  and Paul Roback 2021. A more traditional maxiumun likelyhood approach, but from my scans looks quite thorough. And is free online!
+    
+    
+<br>
 
 - [Data Analysis Using Regression and Multilevel/Hierarchical Models](http://www.stat.columbia.edu/~gelman/arm/)
 
-    - Andrew Gelman and Jennifer Hill. 2006, Not available for free online, dont know what is in it.
+    - Andrew Gelman and Jennifer Hill. 2006. Not available for free online, dont know what is in it.
 
+<br>
 
 - [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/) 
 
-    - Andrew Gelman, Jennifer Hill, Aki Vehtari 2020
-This and the as yet unpublished "Advanced Regression and Multilevel Models" are intended to be the new version of the book mentioned above, as far as I can determine. 
+    - Andrew Gelman, Jennifer Hill, Aki Vehtari 2020.
+This (and the as yet unpublished "Advanced Regression and Multilevel Models") are intended to be the new version of the book mentioned above, as far as I can determine. 
 
-    - Book club starting soon!
+    - Book club starting $\text{soon}^{tm}$!
+    
+    
+    
+## The End
+
+`r knitr::include_graphics("images/wcquote.jpg")`
 
 ## Meeting Videos
 
