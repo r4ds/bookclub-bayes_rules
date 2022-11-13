@@ -348,7 +348,31 @@ mean(binary_prediction)
 # output: 0.494
 ```
  
+ If they did use oxygen:
+ 
+```{r}
+logit_p = -1.55 +  2.91 - .0475*30  + 6.2
 
+invlogit(logit_p)
+``` 
+
+With prediction:
+
+
+
+```{r, eval=FALSE}
+new_expedition <- data.frame(
+  age = c(30), oxygen_used = c(TRUE), 
+  expedition_id = c("new"), peak_name = c("Ama_Dablam") )
+
+binary_prediction <- posterior_predict(climb_model_2, newdata = new_expedition)
+
+mean(binary_prediction)
+
+# output: 0.954
+```
+
+Less due to correlations.
 
 ## Further reading
 
