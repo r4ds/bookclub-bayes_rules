@@ -372,7 +372,7 @@ mean(binary_prediction)
 # output: 0.954
 ```
 
-Less due to correlations.
+Less - due to nonlinear link function.
 
 ## Further reading
 
