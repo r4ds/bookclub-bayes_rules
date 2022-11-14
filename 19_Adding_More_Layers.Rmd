@@ -336,7 +336,7 @@ group_levels_2 %>%
 - For example, to predict success probability for a climber new expedition to an existing peak (say Ama_Dablam, an 'easy one'), we would would use $b=0$ and the appropriate $p_{0j}=2.91$.  If the climber were 30 years old but did not plan  to use oxygen:
 
 ```{r}
-logit_p = -1.55 +  2.91 - .0475*30 
+logit_p = -1.53 +  2.91 - .0474*30 
 
 invlogit(logit_p)
 ```
@@ -358,7 +358,7 @@ mean(binary_prediction)
  If they did use oxygen:
  
 ```{r}
-logit_p = -1.55 +  2.91 - .0475*30  + 6.2
+logit_p = -1.53 +  2.91 - .0474*30  + 6.2
 
 invlogit(logit_p)
 ``` 
@@ -379,7 +379,7 @@ mean(binary_prediction)
 # output: 0.954
 ```
 
-Less - due to nonlinear link function.
+Less - due to nonlinear link function?
 
 ## Check prediction manually
 
@@ -387,17 +387,26 @@ Less - due to nonlinear link function.
 climb_model_2 <- readRDS("data/climb_model_2.Rds")
 climber_df <- as.data.frame(climb_model_2)
 climber_draws_Ama_Dablam <- climber_df |>
-     select('(Intercept)',age, oxygen_usedTRUE, 'b[(Intercept) peak_name:Ama_Dablam]','Sigma[expedition_id:(Intercept),(Intercept)]')
+     select('(Intercept)',age, oxygen_usedTRUE,
+            'b[(Intercept) peak_name:Ama_Dablam]','Sigma[expedition_id:(Intercept),(Intercept)]') |>
+     rename(b_peak ='b[(Intercept) peak_name:Ama_Dablam]', sigma_exp = 'Sigma[expedition_id:(Intercept),(Intercept)]',
+            B_0 = '(Intercept)')
 
 head(climber_draws_Ama_Dablam)
 ```
 
-Ok for each of these 20000 draws, we need to compute a random expedition tweak wiht the appropriate sigma, and then compute the probability from the inverse logistic.
+Ok for each of these 20000 draws, we need to compute a random expedition tweak with the appropriate sigma, and then compute the probability from the inverse logistic.
 
 ```{r}
+prob_draws <- climber_draws_Ama_Dablam |>
+  mutate(exp_tweak = rnorm(n(),0, sqrt(sigma_exp))) |>
+  mutate(logit = B_0 + 30*age + oxygen_usedTRUE + b_peak,
+         prob_without_tweak = invlogit(logit),
+         prob_with_tweak = invlogit(logit + exp_tweak))
 
+summary(prob_draws |> select(prob_without_tweak, prob_with_tweak)) 
 ```
-
+ 
 
 ## Further reading
 
