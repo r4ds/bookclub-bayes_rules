@@ -234,6 +234,10 @@ climb_model_2 <- stan_glmer(
 )
 ```
 
+```{r, eval= FALSE}
+saveRDS(climb_model_2,"data/climb_model_2.Rds")
+```
+
 - If this were real work we would check the priors and chain health etc...
 
 ## Posterior summaries
@@ -376,6 +380,24 @@ mean(binary_prediction)
 ```
 
 Less - due to nonlinear link function.
+
+## Check prediction manually
+
+```{r}
+climb_model_2 <- readRDS("data/climb_model_2.Rds")
+climber_df <- as.data.frame(climb_model_2)
+climber_draws_Ama_Dablam <- climber_df |>
+     select('(Intercept)',age, oxygen_usedTRUE, 'b[(Intercept) peak_name:Ama_Dablam]','Sigma[expedition_id:(Intercept),(Intercept)]')
+
+head(climber_draws_Ama_Dablam)
+```
+
+Ok for each of these 20000 draws, we need to compute a random expedition tweak wiht the appropriate sigma, and then compute the probability from the inverse logistic.
+
+```{r}
+
+```
+
 
 ## Further reading
 
