@@ -61,6 +61,7 @@ ggplot(airbnb, aes(y = log(price), x = neighborhood)) +
   geom_boxplot() + 
   scale_x_discrete(labels = c(1:44))
 ```
+
 - Wide variation of variation of median price -> use neighborhood as grouping variable to account for this.
 
 ## Air-bnb Group Level predictors
@@ -74,9 +75,9 @@ airbnb %>%
   select(price, neighborhood, walk_score, transit_score) %>% 
   head(3)
 ```
-- We can use this 'explain' some of the variation from neighborhood to neighborhood.
+- We can use `walk_score` to  'explain' some of the variation from neighborhood to neighborhood.
 
-```{r, echo= FALSE}
+```{r}
 
 nbhd_features <- airbnb %>% 
   group_by(neighborhood, walk_score) %>% 
@@ -132,7 +133,7 @@ median(log(\text{price})) = (1.9 + 0.017 \text{ walk_score}) + 0.27 \text{ bedro
 0.22\text{ rating} - 0.54 \text{ private_room} - 1.1 \text{ shared_room}
 $$
 
-- For  example, the median log price increases by about 18% for every 10 points increase in walkability.
+- For  example, the median log price increases by about 17% for every 10 points increase in walkability.
 
 
 ```{r, eval = FALSE}
@@ -165,7 +166,7 @@ nbhd_features %>%
 
 `r knitr::include_graphics("images/fig19_6.png")`
 
-- The model with the `walk_score` predictor has pulled Pullman’s intercept down, closer to the trend
+- The model with the `walk_score` predictor has pulled Pullman’s intercept ($\gamma_0 + \gamma_1 U_j$) down, closer to the trend
 
 - Note the small sample size for Pullman. Using group level predictors helps us to pool information across groups, improving understanding of small sample size groups.
 
@@ -182,7 +183,9 @@ data(climbers_sub)
 climbers <- climbers_sub %>% 
   select(peak_name, expedition_id, member_id, success,
          year, season, age, expedition_role, oxygen_used)
+```
 
+```{r}
 expeditions <- climbers %>% 
   group_by(peak_name, expedition_id) %>% 
   summarize(n_climbers = n(),.groups="drop")
