@@ -238,6 +238,11 @@ climb_model_2 <- stan_glmer(
 saveRDS(climb_model_2,"data/climb_model_2.Rds")
 ```
 
+```{r}
+climb_model_2 <- readRDS("data/climb_model_2.Rds")
+```
+
+
 - If this were real work we would check the priors and chain health etc...
 
 ## Posterior summaries
@@ -297,41 +302,31 @@ $$
 
 - For each of the 200 sampled expeditions and 46 sampled peaks, we have associated posterior distributions for the $b_{0j}$ and $p_{0k}$   
 
-```{r, eval=FALSE}
+```{r}
 group_levels_2 <- tidy(climb_model_2, effects = "ran_vals") %>% 
   select(level, group, estimate)
 ```
 
 
+
 - Example tweaks for peaks: 
 
-```{r, eval=FALSE}
+```{r}
 group_levels_2 %>% 
   filter(group == "peak_name") %>% 
   head(2)
 ```
 
-```
-  level       group     estimate
-  <chr>       <chr>        <dbl>
-1 Ama_Dablam  peak_name     2.91
-2 Annapurna_I peak_name    -2.06
-```
-
+ 
 
 - Example tweaks for expedition:
 
-```{r, eval=FALSE}
+```{r}
 group_levels_2 %>% 
   filter(group == "expedition_id") %>% 
   head(2)
 ```
-```
-  level     group         estimate
-  <chr>     <chr>            <dbl>
-1 AMAD03107 expedition_id -0.00294
-2 AMAD03327 expedition_id  3.31  
-```
+ 
 
 - For example, to predict success probability for a climber new expedition to an existing peak (say Ama_Dablam, an 'easy one'), we would would use $b=0$ and the appropriate $p_{0j}=2.91$.  If the climber were 30 years old but did not plan  to use oxygen:
 
@@ -341,9 +336,9 @@ logit_p = -1.53 +  2.91 - .0474*30
 invlogit(logit_p)
 ```
 
-48% chance of success. Could also use `posterior_prediction`
+49% chance of success. Could also use `posterior_prediction`
 
-```{r, eval=FALSE}
+```{r}
 new_expedition <- data.frame(
   age = c(30), oxygen_used = c(FALSE), 
   expedition_id = c("new"), peak_name = c("Ama_Dablam") )
@@ -352,7 +347,6 @@ binary_prediction <- posterior_predict(climb_model_2, newdata = new_expedition)
 
 mean(binary_prediction)
 
-# output: 0.494
 ```
  
  If they did use oxygen:
@@ -367,7 +361,7 @@ With prediction:
 
 
 
-```{r, eval=FALSE}
+```{r}
 new_expedition <- data.frame(
   age = c(30), oxygen_used = c(TRUE), 
   expedition_id = c("new"), peak_name = c("Ama_Dablam") )
@@ -375,8 +369,6 @@ new_expedition <- data.frame(
 binary_prediction <- posterior_predict(climb_model_2, newdata = new_expedition)
 
 mean(binary_prediction)
-
-# output: 0.954
 ```
 
 Less - due to nonlinear link function?
@@ -384,7 +376,6 @@ Less - due to nonlinear link function?
 ## Check prediction manually
 
 ```{r}
-climb_model_2 <- readRDS("data/climb_model_2.Rds")
 climber_df <- as.data.frame(climb_model_2)
 climber_draws_Ama_Dablam <- climber_df |>
      select('(Intercept)',age, oxygen_usedTRUE,
@@ -404,7 +395,14 @@ prob_draws <- climber_draws_Ama_Dablam |>
          prob_without_tweak = invlogit(logit),
          prob_with_tweak = invlogit(logit + exp_tweak))
 
-summary(prob_draws |> select(prob_without_tweak, prob_with_tweak)) 
+prob_draws <- prob_draws |> select(prob_without_tweak, prob_with_tweak)
+prob_draws |> summarize(across(everything(),mean))
+```
+ 
+```{r}
+to_plot <- prob_draws |> pivot_longer(cols = c('prob_without_tweak', 'prob_with_tweak'), names_to = "tweak", values_to = "prob")
+
+ggplot(data = to_plot) + geom_density(mapping = aes(x=logit(prob), color=tweak))
 ```
  
 
