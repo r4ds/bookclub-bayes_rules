@@ -371,7 +371,7 @@ binary_prediction <- posterior_predict(climb_model_2, newdata = new_expedition)
 mean(binary_prediction)
 ```
 
-Less - due to nonlinear link function?
+Why different?  `invlogit` is nonlinear (but monotonic)
 
 ## Check prediction manually
 
@@ -396,13 +396,16 @@ prob_draws <- climber_draws_Ama_Dablam |>
          prob_with_tweak = invlogit(logit + exp_tweak))
 
 prob_draws <- prob_draws |> select(prob_without_tweak, prob_with_tweak)
-prob_draws |> summarize(across(everything(),mean))
+prob_draws_longer <- prob_draws |> pivot_longer(cols = c('prob_without_tweak', 'prob_with_tweak'), names_to = "tweak", values_to = "prob")
+prob_draws_longer |> group_by(tweak) |> summarize(mean=mean(prob),median=median(prob),.groups = "drop")
 ```
  
+ The expedition random tweak only effects the mean, the median is invariant for monotonic function like `invlogit`.  Which to report?  Maybe better to report the posterior distribution!
+ 
 ```{r}
-to_plot <- prob_draws |> pivot_longer(cols = c('prob_without_tweak', 'prob_with_tweak'), names_to = "tweak", values_to = "prob")
 
-ggplot(data = to_plot) + geom_density(mapping = aes(x=logit(prob), color=tweak))
+
+ggplot(data = prob_draws_longer) + geom_density(mapping = aes(x=logit(prob), color=tweak))
 ```
  
 
