@@ -107,7 +107,7 @@ expedition_success <- climbers %>%
 ggplot(expedition_success, aes(x = success_rate,fill=factor(success_rate))) + 
   geom_histogram(show.legend = FALSE,size=0.05,color="grey90") +
   labs(x="Success rate",title="Success rates for the 200 climbing expeditions") +
-  theme_bw(base_size = 14,base_family = "Roboto Condensed")
+  theme_bw(base_size = 14)
 ```
 
 

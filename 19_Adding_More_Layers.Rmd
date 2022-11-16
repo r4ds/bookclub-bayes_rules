@@ -1,13 +1,486 @@
 # Adding More Layers
 
+
+
+
+`r knitr::include_graphics("images/Theend.jpg")`
+
+
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- So far we have used individual-level predictors... how can we also utilize *group-level* predictors?
 
-## SLIDE 1
+- What happens with more then one grouping variable?
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+```{r,echo=FALSE, message = FALSE, warning=FALSE}
+# Load packages
+library(bayesrules)
+library(tidyverse)
+library(bayesplot)
+library(rstanarm)
+library(janitor)
+library(tidybayes)
+library(broom.mixed)
+library(gridExtra)
+```
+
+## Group-level predictors - Airbnb Data Revisited
+
+- Return to Airbnb data, this time look at (log) price.
+
+```{r}
+data(airbnb)
+airbnb %>% 
+  summarize(nlevels(neighborhood), min(price), max(price))
+```
+
+
+- Prices *look* lognormal:
+
+```{r, echo=FALSE}
+ggplot(airbnb) + 
+  geom_histogram(mapping= aes(x=log(price)),color = "white", binwidth = 0.5)
+```
+
+## Airbnb : Individual-level predictors
+
+```{r, echo=FALSE}
+p1 <- ggplot(airbnb, aes(y = log(price), x = bedrooms)) + 
+  geom_jitter()
+p2<-ggplot(airbnb, aes(y = log(price), x = rating)) + 
+  geom_jitter()
+p3<-ggplot(airbnb, aes(y = log(price), x = room_type)) + 
+  geom_boxplot()
+grid.arrange(p1,p2,p3,ncol=3)
+```
+
+## Air-bnb Hierachical structure
+
+```{r, echo=FALSE}
+ggplot(airbnb, aes(y = log(price), x = neighborhood)) + 
+  geom_boxplot() + 
+  scale_x_discrete(labels = c(1:44))
+```
+
+- Wide variation of variation of median price -> use neighborhood as grouping variable to account for this.
+
+## Air-bnb Group Level predictors
+
+- The data also contains group level predictors: walk_score and transit score
+
+- These are the same for each property in a given neighborhood.
+
+```{r}
+airbnb %>% 
+  select(price, neighborhood, walk_score, transit_score) %>% 
+  head(3)
+```
+- We can use `walk_score` to  'explain' some of the variation from neighborhood to neighborhood.
+
+```{r}
+
+nbhd_features <- airbnb %>% 
+  group_by(neighborhood, walk_score) %>% 
+  summarize(mean_log_price = mean(log(price)), n_listings = n(),.groups="drop")  
+
+
+ggplot(nbhd_features, aes(y = mean_log_price, x = walk_score)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+## Incorporating group predictors
+
+- Model ends up looking complicated 
+
+`r knitr::include_graphics("images/eqn19_4.png")`
+
+- But including it is relatively easy!
+
+```{r, eval=FALSE}
+airbnb_model_2 <- stan_glmer(
+  log(price) ~ walk_score + bedrooms + rating + room_type +
+    (1 | neighborhood), 
+  data = airbnb, family = gaussian,
+  chains = 4, iter = 5000*2, seed = 84735
+)
+```
+
+
+
+
+## Airbnb median model 
+
+```{r, eval=FALSE}
+tidy(airbnb_model_2, effects="fixed")
+```
+
+```
+  term                  estimate std.error
+  <chr>                    <dbl>     <dbl>
+1 (Intercept)             1.92     0.305  
+2 walk_score              0.0166   0.00342
+3 bedrooms                0.265    0.0139 
+4 rating                  0.221    0.0282 
+5 room_typePrivate room  -0.538    0.0224 
+6 room_typeShared room   -1.06     0.0583 
+```
+
+This leads to a median model:
+
+$$
+median(log(\text{price})) = (1.9 + 0.017 \text{ walk_score}) + 0.27 \text{ bedrooms} + \\
+0.22\text{ rating} - 0.54 \text{ private_room} - 1.1 \text{ shared_room}
+$$
+
+- For  example, the median log price increases by about 17% for every 10 points increase in walkability.
+
+
+```{r, eval = FALSE}
+tidy(airbnb_model_2, effects = "ran_pars")
+```
+```
+  term                        group        estimate
+  <chr>                       <chr>           <dbl>
+1 sd_(Intercept).neighborhood neighborhood    0.202
+2 sd_Observation.Residual     Residual        0.366
+```
+- These are estimates of the group level variation and within group variation
+
+- Book notes that the 'unexplained' neighborhood to neighborhood variation is less now that we have included the group-level predictor (makes sense!)
+
+
+
+## Airbnb posterior group-level analysis
+
+- This section looks at neighborhood-level trends, focusing on two neighborhoods with mean log price but vastly different walk ability
+
+```{r, echo=FALSE}
+
+nbhd_features %>% 
+  filter(neighborhood %in% c("Edgewater", "Pullman"))
+
+```
+
+- Compare the group-level intercepts for models with (closed circle) and without (open circle) the `walk_score` group level indicator:
+
+`r knitr::include_graphics("images/fig19_6.png")`
+
+- The model with the `walk_score` predictor has pulled Pullman’s intercept ($\gamma_0 + \gamma_1 U_j$) down, closer to the trend
+
+- Note the small sample size for Pullman. Using group level predictors helps us to pool information across groups, improving understanding of small sample size groups.
+
+
+
+## Two or more grouping variables
+
+- Remember last chapter we used `climbers` to model success of a climber, grouped by expedition. 
+
+- However there is also peak_name as a possible grouping variable!
+
+```{r, echo=FALSE}
+data(climbers_sub)
+climbers <- climbers_sub %>% 
+  select(peak_name, expedition_id, member_id, success,
+         year, season, age, expedition_role, oxygen_used)
+```
+
+```{r}
+expeditions <- climbers %>% 
+  group_by(peak_name, expedition_id) %>% 
+  summarize(n_climbers = n(),.groups="drop")
+
+head(expeditions,4)
+```
+- Dataset includes 2076 individual climbers, grouped together in 200 expeditions, to 46 different peaks
+
+## Hiearchical model 
+
+`r knitr::include_graphics("images/fig19_7.png")`
+
+- Just as different expeditions have related climber success probabilities, we expect the same for different peaks. 
+- We don't really care about the particular subset of peaks in the data, but we want to incorporate it -> Grouping variable.  
+
+- Now we have two 'tweaks',  $b_{0j}$ adjustment for expedition `j` and $p_{0k}$, adjustment for  peak `k`.
+
+`r knitr::include_graphics("images/fig19_8.png")`
+
+- $Y_{ijk}$ is the success of the i'th climber, who climbed the j'th peak in the k'th expedition. (nested structure of the data)
+
+- $\sigma_b$ is the variability of success rates from expedition to expedition (within a peak)
+
+- $\sigma_p$ is the variability between peaks.
+
+## Simulating the model
+
+- Model 1, doesn't include the peak id, as in Chapter 18
+
+```{r, eval=FALSE}
+climb_model_1 <- stan_glmer(
+  success ~ age + oxygen_used + (1 | expedition_id), 
+  data = climbers, family = binomial, 
+  chains = 4, iter = 5000*2, seed = 84735
+)
+```
+
+
+- Model 2, including the peak id is easy to specify!
+
+```{r, eval= FALSE}
+climb_model_2 <- stan_glmer(
+  success ~ age + oxygen_used + (1 | expedition_id) + (1 | peak_name), 
+  data = climbers, family = binomial, 
+  chains = 4, iter = 5000*2, seed = 84735
+)
+```
+
+
+- If this were real work we would check the priors and chain health etc...
+
+## Posterior summaries
+
+- The two models lead to similar conclusions for the relationship with age and oxygen use.
+
+```{r, eval=FALSE}
+# Get trend summaries for both models
+climb_model_1_mean <- tidy(climb_model_1, effects = "fixed")
+climb_model_2_mean <- tidy(climb_model_2, effects = "fixed")
+
+# Combine the summaries for both models
+climb_model_1_mean %>%
+  right_join(., climb_model_2_mean, by ="term",
+             suffix = c("_model_1", "_model_2")) %>%
+  select(-starts_with("std.error"))
+```
+
+```
+  term            estimate_model_1 estimate_model_2
+  <chr>                      <dbl>            <dbl>
+1 (Intercept)              -1.41            -1.53  
+2 age                      -0.0475          -0.0474
+3 oxygen_usedTRUE           5.79             6.18  
+
+```
+
+- Different accounting of the variability in success rates.
+
+```{r, eval=FALSE, echo=FALSE}
+climb_model_1_var <- tidy(climb_model_1, effects = "ran_pars")
+climb_model_2_var <- tidy(climb_model_2, effects = "ran_pars")
+
+# Combine the summaries for both models
+climb_model_1_var %>% 
+  right_join(., climb_model_2_var, by = "term",
+             suffix =c("_model_1", "_model_2")) %>%
+  select(-starts_with("group"))
+```
+
+```
+  term                         estimate_model_1 estimate_model_2
+  <chr>                                   <dbl>            <dbl>
+1 sd_(Intercept).expedition_id             3.63             3.09
+2 sd_(Intercept).peak_name                NA                1.85
+```
+
+- This makes sense, not only are some expeditions more successeful , some peaks are easier to climb.
+
+## Group specific parameters
+
+- Climb model 2:
+
+$$
+log(\frac{\pi_{ijk}}{1-\pi_{ijk}})=(\beta_0 + b_{0j} + p_{0k}) + \beta_1 X_{ijk1} + \beta_2 X_{ijk2}
+$$
+
+- For each of the 200 sampled expeditions and 46 sampled peaks, we have associated posterior distributions for the $b_{0j}$ and $p_{0k}$   
+
+```{r, eval=FALSE}
+group_levels_2 <- tidy(climb_model_2, effects = "ran_vals") %>% 
+  select(level, group, estimate)
+```
+
+
+
+- Example tweaks for peaks: 
+
+```{r, eval=FALSE}
+group_levels_2 %>% 
+  filter(group == "peak_name") %>% 
+  head(2)
+```
+```
+# A tibble: 2 × 3
+  level       group     estimate
+  <chr>       <chr>        <dbl>
+1 Ama_Dablam  peak_name     2.91
+2 Annapurna_I peak_name    -2.05
+```
+ 
+
+- Example tweaks for expedition:
+
+```{r, eval=FALSE}
+group_levels_2 %>% 
+  filter(group == "expedition_id") %>% 
+  head(2)
+```
+```
+# A tibble: 2 × 3
+  level     group         estimate
+  <chr>     <chr>            <dbl>
+1 AMAD03107 expedition_id -0.00442
+2 AMAD03327 expedition_id  3.36 
+```
+ 
+
+- For example, to predict success probability for a climber new expedition to an existing peak (say Ama_Dablam, an 'easy one'), we would would use $b=0$ and the appropriate $p_{0j}=2.91$.  If the climber were 30 years old but did not plan  to use oxygen:
+
+```{r}
+logit_p = -1.53 +  2.91 - .0474*30 
+
+invlogit(logit_p)
+```
+
+49% chance of success. Could also use `posterior_prediction`
+
+```{r, eval= FALSE}
+new_expedition <- data.frame(
+  age = c(30), oxygen_used = c(FALSE), 
+  expedition_id = c("new"), peak_name = c("Ama_Dablam") )
+
+binary_prediction <- posterior_predict(climb_model_2, newdata = new_expedition)
+
+mean(binary_prediction)
+
+# [1] 0.49425
+```
+ 
+ If they did use oxygen:
+ 
+```{r}
+logit_p = -1.53 +  2.91 - .0474*30  + 6.2
+
+invlogit(logit_p)
+``` 
+
+With prediction:
+
+
+
+```{r, eval=FALSE}
+new_expedition <- data.frame(
+  age = c(30), oxygen_used = c(TRUE), 
+  expedition_id = c("new"), peak_name = c("Ama_Dablam") )
+
+binary_prediction <- posterior_predict(climb_model_2, newdata = new_expedition)
+
+mean(binary_prediction)
+# [1] 0.95185
+```
+
+Why different?  `invlogit` is nonlinear (but monotonic)
+
+## Check prediction manually
+
+```{r, eval=FALSE}
+climber_df <- as.data.frame(climb_model_2)
+climber_draws_Ama_Dablam <- climber_df |>
+     select('(Intercept)',age, oxygen_usedTRUE,
+            'b[(Intercept) peak_name:Ama_Dablam]','Sigma[expedition_id:(Intercept),(Intercept)]') |>
+     rename(b_peak ='b[(Intercept) peak_name:Ama_Dablam]', sigma_exp = 'Sigma[expedition_id:(Intercept),(Intercept)]',
+            B_0 = '(Intercept)')
+
+head(climber_draws_Ama_Dablam)
+```
+```
+        B_0         age oxygen_usedTRUE   b_peak sigma_exp
+1 -1.568117 -0.05460222        5.982335 2.556797 10.682662
+2 -1.642934 -0.05515428        5.534564 3.408024  6.409617
+3 -1.296799 -0.05990499        6.250567 3.837433  8.373671
+4 -2.153309 -0.02706937        5.822815 3.100700  7.631247
+5 -2.083079 -0.05394689        6.751443 3.877804  8.072649
+6 -2.595809 -0.03535885        5.731177 4.762982 12.472273
+```
+
+Ok for each of these 20000 draws, we compute a random expedition tweak with the appropriate sigma, and then compute the probability from the inverse logistic.
+
+```{r, eval=FALSE}
+logit_draws <- climber_draws_Ama_Dablam |>
+  mutate(exp_tweak = rnorm(n(),0, sqrt(sigma_exp))) |>
+  mutate(without_tweak = B_0 + 30*age + oxygen_usedTRUE + b_peak,
+         with_tweak =  without_tweak + exp_tweak)
+ 
+draws_longer <- logit_draws |> pivot_longer(cols = c('without_tweak', 'with_tweak'), names_to = "tweak", values_to = "logit")
+
+draws_longer <- draws_longer |> mutate(prob_success = invlogit(logit))
+
+ggplot(data = draws_longer) + geom_density(mapping = aes(x=logit, color=tweak))
+```
+
+
+`r knitr::include_graphics("images/logitplot.png")`
+
+
+Summary statistics: 
+ 
+```{r, eval=FALSE}
+draws_longer |> group_by(tweak) |> 
+  summarize(mean=mean(prob_success),
+           median=median(prob_success),
+           q_lower = quantile(prob_success,.1),
+           q_higher = quantile(prob_success,.9),.groups = "drop")
+```
+```
+# A tibble: 2 × 5
+  tweak          mean median q_lower q_higher
+  <chr>         <dbl>  <dbl>   <dbl>    <dbl>
+1 with_tweak    0.952  0.998   0.885    1.00 
+2 without_tweak 0.997  0.998   0.994    0.999
+```
+
+ The expedition random tweak only effects the mean, the median is invariant for monotonic function like `invlogit`.  But the mean is what you get if you simulate  the Bernoulli event for each probability draw in the same way `posterior_predict` does.
+
+$$
+p_{succ} = \mathbb{E}(Y) \approx \frac{1}{N_{draws}} \sum_{draws} \pi_{draw} = \mathbb{E}(\pi)
+$$
+
+Or one could report the full posterior for $\pi$ :
+
+```{r, eval=FALSE}
+ggplot(data = draws_longer |> filter(tweak=='with_tweak')) +
+  geom_density(mapping = aes(x=prob_success )) + xlim(.95,1) 
+```
+
+`r knitr::include_graphics("images/posterior_c18.png")` 
+
+
+## Further reading
+
+- [Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R.](https://bookdown.org/roback/bookdown-BeyondMLR/)
+
+    - Julie Legler  and Paul Roback 2021. A more traditional maxiumun likelyhood approach, but from my scans looks quite thorough. And is free online!
+    
+    
+<br>
+
+- [Data Analysis Using Regression and Multilevel/Hierarchical Models](http://www.stat.columbia.edu/~gelman/arm/)
+
+    - Andrew Gelman and Jennifer Hill. 2006. Not available for free online, dont know what is in it.
+
+<br>
+
+- [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/) 
+
+    - Andrew Gelman, Jennifer Hill, Aki Vehtari 2020.
+This (and the as yet unpublished "Advanced Regression and Multilevel Models") are intended to be the new version of the book mentioned above, as far as I can determine. 
+
+    - Book club starting $\text{soon}^{tm}$!
+    
+    
+    
+## The End
+
+`r knitr::include_graphics("images/wcquote.jpg")`
 
 ## Meeting Videos
 
