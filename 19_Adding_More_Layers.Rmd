@@ -153,7 +153,7 @@ tidy(airbnb_model_2, effects = "ran_pars")
 
 ## Airbnb posterior group-level analysis
 
-- This last section looks at neighborhood-level trends, focusing on two neighborhoods with mean log price but vastly different walk ability
+- This section looks at neighborhood-level trends, focusing on two neighborhoods with mean log price but vastly different walk ability
 
 ```{r, echo=FALSE}
 
