@@ -389,25 +389,27 @@ head(climber_draws_Ama_Dablam)
 Ok for each of these 20000 draws, we need to compute a random expedition tweak with the appropriate sigma, and then compute the probability from the inverse logistic.
 
 ```{r}
-prob_draws <- climber_draws_Ama_Dablam |>
+logit_draws <- climber_draws_Ama_Dablam |>
   mutate(exp_tweak = rnorm(n(),0, sqrt(sigma_exp))) |>
-  mutate(logit = B_0 + 30*age + oxygen_usedTRUE + b_peak,
-         prob_without_tweak = invlogit(logit),
-         prob_with_tweak = invlogit(logit + exp_tweak))
-
-prob_draws <- prob_draws |> select(prob_without_tweak, prob_with_tweak)
-prob_draws_longer <- prob_draws |> pivot_longer(cols = c('prob_without_tweak', 'prob_with_tweak'), names_to = "tweak", values_to = "prob")
-prob_draws_longer |> group_by(tweak) |> summarize(mean=mean(prob),median=median(prob),.groups = "drop")
-```
+  mutate(without_tweak = B_0 + 30*age + oxygen_usedTRUE + b_peak,
+         with_tweak =  without_tweak + exp_tweak)
  
- The expedition random tweak only effects the mean, the median is invariant for monotonic function like `invlogit`.  Which to report?  Maybe better to report the posterior distribution!
+logit_draws_longer <- logit_draws |> pivot_longer(cols = c('without_tweak', 'with_tweak'), names_to = "tweak", values_to = "logit")
+
+ggplot(data = logit_draws_longer) + geom_density(mapping = aes(x=logit, color=tweak))
+```
+
+Summary statistics: 
  
 ```{r}
-
-
-ggplot(data = prob_draws_longer) + geom_density(mapping = aes(x=logit(prob), color=tweak))
+logit_draws_longer |> group_by(tweak) |> summarize(mean=mean(invlogit(logit)),median=median(invlogit(logit)),.groups = "drop")
 ```
  
+ The expedition random tweak only effects the mean, the median is invariant for monotonic function like `invlogit`.  But the mean is what you want if you want a prediction for probability of success. 
+
+$$
+p_{succ} = \mathbb{E}(Y) \approx \frac{1}{N_{draws}} \sum_{draws} \pi_{draw} = \mathbb{E}(\pi)
+$$
 
 ## Further reading
 
