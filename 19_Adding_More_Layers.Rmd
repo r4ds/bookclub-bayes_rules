@@ -394,15 +394,21 @@ logit_draws <- climber_draws_Ama_Dablam |>
   mutate(without_tweak = B_0 + 30*age + oxygen_usedTRUE + b_peak,
          with_tweak =  without_tweak + exp_tweak)
  
-logit_draws_longer <- logit_draws |> pivot_longer(cols = c('without_tweak', 'with_tweak'), names_to = "tweak", values_to = "logit")
+draws_longer <- logit_draws |> pivot_longer(cols = c('without_tweak', 'with_tweak'), names_to = "tweak", values_to = "logit")
 
-ggplot(data = logit_draws_longer) + geom_density(mapping = aes(x=logit, color=tweak))
+draws_longer <- draws_longer |> mutate(prob_success = invlogit(logit))
+
+ggplot(data = draws_longer) + geom_density(mapping = aes(x=logit, color=tweak))
 ```
 
 Summary statistics: 
  
 ```{r}
-logit_draws_longer |> group_by(tweak) |> summarize(mean=mean(invlogit(logit)),median=median(invlogit(logit)),.groups = "drop")
+draws_longer |> group_by(tweak) |> 
+  summarize(mean=mean(prob_success),
+           median=median(prob_success),
+           q_lower = quantile(prob_success,.1),
+           q_higher = quantile(prob_success,.9),.groups = "drop")
 ```
  
  The expedition random tweak only effects the mean, the median is invariant for monotonic function like `invlogit`.  But the mean is what you get if you simulate  the Bernoulli event for each probability draw in the same way `posterior_predict` does.
@@ -414,8 +420,7 @@ $$
 Or one could report the full posterior for $\pi$ :
 
 ```{r}
-probs <- logit_draws |> mutate(prob_success = invlogit(with_tweak))
-ggplot(data = probs) + geom_density(mapping = aes(x=prob_success )) + xlim(.95,1) 
+ggplot(data = draws_longer |> filter(tweak=='with_tweak')) + geom_density(mapping = aes(x=prob_success )) + xlim(.95,1) 
 ```
 
 
