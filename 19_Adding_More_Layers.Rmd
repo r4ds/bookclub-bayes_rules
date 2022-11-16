@@ -405,11 +405,20 @@ Summary statistics:
 logit_draws_longer |> group_by(tweak) |> summarize(mean=mean(invlogit(logit)),median=median(invlogit(logit)),.groups = "drop")
 ```
  
- The expedition random tweak only effects the mean, the median is invariant for monotonic function like `invlogit`.  But the mean is what you want if you want a prediction for probability of success. 
+ The expedition random tweak only effects the mean, the median is invariant for monotonic function like `invlogit`.  But the mean is what you get if you simulate  the Bernoulli event for each probability draw in the same way `posterior_predict` does.
 
 $$
 p_{succ} = \mathbb{E}(Y) \approx \frac{1}{N_{draws}} \sum_{draws} \pi_{draw} = \mathbb{E}(\pi)
 $$
+
+Or one could report the full posterior for $\pi$ :
+
+```{r}
+probs <- logit_draws |> mutate(prob_success = invlogit(with_tweak))
+ggplot(data = probs) + geom_density(mapping = aes(x=prob_success )) + xlim(.95,1) 
+```
+
+
 
 ## Further reading
 
