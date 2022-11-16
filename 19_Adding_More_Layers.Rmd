@@ -234,14 +234,6 @@ climb_model_2 <- stan_glmer(
 )
 ```
 
-```{r, eval= FALSE}
-saveRDS(climb_model_2,"data/climb_model_2.Rds")
-```
-
-```{r}
-climb_model_2 <- readRDS("data/climb_model_2.Rds")
-```
-
 
 - If this were real work we would check the priors and chain health etc...
 
@@ -302,7 +294,7 @@ $$
 
 - For each of the 200 sampled expeditions and 46 sampled peaks, we have associated posterior distributions for the $b_{0j}$ and $p_{0k}$   
 
-```{r}
+```{r, eval=FALSE}
 group_levels_2 <- tidy(climb_model_2, effects = "ran_vals") %>% 
   select(level, group, estimate)
 ```
@@ -311,20 +303,33 @@ group_levels_2 <- tidy(climb_model_2, effects = "ran_vals") %>%
 
 - Example tweaks for peaks: 
 
-```{r}
+```{r, eval=FALSE}
 group_levels_2 %>% 
   filter(group == "peak_name") %>% 
   head(2)
 ```
-
+```
+# A tibble: 2 × 3
+  level       group     estimate
+  <chr>       <chr>        <dbl>
+1 Ama_Dablam  peak_name     2.91
+2 Annapurna_I peak_name    -2.05
+```
  
 
 - Example tweaks for expedition:
 
-```{r}
+```{r, eval=FALSE}
 group_levels_2 %>% 
   filter(group == "expedition_id") %>% 
   head(2)
+```
+```
+# A tibble: 2 × 3
+  level     group         estimate
+  <chr>     <chr>            <dbl>
+1 AMAD03107 expedition_id -0.00442
+2 AMAD03327 expedition_id  3.36 
 ```
  
 
@@ -338,7 +343,7 @@ invlogit(logit_p)
 
 49% chance of success. Could also use `posterior_prediction`
 
-```{r}
+```{r, eval= FALSE}
 new_expedition <- data.frame(
   age = c(30), oxygen_used = c(FALSE), 
   expedition_id = c("new"), peak_name = c("Ama_Dablam") )
@@ -347,6 +352,7 @@ binary_prediction <- posterior_predict(climb_model_2, newdata = new_expedition)
 
 mean(binary_prediction)
 
+# [1] 0.49425
 ```
  
  If they did use oxygen:
@@ -361,7 +367,7 @@ With prediction:
 
 
 
-```{r}
+```{r, eval=FALSE}
 new_expedition <- data.frame(
   age = c(30), oxygen_used = c(TRUE), 
   expedition_id = c("new"), peak_name = c("Ama_Dablam") )
@@ -369,13 +375,14 @@ new_expedition <- data.frame(
 binary_prediction <- posterior_predict(climb_model_2, newdata = new_expedition)
 
 mean(binary_prediction)
+# [1] 0.95185
 ```
 
 Why different?  `invlogit` is nonlinear (but monotonic)
 
 ## Check prediction manually
 
-```{r}
+```{r, eval=FALSE}
 climber_df <- as.data.frame(climb_model_2)
 climber_draws_Ama_Dablam <- climber_df |>
      select('(Intercept)',age, oxygen_usedTRUE,
@@ -385,10 +392,19 @@ climber_draws_Ama_Dablam <- climber_df |>
 
 head(climber_draws_Ama_Dablam)
 ```
+```
+        B_0         age oxygen_usedTRUE   b_peak sigma_exp
+1 -1.568117 -0.05460222        5.982335 2.556797 10.682662
+2 -1.642934 -0.05515428        5.534564 3.408024  6.409617
+3 -1.296799 -0.05990499        6.250567 3.837433  8.373671
+4 -2.153309 -0.02706937        5.822815 3.100700  7.631247
+5 -2.083079 -0.05394689        6.751443 3.877804  8.072649
+6 -2.595809 -0.03535885        5.731177 4.762982 12.472273
+```
 
-Ok for each of these 20000 draws, we need to compute a random expedition tweak with the appropriate sigma, and then compute the probability from the inverse logistic.
+Ok for each of these 20000 draws, we compute a random expedition tweak with the appropriate sigma, and then compute the probability from the inverse logistic.
 
-```{r}
+```{r, eval=FALSE}
 logit_draws <- climber_draws_Ama_Dablam |>
   mutate(exp_tweak = rnorm(n(),0, sqrt(sigma_exp))) |>
   mutate(without_tweak = B_0 + 30*age + oxygen_usedTRUE + b_peak,
@@ -401,16 +417,27 @@ draws_longer <- draws_longer |> mutate(prob_success = invlogit(logit))
 ggplot(data = draws_longer) + geom_density(mapping = aes(x=logit, color=tweak))
 ```
 
+
+`r knitr::include_graphics("images/logitplot.png")`
+
+
 Summary statistics: 
  
-```{r}
+```{r, eval=FALSE}
 draws_longer |> group_by(tweak) |> 
   summarize(mean=mean(prob_success),
            median=median(prob_success),
            q_lower = quantile(prob_success,.1),
            q_higher = quantile(prob_success,.9),.groups = "drop")
 ```
- 
+```
+# A tibble: 2 × 5
+  tweak          mean median q_lower q_higher
+  <chr>         <dbl>  <dbl>   <dbl>    <dbl>
+1 with_tweak    0.952  0.998   0.885    1.00 
+2 without_tweak 0.997  0.998   0.994    0.999
+```
+
  The expedition random tweak only effects the mean, the median is invariant for monotonic function like `invlogit`.  But the mean is what you get if you simulate  the Bernoulli event for each probability draw in the same way `posterior_predict` does.
 
 $$
@@ -419,10 +446,12 @@ $$
 
 Or one could report the full posterior for $\pi$ :
 
-```{r}
-ggplot(data = draws_longer |> filter(tweak=='with_tweak')) + geom_density(mapping = aes(x=prob_success )) + xlim(.95,1) 
+```{r, eval=FALSE}
+ggplot(data = draws_longer |> filter(tweak=='with_tweak')) +
+  geom_density(mapping = aes(x=prob_success )) + xlim(.95,1) 
 ```
 
+`r knitr::include_graphics("images/posterior_c18.png")` 
 
 
 ## Further reading
