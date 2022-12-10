@@ -23,7 +23,7 @@
 <meta name="author" content="The R4DS Online Learning Community" />
 
 
-<meta name="date" content="2022-11-16" />
+<meta name="date" content="2022-12-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -625,7 +625,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb30-4"><a href="striking-a-balance-between-the-prior-and-data.html#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">c</span>(mean, mode, var, sd), </span>
 <span id="cb30-5"><a href="striking-a-balance-between-the-prior-and-data.html#cb30-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">decimals =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb30-6"><a href="striking-a-balance-between-the-prior-and-data.html#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">column_labels.font.weight =</span> <span class="st">&#39;bold&#39;</span>)</span></code></pre></div>
-<div id="fmdhbywmqa" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="fmdhbywmqa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
@@ -665,6 +665,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-style: none;
   border-right-width: 1px;
   border-right-color: #D3D3D3;
+}
+
+#fmdhbywmqa .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 #fmdhbywmqa .gt_title {
@@ -787,6 +792,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
 #fmdhbywmqa .gt_empty_group_heading {
@@ -1034,30 +1040,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">model</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">alpha</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">beta</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">mean</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">mode</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">var</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">sd</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="model">model</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha">alpha</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="beta">beta</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="mean">mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="mode">mode</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="var">var</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="sd">sd</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left">prior</td>
-<td class="gt_row gt_right">5</td>
-<td class="gt_row gt_right">11</td>
-<td class="gt_row gt_right">0.31</td>
-<td class="gt_row gt_right">0.29</td>
-<td class="gt_row gt_right">0.01</td>
-<td class="gt_row gt_right">0.11</td></tr>
-    <tr><td class="gt_row gt_left">posterior</td>
-<td class="gt_row gt_right">55</td>
-<td class="gt_row gt_right">60</td>
-<td class="gt_row gt_right">0.48</td>
-<td class="gt_row gt_right">0.48</td>
-<td class="gt_row gt_right">0.00</td>
-<td class="gt_row gt_right">0.05</td></tr>
+    <tr><td headers="model" class="gt_row gt_left">prior</td>
+<td headers="alpha" class="gt_row gt_right">5</td>
+<td headers="beta" class="gt_row gt_right">11</td>
+<td headers="mean" class="gt_row gt_right">0.31</td>
+<td headers="mode" class="gt_row gt_right">0.29</td>
+<td headers="var" class="gt_row gt_right">0.01</td>
+<td headers="sd" class="gt_row gt_right">0.11</td></tr>
+    <tr><td headers="model" class="gt_row gt_left">posterior</td>
+<td headers="alpha" class="gt_row gt_right">55</td>
+<td headers="beta" class="gt_row gt_right">60</td>
+<td headers="mean" class="gt_row gt_right">0.48</td>
+<td headers="mode" class="gt_row gt_right">0.48</td>
+<td headers="var" class="gt_row gt_right">0.00</td>
+<td headers="sd" class="gt_row gt_right">0.05</td></tr>
   </tbody>
   
   

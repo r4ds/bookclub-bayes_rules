@@ -23,7 +23,7 @@
 <meta name="author" content="The R4DS Online Learning Community" />
 
 
-<meta name="date" content="2022-11-16" />
+<meta name="date" content="2022-12-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -626,7 +626,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>How will their different priors influence the posterior conclusions of the friends? To answer this question, they collected some data!</p></li>
 <li><p>Review 20 recent movies picked at random.</p></li>
 </ul>
-<div id="gcfsdknrgj" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="gcfsdknrgj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
@@ -666,6 +666,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-style: none;
   border-right-width: 1px;
   border-right-color: #D3D3D3;
+}
+
+#gcfsdknrgj .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 #gcfsdknrgj .gt_title {
@@ -788,6 +793,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
 #gcfsdknrgj .gt_empty_group_heading {
@@ -1035,21 +1041,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">year</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">title</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">binary</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="year">year</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="title">title</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="binary">binary</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_right">2005</td>
-<td class="gt_row gt_left">King Kong</td>
-<td class="gt_row gt_left">FAIL</td></tr>
-    <tr><td class="gt_row gt_right">1983</td>
-<td class="gt_row gt_left">Flashdance</td>
-<td class="gt_row gt_left">PASS</td></tr>
-    <tr><td class="gt_row gt_right">2013</td>
-<td class="gt_row gt_left">The Purge</td>
-<td class="gt_row gt_left">FAIL</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2005</td>
+<td headers="title" class="gt_row gt_left">King Kong</td>
+<td headers="binary" class="gt_row gt_left">FAIL</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">1983</td>
+<td headers="title" class="gt_row gt_left">Flashdance</td>
+<td headers="binary" class="gt_row gt_left">PASS</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2013</td>
+<td headers="title" class="gt_row gt_left">The Purge</td>
+<td headers="binary" class="gt_row gt_left">FAIL</td></tr>
   </tbody>
   
   
@@ -1060,7 +1066,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb28-3"><a href="different-priors-different-posteriors.html#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_totals</span>(<span class="st">&quot;row&quot;</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb28-4"><a href="different-priors-different-posteriors.html#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb28-5"><a href="different-priors-different-posteriors.html#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">column_labels.font.weight =</span> <span class="st">&#39;bold&#39;</span>)</span></code></pre></div>
-<div id="rguqtkfzie" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="rguqtkfzie" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
@@ -1100,6 +1106,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-style: none;
   border-right-width: 1px;
   border-right-color: #D3D3D3;
+}
+
+#rguqtkfzie .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 #rguqtkfzie .gt_title {
@@ -1222,6 +1233,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
 #rguqtkfzie .gt_empty_group_heading {
@@ -1469,21 +1481,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">binary</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">n</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">percent</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="binary">binary</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="percent">percent</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left">FAIL</td>
-<td class="gt_row gt_right">11</td>
-<td class="gt_row gt_right">0.55</td></tr>
-    <tr><td class="gt_row gt_left">PASS</td>
-<td class="gt_row gt_right">9</td>
-<td class="gt_row gt_right">0.45</td></tr>
-    <tr><td class="gt_row gt_left">Total</td>
-<td class="gt_row gt_right">20</td>
-<td class="gt_row gt_right">1.00</td></tr>
+    <tr><td headers="binary" class="gt_row gt_left">FAIL</td>
+<td headers="n" class="gt_row gt_right">11</td>
+<td headers="percent" class="gt_row gt_right">0.55</td></tr>
+    <tr><td headers="binary" class="gt_row gt_left">PASS</td>
+<td headers="n" class="gt_row gt_right">9</td>
+<td headers="percent" class="gt_row gt_right">0.45</td></tr>
+    <tr><td headers="binary" class="gt_row gt_left">Total</td>
+<td headers="n" class="gt_row gt_right">20</td>
+<td headers="percent" class="gt_row gt_right">1.00</td></tr>
   </tbody>
   
   
