@@ -230,3 +230,16 @@ This is a list of resources mentioned in the first meeting!
 01:05:06	Oluwafemi Oyedele:	Thank you !!!
 ```
 </details>
+
+
+### Cohort 4
+
+`r knitr::include_url("https://www.youtube.com/embed/URL")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+LOG
+```
+</details>

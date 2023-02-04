@@ -505,18 +505,10 @@ This (and the as yet unpublished "Advanced Regression and Multilevel Models") ar
 
 ### Cohort 2
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
+`r knitr::include_url("https://www.youtube.com/embed/-TKYo__mqZg")`
 
 
-### Cohort 3
+### Cohort 4
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

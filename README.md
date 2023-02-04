@@ -11,8 +11,9 @@ As we read, we are producing [notes about the book](https://r4ds.io/bayes_rules)
 If you would like to present, please see the sign-up sheet for your cohort (linked below, and pinned in the [#book_club-bayes_rules](https://rfordatascience.slack.com/archives/C03EK4FUMQX) channel on Slack)!
 
 - Cohort 1 (ended 2022-10-20): [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGg3BSs7FW5_LPYfAyNft7I0)
-- [Cohort 2](https://docs.google.com/spreadsheets/d/1RENoDi6HNBw_l_OsOttl_3sA5CNVF6JExgnjwoSR5y4/edit?usp=sharing) (started 2022-06-15): [Wednesdays, 12:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20220615T170000&p1=24&p2=197&p3=1440) | [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGj_iXxIxkutG3rUzh-Z5vi7)
-- [Cohort 3](https://docs.google.com/spreadsheets/d/1a-jmLFb5Du5G9CoYmLdiPA8waNI6nLzoXkl6gsPdhmc/edit?usp=sharing) (started 2022-10-12): [Wednesdays, 15:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20221012T200000&p1=24&p2=1440) | [meeting videos](https://youtube.com/playlist?list=PL3x6DOfs2NGhtHrM2ZAQLzgDpvA-Bj2-m)
+- Cohort 2 (ended 2022-11-16): [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGj_iXxIxkutG3rUzh-Z5vi7)
+- Cohort 3 (ended 2022-12-21): [meeting videos](https://youtube.com/playlist?list=PL3x6DOfs2NGhtHrM2ZAQLzgDpvA-Bj2-m)
+- [Cohort 4](https://docs.google.com/spreadsheets/d/1tf2GwxwpZNyQsXfyi8wBfuMyRrr6FT1ZxZAQPzxFJCA/edit?usp=sharing) (started 2023-02-11): [Saturdays, 08:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20230211T140000&p1=24&p2=1440) | [meeting videos](https://youtube.com/playlist?list=PL3x6DOfs2NGgr7tq9xfZsr-jET5VJ6Q0U)
 
 <hr>
 

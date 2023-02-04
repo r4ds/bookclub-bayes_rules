@@ -204,6 +204,11 @@ Next chapter, MCMC **under the hood**
 
 ### Cohort 3
 
+`r knitr::include_url("https://www.youtube.com/embed/A7K8K11RFs4")`
+
+
+### Cohort 4
+
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>

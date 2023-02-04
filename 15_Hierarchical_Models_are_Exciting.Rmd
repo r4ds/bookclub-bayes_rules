@@ -204,16 +204,8 @@ knitr::include_graphics(rep("images/runners-ch-15-1.png"))
 
 `r knitr::include_url("https://www.youtube.com/embed/AydrtOASCUw")`
 
-<details>
-<summary> Meeting chat log </summary>
 
-```
-LOG
-```
-</details>
-
-
-### Cohort 3
+### Cohort 4
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

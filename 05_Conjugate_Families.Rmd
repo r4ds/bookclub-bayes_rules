@@ -224,11 +224,6 @@ We moved from sample size 1 -> $n$
 - Normal-Normal: Y is continuous 
 
 
-## SLIDE 1
-
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
-
 ## Meeting Videos
 
 ### Cohort 1
@@ -242,6 +237,11 @@ We moved from sample size 1 -> $n$
 
 
 ### Cohort 3
+
+`r knitr::include_url("https://www.youtube.com/embed/zva5guIAOic")`
+
+
+### Cohort 4
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

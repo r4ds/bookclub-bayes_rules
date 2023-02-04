@@ -552,16 +552,8 @@ Either we go with a random intercepts models or we use a random intercepts and s
 
 `r knitr::include_url("https://www.youtube.com/embed/1KCDnDqOhCQ")`
 
-<details>
-<summary> Meeting chat log </summary>
 
-```
-LOG
-```
-</details>
-
-
-### Cohort 3
+### Cohort 4
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
