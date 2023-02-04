@@ -291,3 +291,16 @@ Author: Marisa Eisenberg
 ### Cohort 3
 
 `r knitr::include_url("https://www.youtube.com/embed/RygccxWeHSE")`
+
+
+### Cohort 4
+
+`r knitr::include_url("https://www.youtube.com/embed/URL")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+LOG
+```
+</details>

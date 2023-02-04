@@ -29,16 +29,8 @@
 
 `r knitr::include_url("https://www.youtube.com/embed/6Yma6P5h0IA")`
 
-<details>
-<summary> Meeting chat log </summary>
 
-```
-LOG
-```
-</details>
-
-
-### Cohort 3
+### Cohort 4
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

@@ -254,6 +254,19 @@ un_runif <- runif(1)
 
 ### Cohort 3
 
+`r knitr::include_url("https://www.youtube.com/embed/CCpL8IpUTEE")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+00:24:45	Gabby Palomo:	https://stats.stackexchange.com/questions/513661/example-where-the-posterior-from-jags-and-stan-are-really-different-and-have-rea
+```
+</details>
+
+
+### Cohort 4
+
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>
