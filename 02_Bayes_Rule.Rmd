@@ -1,6 +1,6 @@
 # Bayes' Rule
 
-```{r load-packages, message=FALSE, echo=FALSE}
+```{r 02-load-packages, message=FALSE, echo=FALSE}
 library(tidyverse)
 library(bayesrules)
 library(janitor)
