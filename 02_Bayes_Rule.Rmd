@@ -1,28 +1,46 @@
-# Bayes’ Rule
+# Bayes' Rule
+
+```{r 02-load-packages, message=FALSE, echo=FALSE}
+library(tidyverse)
+library(bayesrules)
+library(janitor)
+library(gt)
+library(latex2exp)
+```
 
 **Learning objectives:**
 
-- Explore foundational probability tools
-    - conditional probability: Probability of A given B $P(A|B)$  
-    - joint probability: Probability of A and B occuring  $P(A \cap B)$   
-    - marginal probability:  Probability of an event $P(A)$
-    - Law of Total Probability: If a probability of an event is unknown it can be calculated using the known probability of other related event
+-   Explore foundational probability tools
 
-- Conduct first formal Bayesian analysis  
+    -   conditional probability: probability of $A$ given $B$, $P(A|B)$
 
-- Practice your Bayesian grammar  
-    - Prior
-    - Likelihood
-    - Normalizing constant  
-    
-- Simulate Bayesian models
-    - `sample()`
-    - `sample_n()`
-    - `rbinon()`
+    -   joint probability: probability of $A$ and $B$ occurring together, $P(A \cap B)$
 
-## Building a Bayesian model for events 
+    -   marginal probability: probability of an event $A$, $P(A)$
 
-**First Data set** `?? fake_news` 
+    -   law of total probability: if a probability of an event $A$ is unknown it can be calculated using the known probability of other related events such as $A \cap B$ and $A|B$
+
+-   Conduct first formal Bayesian analysis
+
+-   Practice your Bayesian grammar
+
+    -   Prior
+
+    -   Likelihood
+
+    -   Normalizing constant
+
+-   Simulate Bayesian models
+
+    -   `sample()`
+
+    -   `sample_n()`
+
+    -   `rbinon()`
+
+## Building a Bayesian model for events
+
+**The `fake_news` data set**
 
 ```{r, fig.cap="Bayesian knowledge-building diagram for wether or not the article is fake", echo=FALSE}
 DiagrammeR::grViz("
@@ -30,228 +48,339 @@ DiagrammeR::grViz("
   
   # node statement
   node [shape = oval]
-  a [label = 'Prior: 40% of the article are fake'];
-  b [label = 'Data: ! more common among fake news'];
-  c [label = 'Posterior: Is the article fake or not?!'];
+  a [label = 'Prior: 40% of the articles\nare fake'];
+  b [label = 'Data: ! more common\namong fake news'];
+  c [label = 'Posterior: Is the article\nfake or not?!'];
 
   # edge statement
   a -> c b -> c
   }")
 ```
 
-Two variables:  
-- fake vs real  
-- ! or not  
+Two variables:\
+- fake vs real\
+- contains exclamation (!) or not
 
 ![](./images/Quiz_2_1.png)
 
+### Workflow:
 
-### Workflow: 
+1.  Prior probability model
 
-1. Prior probability model  
-2. A model for interpreting the data  
-3. Posterior probability model  
+2.  A model for interpreting the data
 
-**Prior probability model: **
+3.  Posterior probability model
 
-$$ P(FakeNew = 0.4 )  \quad and \quad  P(Real = 0.6) $$
-$$ P(B = 0.4 )  \quad and \quad  P(B^c = 0.6) $$
-
-*Here $P(FakeNew)$ : prior probability of an article to be a fake news.*
+## Prior probability model
 
 A valid probability model must:
 
-1. account for all events;  
-2. assign probabilities for each event;  
-3. sum to one.
+1.  account for all events;
 
-**Conditional probability & likelihood**
+2.  assign probabilities for each event;
 
-$P(ExClam)$ : probability that an article contains an exclamation mark in his title
+3.  sum to one.
 
-We know that if an article is fake news : 26.67% that the title contains **!** and if it is not fake this is just 2.22%.
+In our `fake_news` example, the prior probability model is defined as:
 
-$$ P(Exclam|FakeNew) = 0.2667 \quad and \quad P(Exclam|Real = 0.0222)  $$
+$P(\text{is fake}) = 0.4$ and $P(\text{is real}) = 0.6$
 
-This is a **conditional probability**. Conditional probability helps us know if B gives us an insight in A. If it does not provide any information, it means that events A and B are **independent** ($P(A|B) = P(A)$). 
+## Model for interpreting the data
 
-## Normalizing constant 
+If the event "*is fake"* is know and "*has !*" is unknown then the **conditional probability function** allows us to compare the probabilities of "has !" with being fake or real:
 
-$P(Exclam|FakeNew) = 0.2667 \quad and \quad P(Exclam|Real) = 0.0222)$ are our likelihood, when we know A (!) we know that getting B (Fake news) is more likely. It is different that our prior probability.
+$P(\text{has ! | is fake})$ and $P(\text{doesn't have ! | is fake})$
 
-Then we need can calculate the **joint probability** (probability of observing A nd B for example), of each options (here it is half of them): 
+If the event "*is fake"* is unknown and "*has !*" is known then the **likelihood function** allows us to evaluate the relative compatibility of the data, "*has !*" with the event of being fake or real:
 
-$$ P(Exclam \cap FakeNew) = P(Exclam|FakeNew) P (Fakenew) = 0.2667 *0.4 = 0.1067 $$ 
+$L(\text{is fake | has !})$ and $L(\text{is real | has !})$
 
-$$ P(PasExclam \cap FakeNew ) = (1 - P(Exclam|FakeNew)) * P(FakeNew)) = (1 - 0.2667) * 0.4 = 0.2993  $$ 
+where,
 
-Here $P(B)$ is the *marginal probability* of B
+$L(\text{is fake | has !}) = P(\text{has ! | is fake})$ and
 
-```{r}
-B <- c(0.1067, 0.2933, 0.4)
-Bc <- c(0.0133, 0.5867, 0.6)
-Total <- c(0.12, 0.88, 1)
-joint_p <- data.frame(B, Bc, Total, row.names = c("A", "Ac", "Total"))
-knitr::kable(joint_p)
+$L(\text{is real | has !}) = P(\text{has ! | is real})$
+
+```{r, echo=FALSE}
+fake_news |> 
+  tabyl(type, title_has_excl) |> 
+  adorn_percentages() |> 
+  adorn_pct_formatting(digits = 1) |> 
+  gt() |> 
+  tab_spanner(label = "has !", columns = -1) |> 
+  tab_style(style = list(cell_fill("steelblue", alpha = 0.15), cell_text(weight = "bold")),
+            locations = cells_body(columns = "TRUE")) |> 
+  cols_width(2:3 ~ px(100)) |> 
+  tab_options(table.border.top.style = "hidden")
 ```
 
+Since the **likelihood function** is not a true probability model, we need a **normalizing constant**. Here it will be $P(\text{has !})$, i.e., the probability of observing the data.
 
-$P(Exclam)$ is our normalizing constant.
+\begin{equation}
+\begin{split}
+  \text{normalizing constant} &= P(\text{has !}) \\
+                              &= P(\text{has ! }\cap \text{ is real}) + P(\text{has ! }\cap \text{ is fake}) \\
+                              &= P(\text{is real}) \cdot P(\text{has ! | is real}) + P(\text{is fake}) \cdot P(\text{has ! | is fake}) \\
+                              &= 0.6 \times 0.022 + 0.4 \times 0.267 \\
+                              &= 0.12
+\end{split}
+\end{equation} 
 
-Ok but we want $P(FakeNew|exlam)$ ie $P(B|A)$
+The formula used to calculate the normalizing constant is also called the **law of total probability**.
 
-$$ P(FakeNew|exclam) = \frac{P(exclam \cap FakeNew)}{P(Exclam)} = \frac{P(FakeNew)L(FakeNew|Exclam)}{P(Exclam)}  $$ 
+## Posterior probability model
 
-$$ posterior = \frac{prior . likelihood}{normalizing \quad constant} = \frac{0.4 * 0.2667}{0.12} = 0.889  $$
+The posterior probability model is defined as: $P(\text{is fake | has !})$ and $P(\text{is real | has !})$
 
-## Posterior simulation 
+and this can be calculated using **Bayes' Rule**:
 
-This was a model. Now we will use a simulation! 
+$$
+\text{posterior} = \frac{\text{prior} \times \text{likelihood}}{\text{normalizing constant}}
+$$
 
-```{r, message=FALSE}
-library(dplyr)
-library(ggplot2)
+```{r, echo=FALSE}
+prior <- c(0.4, 0.6)
+likelihood <- c(0.2667, 0.0222)
+normalizing_constant <- sum(prior * likelihood)
+posterior <- prior * likelihood / normalizing_constant
+summary_table <- 
+  tibble(type = c("fake", "real"), prior = prior, likelihood = likelihood, posterior = posterior) |> 
+  pivot_longer(-type) |> 
+  pivot_wider(names_from = type, values_from = value) |> 
+  adorn_pct_formatting(digits = 1) 
+
+gt(summary_table) |> 
+  cols_label(name = "", fake = "Fake", real = "Real") |> 
+  cols_width(1 ~ px(120), 2:3 ~ px(100)) |> 
+  tab_style(style = list(cell_text(weight = "bold")),
+            locations = cells_body(rows = 3))
+```
+
+Shortcut to calculating the normalizing constant:
+
+$$
+\text{normalising constant} = \text{sum}(\text{prior} \times \text{likelihood})
+$$
+
+## Posterior simulation
+
+We can also validate the posterior model derived using the Bayes' Rule via simulation.
+
+Start off with specifying the prior and the likelihoods.
+
+```{r}
+prior <- list(fake = 0.4, real = 0.6)
+likelihood <- list(fake = 0.2667, real = 0.0222)
+```
+
+We then simulate 10,000 articles as either "real" or "fake" based on the prior probabilities.
+
+```{r}
 set.seed(84735)
-# Define possible articles
-article <- data.frame(type = c("real", "fake"))
+articles <- sample_n(tibble(type = c("fake", "real")), size = 10000, 
+                     weight = prior, replace = TRUE)
+```
 
-# Define the prior model
-prior <- c(0.6, 0.4)
-article_sim <- dplyr::sample_n(article, size = 10000, 
-                        weight = prior, 
-                        replace = TRUE)
-# dats model
-article_sim <- article_sim %>% 
-  mutate(data_model = case_when(type == "fake" ~ 0.2667,
-                                type == "real" ~ 0.0222))
+```{r, echo=FALSE}
+articles |> 
+  tabyl(type) |> 
+  adorn_totals("row") |> 
+  adorn_pct_formatting(digits = 1) |> 
+  gt() |> 
+  tab_header("Summary of simulated articles") |> 
+  tab_options(table.border.top.style = "hidden")
+```
 
+Against these simulated we add an attribute - "does it have an exclamation (!) mark" based on the likelihoods.
 
-# Simulate exclamation point usage 
-data <- c("NoExclam", "Exclam")
+```{r}
+articles <- articles |>
+  mutate(data_model = if_else(type == "fake", likelihood$fake, 
+                              likelihood$real)) |> 
+  rowwise() |>
+  mutate(has_exclam = sample(c(T, F), 1, prob = c(data_model, 1-data_model)))
+```
 
-set.seed(3)
-# Rbase simplier ? 
-article_sim <- article_sim %>%
-  group_by(1:n()) %>% 
-  mutate(usage = sample(data, size = 1, 
-                        prob = c(1 - data_model, data_model)))
+Finally, we filter for those articles which have an exclamation mark and compute the probabilitiy of them being "fake" or "real". This gives us the **posterior probability (simulated)**.
 
-ggplot(article_sim, aes(x = type)) + 
-  geom_bar() + 
-  facet_wrap(~ usage)
+```{r}
+posterior_prob_sim <- 
+  articles |> 
+  filter(has_exclam) |> 
+  tabyl(type) |> 
+  adorn_pct_formatting(digits = 1) |> 
+  pull(percent) 
+```
 
+```{r, echo=FALSE}
+summary_table |> 
+  rbind(c("posterior (simulated)", posterior_prob_sim)) |> 
+  gt() |> 
+  cols_label(name = "", fake = "Fake", real = "Real") |> 
+  cols_width(1 ~ px(180), 2:3 ~ px(100)) |> 
+  tab_style(style = list(cell_text(weight = "bold")),
+            locations = cells_body(rows = 4))
 ```
 
 ## Example Pop vs Soda vs Coke
 
- Expend TRUE/FALSE example with one with categories. 
- 
-## Building a Bayesian model for random variables (1/n)
-
-### First step prior
-
-$\pi$ : skill of Kasparov relative to Deep Blue (**random variable**) 
-
-Prior model of $\pi$:
+Define the prior probability model.
 
 ```{r}
-pi <- c(0.2, 0.5, 0.8, "total")
-# pmf : probability mass functions
-pmf <- c(0.1, 0.25, 0.65, 1)
-prior_pi <- data.frame(pi, pmf)
-knitr::kable(t(prior_pi))
+prior <- c("midwest" = 0.21, "northeast" = 0.17, "south" = 0.38, "west" = 0.24)
 ```
 
-## Building a Bayesian model for random variables (1/n)
+```{r, echo=FALSE}
+tibble(region = "probability") |> 
+  bind_cols() |> 
+  tibble(regions = names(prior),
+       prior = prior) |> 
+  pivot_wider(names_from = regions, values_from =  prior) |> 
+  adorn_pct_formatting(digits = 1) |> 
+  gt() |> 
+  tab_header("Prior probability model") |> 
+  cols_width(1 ~ px(120), everything() ~ px(100)) |> 
+  tab_options(column_labels.font.weight = "bold", table.border.top.style = "hidden")
+```
 
-### Binomial data model
+```{r}
+likelihood <- pop_vs_soda |> 
+  tabyl(pop, region) |> 
+  adorn_percentages("col") |> 
+  filter(pop) |> 
+  select(-pop)
+```
 
-Y is the number of games (on 6 games) that Kasparov wins.
+```{r, echo=FALSE}
+tibble(region = "likelihood") |> 
+  bind_cols() |> 
+  tibble(regions = names(likelihood),
+       likelihood = as_vector(likelihood)) |> 
+  pivot_wider(names_from = regions, values_from =  likelihood) |> 
+  adorn_pct_formatting(digits = 1) |> 
+  gt() |> 
+  tab_header("Data model (likelihoods)") |> 
+  cols_width(1 ~ px(120), everything() ~ px(100)) |> 
+  tab_options(column_labels.font.weight = "bold", table.border.top.style = "hidden")
+```
 
-Y our random variable: {0, 1, ...., 6}  , depends on $\pi$  
+```{r}
+posterior <- prior * likelihood / sum(prior * likelihood)
+```
 
-$$f(y|\pi) = P (Y = y|\pi )  $$
-$y$ : any possible outcone
+```{r, echo=FALSE}
+tibble(region = names(prior), prior = prior, likelihood = as_vector(likelihood), posterior = as_vector(posterior)) |> 
+  pivot_longer(cols = -region) |> 
+  pivot_wider(names_from = region, values_from = value) |> 
+  adorn_pct_formatting() |> 
+  gt() |> 
+  tab_header("Posterior porbability model") |> 
+  cols_width(1 ~ px(120), everything() ~ px(100)) |> 
+  cols_label(name = "") |> 
+  tab_style(style = cell_text(weight = "bold", color = "crimson"),
+            locations = list(cells_body(4, 1), cells_body(2, 3))) |> 
+  tab_options(column_labels.font.weight = "bold",  table.border.top.style = "hidden")
+```
 
-If we assume games are independents (no effect on each other) and $\pi$ is fixed we can use the *Binomial model*.
+We can summarize the key observations from this analysis is the form of the below graph.
 
-Y is the number of successes in a fixed number of trials ($n$)
+```{r, echo=FALSE}
+DiagrammeR::grViz("
+  digraph {
+  # node statement
+  node [shape = oval]
+    a [label = 'Prior: The person is most likely\nfrom the south'];
+    b [label = 'Data: People from the mid-west are most\nlikely to call the drink pop'];
+    c [label = 'Posterior: The person is most likely\nfrom the mid-west'];
 
-$$ Y|\pi \sim Bin(n, \pi) $$ 
+  # edge statement
+  a -> c b -> c
+  }")
+```
 
-$$ f(y|\pi) = \begin{pmatrix} 6 \\y \end{pmatrix} \pi^y(1 - \pi)^{6 - y} \quad for \quad  y \in \begin{Bmatrix} 0, 1, 2, 3, 4, 5, 6 \end{Bmatrix}  $$ 
-We can use the prior for $\pi$ and all $y$ to calculate each probabilities. 
+## Building a Bayesian model for random variables
 
-## Building a Bayesian model for random variables (1/n)
+Here we will be modelling the probability ($\pi$) of Kasparov defeating Deep Blue in a game of chess.
 
-### Binomial likelihood function
+### Prior probability model
 
-Kasparov only won one of six games. This is our data with $L(\pi|y = 1)$. We can calculate it for each $\pi$ value. 
+This is based on the matches played between Kasparov and Deep Blue in 1996.
 
-What is more likely is that $pi$ was 0.2.
+|$\pi$    | 0.2 | 0.5  | 0.8  | Total |
+|:----------|:---:|:----:|:----:|:-----:|
+|$f(\pi)$ | 10.0% | 25.0% | 65.0% |   100.0%   |
 
-### Probability mass functions vs likelihood functions
 
-When $\pi$ is known the conditional pmf allows us to compare the probabilities of different possible value of data Y (y1, y2 ..) occuring with $pi$
+**R code for prior probability model:**
 
-when Y = y is known the likelihood function allows us to to compare the relative values of $\pi$ ($\pi_1, \pi_2, etc ..$)
+```{r}
+pi <- c(0.2, 0.5, 0.8)
+prior_prob <- c(0.1, 0.25, 0.65)
+```
 
-### Normalizing constant
+### Data model
 
-Total probability that Kasparov would win Y = 1 game across all possible win probability of $\pi$
+The number of matches won ($Y$) by Kasparov in the 1997 encounter will serve as the data in this setup. 
 
-We apply the Law of Total Probability (the sum of all likelihood for each value of $\pi$ by the prior probailities of these $\pi$ values)
+In the end Kasparov just one out of the six matches played in 1997, i.e., $Y = 1$
 
-$$ f(y = 1) = L(\pi = 0.2 | y = 1) f(\pi = 0.2 ) +  L(\pi = 0.5 | y = 1) f(\pi = 0.5 ) + L(\pi = 0.8 | y = 1) f(\pi = 0.8 ) +$$ 
+**R code for binomial data model (likelihood function):**
 
-$$ f( y = 1) \simeq 0.3932 * 0.1 + 0.0938 * 0.25 + 0.0015 * 0.65 \simeq 0.0637 $$
+```{r}
+likelihoods <- map_dbl(pi, ~dbinom(1, 6, .x))
+
+ggplot(mapping = aes(x = pi, y = likelihoods)) +
+  geom_point(size = 3) +
+  geom_segment(aes(xend = pi, yend = 0)) +
+  scale_x_continuous(breaks = pi) +
+  xlab(TeX(r"($\pi$)")) +
+  ylab(TeX(r"($L(\pi | y = 1)$)"))
+```
 
 ### Posterior probability model 
 
-We have the prior, the likelihod and the normalizing constant -> Bayes Rules!
+We can now combine the prior and likelihood to derive the posterior probabilities.
 
-
-$$ posterior = \frac{prior . likelihood}{normalizing \quad constant} \quad for \in  \begin{Bmatrix} 0.2, 0
-5, 0.8 \end{Bmatrix} $$
-
-
-### Posterior shortcut
-
-The normalizing constant, is a **constant** it appears in all posterior calculations. We can work with unnormalizied proabilities or we can divide each unnormalizied probability by the sum of each of them.
-
-$$ posterior \propto prior * likelihood $$
-## Posterior simulation 
+**R code for posterior probability model:**
 
 ```{r}
-# Define possible win probabilities
-chess <- data.frame(pi = c(0.2, 0.5, 0.8))
+posterior_prob <- prior_prob * likelihoods / sum(prior_prob * likelihoods)
 
-# Define the prior model
-prior <- c(0.10, 0.25, 0.65)
-
-# Simulate 10000 values of pi from the prior
-set.seed(84735)
-chess_sim <- sample_n(chess, size = 10000, weight = prior, replace = TRUE)
-
-chess_sim <- chess_sim %>% 
-  mutate(y = rbinom(10000, size = 6, prob = pi))
-
-# Focus on simulations with y = 1
-win_one <- chess_sim %>% 
-  filter(y == 1)
-
-
-# Plot the posterior approximation
-ggplot(win_one, aes(x = pi)) + 
-  geom_bar()
-
+tibble(pi = pi, prior = prior_prob, posterior = posterior_prob) |> 
+  pivot_longer(cols = -pi, values_to = "probability") |> 
+  mutate(name = fct_rev(name)) |> 
+  ggplot() +
+  geom_col(aes(pi, probability, fill = name), position = "dodge") +
+  scale_x_continuous(breaks = pi) +
+  theme(legend.title = element_blank())
 ```
+
+### Posterior simulation 
+
+```{r}
+set.seed(84735)
+
+sim_results <- 
+  tibble(pi = sample(pi, 10000, replace = TRUE, prob = prior_prob)) |> 
+  rowwise() |> 
+  mutate(games_won = rbinom(1, 6, pi)) |> 
+  filter(games_won == 1) |> 
+  tabyl(pi) |> 
+  rename(posterior_sim = percent) |> 
+  mutate(posterior = posterior_prob)
+
+sim_results |> 
+  select(-n) |> 
+  adorn_pct_formatting() |> 
+  gt() |> 
+  cols_width(1 ~ px(50), everything() ~ px(120)) |> 
+  tab_header("Simulating the posterior probabilities")
+```
+
 
 ## Links shared in the second meeting
 
-Bayesian probability for babies! (with cookies) : https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf
-Author: Marisa Eisenberg
-
+Bayesian probability for babies! (with cookies) : <https://raw.githubusercontent.com/epimath/epid-814-materials/master/Lectures/BayesianEstimation.pdf> Author: Marisa Eisenberg
 
 ## Meeting Videos
 
@@ -260,26 +389,25 @@ Author: Marisa Eisenberg
 `r knitr::include_url("https://www.youtube.com/embed/-6f60j96d58")`
 
 <details>
-<summary> Meeting chat log </summary>
 
-```
-00:11:44	erik.aalto@tocaboca.com:	Hello, sorry for joining late, happy to see you again 😄
-00:36:06	Brendan Lam:	https://www.youtube.com/watch?v=HZGCoVF3YvM
-00:37:26	Erik:	we’ll utilize the following likelihood function notation  
-<poorly formatted paste>
-00:37:41	Erik:	sorry for how the formatting above went…
-00:42:42	Lisa:	to add to brendan's resource, here is a slide deck using cookies as an example: https://github.com/epimath/epid-814-materials/blob/master/Lectures/BayesianEstimation.pdf
-01:02:00	Federica Gazzelloni:	thanks
-01:02:34	Federica Gazzelloni:	I’d like to go back to the L(..|..)
-01:02:35	Gabby Palomo:	It was clear Olivier. Don’t worry!!
-01:03:07	Federica Gazzelloni:	just to understand how it works and what is the difference
-01:03:43	Erik:	Need to jump out! Thanks for today.
-01:04:15	Lisa:	I need to get back to work too. thank you for today!
-01:04:58	Federica Gazzelloni:	thanks
-01:05:03	Federica Gazzelloni:	I’ll check that
-```
+<summary>Meeting chat log</summary>
+
+    00:11:44    erik.aalto@tocaboca.com:    Hello, sorry for joining late, happy to see you again 😄
+    00:36:06    Brendan Lam:    https://www.youtube.com/watch?v=HZGCoVF3YvM
+    00:37:26    Erik:   we’ll utilize the following likelihood function notation  
+    <poorly formatted paste>
+    00:37:41    Erik:   sorry for how the formatting above went…
+    00:42:42    Lisa:   to add to brendan's resource, here is a slide deck using cookies as an example: https://github.com/epimath/epid-814-materials/blob/master/Lectures/BayesianEstimation.pdf
+    01:02:00    Federica Gazzelloni:    thanks
+    01:02:34    Federica Gazzelloni:    I’d like to go back to the L(..|..)
+    01:02:35    Gabby Palomo:   It was clear Olivier. Don’t worry!!
+    01:03:07    Federica Gazzelloni:    just to understand how it works and what is the difference
+    01:03:43    Erik:   Need to jump out! Thanks for today.
+    01:04:15    Lisa:   I need to get back to work too. thank you for today!
+    01:04:58    Federica Gazzelloni:    thanks
+    01:05:03    Federica Gazzelloni:    I’ll check that
+
 </details>
-
 
 ### Cohort 2
 
@@ -287,20 +415,18 @@ Author: Marisa Eisenberg
 
 `r knitr::include_url("https://www.youtube.com/embed/QirQynPol0k")`
 
-
 ### Cohort 3
 
 `r knitr::include_url("https://www.youtube.com/embed/RygccxWeHSE")`
-
 
 ### Cohort 4
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 
 <details>
-<summary> Meeting chat log </summary>
 
-```
-LOG
-```
+<summary>Meeting chat log</summary>
+
+    LOG
+
 </details>
