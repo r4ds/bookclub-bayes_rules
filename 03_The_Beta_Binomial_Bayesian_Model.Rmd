@@ -51,11 +51,19 @@ In that case, we greatly over-simplified reality to fit within the framework of 
  
 ## What quality does the probability density function have ?
 
+Let $\pi$ be a continuous random variable with *probability density function* $f(\pi)$.  Then $f(\pi)$ has the following properties:
+
 - The proportion has to be greater than or equal to zero
+
+$$f(\pi) \geq 0$$
 
 - The area under the curve sums to 1
 
+$$\int_{\pi} \! f(\pi) \, d\pi = 1$$
+
 - The area under the curve between a and b sums to the probability of pie being in that range.
+
+$$P(a < \pi < b) = \int_{a}^{b} \! f(\pi) \, d\pi$$
 
 ## Tuning the Beta Prior
 This is a process of trial and error
@@ -63,7 +71,10 @@ This is a process of trial and error
 **Plot the Beta(45,55) prior**
 
 ```{r}
-plot_beta(45,55)
+# beta distribution with hyperparameters
+# alpha = 45
+# beta = 55
+bayesrules::plot_beta(45,55, mean = FALSE, mode = FALSE)
 ```
 
 
