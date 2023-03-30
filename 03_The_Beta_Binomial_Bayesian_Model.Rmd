@@ -30,7 +30,7 @@ library(tidyverse)
 
 This is going to form the basis for our prior.
 
-## Are we good so far ?
+### Are we good so far ?
 ![](images/Michelle.png)
 
 
@@ -43,19 +43,27 @@ In that case, we greatly over-simplified reality to fit within the framework of 
 
  So ....
  
- - Probability density functions for continuous models
+ - Probability density functions for *continuous* models
  
- - rather than
+rather than
  
  - Probability mass functions  for discrete models
  
 ## What quality does the probability density function have ?
 
+Let $\pi$ be a continuous random variable with *probability density function* $f(\pi)$.  Then $f(\pi)$ has the following properties:
+
 - The proportion has to be greater than or equal to zero
+
+$$f(\pi) \geq 0$$
 
 - The area under the curve sums to 1
 
+$$\int_{\pi} \! f(\pi) \, d\pi = 1$$
+
 - The area under the curve between a and b sums to the probability of pie being in that range.
+
+$$P(a < \pi < b) = \int_{a}^{b} \! f(\pi) \, d\pi$$
 
 ## Tuning the Beta Prior
 This is a process of trial and error
@@ -63,7 +71,20 @@ This is a process of trial and error
 **Plot the Beta(45,55) prior**
 
 ```{r}
-plot_beta(45,55)
+# beta distribution with hyperparameters
+# alpha = 45
+# beta = 55
+bayesrules::plot_beta(45,55, mean = FALSE, mode = FALSE)
+```
+
+$$\text{E}(\pi) = \frac{\alpha}{\alpha + \beta} = \frac{45}{45 + 55} = 0.45$$
+$$\text{Mode}(\pi) = \frac{\alpha-1}{\alpha+\beta-2} = \frac{45-1}{45+55-2} \approx 0.4490$$
+
+```{r}
+# beta distribution with hyperparameters
+# alpha = 45
+# beta = 55
+bayesrules::plot_beta(45,55, mean = TRUE, mode = TRUE)
 ```
 
 
@@ -110,20 +131,27 @@ The Posterior model of $\pi$ along with the (scaled) likelihood function of $\pi
 plot_beta_binomial(alpha = 45, beta = 55, y = 30, n = 50)
 ```
 
-**The beta posterior model is B**
+**The beta posterior model was choice B** because this posterior model strikes a *balance* between the prior and the likelihood.
 
+<!--
 The prior pdf, scaled likelihood function, and posterior pdf of Michelle’s election support $\pi$.
+-->
 
 ## Effects of New Data ?
 
 ```{r}
 summarize_beta_binomial(alpha = 45, beta = 55, y = 30, n = 50)
 ```
-- A comparison illuminates the polling data’s influence on the posterior model. Mainly, after observing the poll in which 30 of 50 people supported Michelle, the expected value of her underlying support $\pi$ nudged up from approximately 45% to 50%.
+
+A comparison illuminates the polling data’s influence on the posterior model. 
+
+- After observing the poll in which 30 of 50 people supported Michelle, the expected value of her underlying support $\pi$ nudged up from approximately 45% to 50%.
+
+- The variance has also decreased.
 
 ## Simulating the Beta-Binomial
 
-- Here we are going to simulate the posterior model of Michelle's support $\pi$. We bigin by simulating **10,000** values of $\pi$ from **Beta(45,55)** prior using **rbeta()** and, subsequently, a potential Bin(50,$\pi$) poll result **Y** from each $\pi$ using **rbinom()**
+- Here we are going to simulate the posterior model of Michelle's support $\pi$. We begin by simulating **10,000** values of $\pi$ from **Beta(45,55)** prior using **rbeta()** and, subsequently, a potential Bin(50,$\pi$) poll result **Y** from each $\pi$ using **rbinom()**
 
 
 - The resulting 10,000 pairs of $\pi$ and Y values are shown below. In general, the greater Michelle’s support, the better her poll results tend to be. Further, the highlighted pairs illustrate that the eventual observed poll result, Y=30 of 50 polled voters supported Michelle, would most likely arise if her underlying support $\pi$ were somewhere in the range from 0.4 to 0.6.
@@ -134,7 +162,12 @@ michelle_sim <- data.frame(pi = rbeta(10000,45,55)) |>
   mutate(y=rbinom(10000,size=50,prob=pi))
 
 ggplot(data=michelle_sim,aes(x=pi, y=y))+
-  geom_point(aes(color=(y==30)),size=0.1)
+  geom_point(aes(color=(y==30)),
+  
+             # added for visibility           
+             size=0.5, alpha = 0.5) +
+  labs(title = "Simulating the Beta-Binomial") +
+  theme_minimal()
 ```
 
 - Separate out from the simulation the results that match your new data where 30 out of 50 are supporting Michelle.
@@ -165,27 +198,38 @@ nrow(michelle_posterior)
 
 ```
 
-## Milgram's behavior study of obedience
+## Case Study: Milgram's Behavior Study of Obedience
 
 - This is the famous study where the subjects were asked to deliver an electric shock to an actor under the ruse of a study on the effect of punishment on memory.
 
 - In reality what was being tested was obedience to authority and the conflict with personal conscience.
 
-## What do you think the prior beliefs were ?
-Given the Beta (1,10) prior model, what does that reveal about the psychologist's prior understanding of $\pi$
+![Milgram Study](images/milgram_study.png)
 
-- They don't have an informed opinion
+- published in 1963 in *The Journal of Abnormal and Social Psychology*
 
-- They are fairly certain that a large proportion of people will do what authority tells them.
+## What do you think the prior beliefs were?
 
-- They are fairly certain that only a small proportion of people will do what authority tells them.
+Given the Beta(1,10) prior model, what does that reveal about the psychologist's *prior* understanding of $\pi$
+
+a) They don't have an informed opinion
+
+b) They are fairly certain that a large proportion of people will do what authority tells them.
+
+c) They are fairly certain that only a small proportion of people will do what authority tells them.
 
 ## Let plot them to find out
+
 ```{r}
 # Beta(1,10) prior
-
 plot_beta(alpha = 1,beta = 10)
 ```
+
+$$\text{E}(\pi) = \frac{\alpha}{\alpha + \beta} = \frac{1}{1 + 10} = \frac{1}{11}$$
+$$\text{Mode}(\pi) = \frac{\alpha-1}{\alpha+\beta-2} = \frac{1-1}{1+10-2} = 0$$
+
+The psychologist's prior understanding *expected* that only a small proportion of people will do what authority tells them at about 1:10 odds.
+
 
 ## So what actually happened ?
 
@@ -203,24 +247,49 @@ plot_beta(alpha = 1,beta = 10)
 
 - Posterior: they now understand this figure to be somewhere between ~30% and ~70%.
 
-## Let's plot the prior, likelihood and posterior
+## Updating the Model
 
 ```{r}
+# prior: Beta(alpha = 1, beta = 10)
+# evidence: The data collected showed that 26 out of 40 
+# participants inflicted the maximum electric shock.
 plot_beta_binomial(alpha = 1, beta = 10, y = 26, n = 40)
 ```
 
+```{r}
+summarize_beta_binomial(alpha = 1, beta = 10,
+                        y = 26, n = 40)
+```
+
+
 ## Summary
-We built a Beta-Binomial model for unknown proportion anywhere between 0 and 1
+
+We can build a Beta-Binomial model for unknown proportion anywhere between 0 and 1
+
+$$\begin{array}{rcl}
+Y|\pi & \sim & \text{Bin}(n,\pi) \\ \pi &  \sim & \text{Beta}(\alpha,\beta)
+\end{array} \quad\Rightarrow\quad \pi|(Y = y) \sim \text{Beta}(\alpha + y, \beta + n - y)$$
 
 Like every Bayesian analysis Beta-Binomial models have four common elements.
 
-- Prior model
+1. **Prior model**: The Beta prior model for $\pi$ can be tuned to reflect the relative prior plausibility for each $\pi \in [0,1]$
 
-- Data model
+$$f(\pi) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)}\pi^{\alpha-1}(1-\pi)^{\beta-1}$$
 
-- Likelihood function
+2. **Data model**: We collect data $Y$, whose dependence on $\pi$ is summarized by $\text{Bin}(n,\pi)$
 
-- Posterior model
+3. **Likelihood function**: compare the compatibility of the data with different values of $\pi$
+
+$$L(\pi|y) = \binom{n}{y}\pi^{y}(1-\pi)^{n-y} \quad\text{for}\quad \pi \in [0,1]$$
+
+4. **Posterior model**: via Bayes' Rule, the **conjugate** Beta prior combined with the Binomial data model produce a Beta posterior model for $\pi$.
+
+$$f(\pi|y) \propto f(\pi)L(\pi|y) \propto \pi^{(\alpha+y)-1}(1-\pi)^{(\beta+n-y)-1}$$
+
+
+- we say that $f(\pi)$ is a *conjugate prior* for $L(\pi|y)$ if the posterior, f(\pi|y) \propto f(\pi)L(\pi|y), is from the same model family as the prior
+  
+- the updated Beta posterior $(\alpha+y, \beta+n-y)$ reflect the influence of the prior (via $\alpha$ and $\beta$ and the observed data (via $y$ and $n$)
 
 
 ## Meeting Videos
