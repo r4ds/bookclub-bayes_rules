@@ -3,8 +3,8 @@
 **Learning objectives:**
 
 - Practice building Bayesian models
-
 - Familiarize yourself with conjugacy 
+
 
 ## Greek letters
 
@@ -23,10 +23,9 @@ This our last chapter on Bayesian foundations!
 ## Revisiting choice of prior
 
 - Flexibility 
-
 - Computational ease: posterior easy to build
-
 - Interpretability
+
 
 ### **Reminder** the Beta-Binomial Model:
 
@@ -38,9 +37,15 @@ This our last chapter on Bayesian foundations!
 
 ## Joy!
 
-![](images/marie_condo.png)
+Here are a couple of extra resources I found very interesting:
 
-(yes I know it was the other way!)
+- [zedstatistics](https://www.youtube.com/watch?v=Pahyv9i_X2k)
+- [Conjugate prior for a Binomial likelihood](https://www.youtube.com/watch?v=AHePwNKfPS8)
+
+<center>
+![](images/ch5_conjugate.png)
+</center>
+
 
 ## Gamma-Poisson conjugate family 1/8
 
@@ -56,7 +61,7 @@ We are going to do a model to estimate the number of fraud risk phone call:
 
 ### Poisson **data** model:
 
-$Y =$ number of *independant* event that occur in a fixed ammount of time
+$Y =$ number of *independent* event that occur in a fixed amount of time
 
 $$Y|y \sim Pois(\tau) $$
 
@@ -121,7 +126,7 @@ Probability density functions:
 $$f(\tau) = \frac{r^s}{\Gamma (s)} \tau^{s - 1} e^{-r\tau} \quad for \quad \tau > 0  $$ 
 $$ E(\tau) = \frac{s}{r} ; Mode(\tau) = \frac{s - 1}{r} \quad for \quad s \geq 1; Var(\tau) = \frac{s}{r^2} $$ 
 
-When s = 1 -> Exponenial model = Gamma(1,r)
+When s = 1 -> Exponential model = Gamma(1,r)
 
 $$\tau \sim Exp(r)$$ 
 
@@ -131,7 +136,7 @@ $$\tau \sim Exp(r)$$
 
 - Gamma when s > r ? 
 
-- Gamme when s < r ?
+- Gamma when s < r ?
 
 - More variability in Gamma(20, 20) or Gamma(20, 100) ? 
 
@@ -194,10 +199,102 @@ bayesrules::plot_gamma_poisson(shape = 10, rate = 2, sum_y = 11, n = 4)
 
 ## Normal-Normal conjugate family
 
-TODO ...
+Let's start considering a case study. 
 
-<div class="tenor-gif-embed" data-postid="19573156" data-share-method="host" data-aspect-ratio="0.975" data-width="40%"><a href="https://tenor.com/view/kitten-love-begging-please-forgive-me-gif-19573156">Kitten Love GIF</a>from <a href="https://tenor.com/search/kitten-gifs">Kitten GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+> Among all people who have a history of concussions, we are interested in $\mu$ the average volume (in cubic centimeters) of a specific part of the brain: the hippocampus.
 
+What we know so far:
+
+- Both halves of the adults' hippocampus have a volume between 3.0 and 3.5 $cm^3$.
+
+- Total hippocampal volume of both sides of the brain is between 6 and 7 $cm^3$
+
+Our starting hypotheses are:
+
+- $H_0$: $\mu$ is between 6 and 7 $cm^3$ with an average of 6.5. 
+- $n=25$
+- suppose $Normal$ prior
+- use the $Normal-Normal$ Bayesian model
+
+Since hippocampal volumes, our $Y_i$, are measured on a continuous scale, there are many possible common models of the variability:
+
+- Beta --> but it is not good as it assumes $Y_i \epsilon[0,1]$, our $\mu$ is 6.5$cm^3$
+- Exponential
+- Gamma
+- **Normal** --> hippocampal symmetrically or Normally distributed around some global average
+- F
+- ...etc
+
+
+## Normal Model
+
+$$Y \sim N(\mu,\sigma^2)$$
+
+$$f(y)=\frac{1}{\sqrt{2 \pi \sigma^2}}exp\begin{bmatrix}
+-\frac{(y-\mu)^2}{2\sigma^2/n}\end{bmatrix}$$ for $y \epsilon (-\infty,\infty)$
+
+
+      plot_normal(mean,sd)
+
+
+```{r}
+library(bayesrules)
+library(patchwork)
+```
+
+
+![](images/ch5_normal.png)
+
+### Prior X Likelihood = Posterior
+
+$f(\vec{y}|\mu)$ x $L(\mu|\vec{y})$ 
+
+
+Starting from the **prior** model:
+
+$$\mu \sim N(6.5,0.4^2)$$
+
+We are considering the adults with experience of concussion, in the `football` dataset.
+
+```{r message=FALSE,warning=FALSE}
+library(tidyverse)
+football%>%head
+```
+```{r}
+football%>%count(group)
+```
+
+
+Let's see the mean:
+```{r}
+football%>%
+  filter(group == "fb_concuss")%>%
+  summarise(mean=mean(volume),sd=sd(volume))
+```
+```{r}
+concussion_subjects <- football%>%
+  filter(group == "fb_concuss")
+
+concussion_subjects%>%
+  ggplot(aes(x = volume)) + 
+  geom_density()
+```
+
+$$L(y|\vec{y}) \propto exp \begin{bmatrix}
+-\frac{(5.735-\mu)}{2(0.5^2/25)}\end{bmatrix}$$
+
+```{r}
+
+plot_normal_likelihood(y = concussion_subjects$volume, sigma = 0.5)
+```
+```{r}
+plot_normal_normal(mean = 6.5, sd = 0.4, sigma = 0.5,
+                   y_bar = 5.735, n = 25)
+```
+```{r}
+summarize_normal_normal(mean = 6.5, sd = 0.4, sigma = 0.5,
+                        y_bar = 5.735, n = 25)
+```
 
 ## Why no simulation in this chapter? 
 
