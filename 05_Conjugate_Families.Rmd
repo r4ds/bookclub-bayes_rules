@@ -239,7 +239,6 @@ $$f(y)=\frac{1}{\sqrt{2 \pi \sigma^2}}exp\begin{bmatrix}
 
 ```{r}
 library(bayesrules)
-library(patchwork)
 ```
 
 
