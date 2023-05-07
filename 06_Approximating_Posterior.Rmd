@@ -31,7 +31,15 @@ $$ f\left(\theta | y \right) = \frac{f(\theta)L(\theta | y)}{f(y)} $$
 
 $$ f(y) = \int_{\theta_1}\int_{\theta_2} ... \int_{\theta_k}f(\theta)L(\theta | y) d\theta_k ... d\theta_1 d\theta_2 $$
 
-- Solution?  Aapproximate the posterior via simulation!
+- Solution?  Approximate the posterior via simulation!
+
+## Coming into View
+
+![textbook image, downsampled by factor of 4](images/textbook_25.png)
+
+![textbook image, downsampled by factor of 2](images/textbook_50.png)
+
+![textbook image, original](images/textbook_original.png)
 
 
 ## Grid Approximaiton
@@ -42,15 +50,22 @@ $$ f(y) = \int_{\theta_1}\int_{\theta_2} ... \int_{\theta_k}f(\theta)L(\theta | 
 
     1. Define a grid of possible values of the parameters $\theta$,
     2. Evaluate the numerator at each possible value  
-    3. Obtain a discrete approximation of $f(\theta|y)$ by normalizing the results (i.e. divide by the sum!)
+    3. Obtain a discrete approximation of $f(\theta|y)$ by normalizing the results 
+    
+        - i.e. divide by the sum!
+        
     4. Randomly sample the grid values using the probabilities determined in step 3.
     
-## Beta Binomial Example (Grid)
+## Beta Binomial Example
 
-$$ Y|\pi \sim Bin(10,\pi)\\
-     \pi \sim Beta(2,2)$$
+$$\begin{array}{rcl}
+\pi & \sim & \text{Beta}(2,2) \\
+Y|\pi & \sim & \text{Bin}(10,\pi)\\
+\end{array}$$
 
-- Observe $Y=9$ successes.
+$$\text{E}(\pi) = \frac{\alpha}{\alpha + \beta} = \frac{2}{2 + 2} = 0.5$$
+
+- We bbserve $Y=9$ successes (out of 10)
 
 ```{r}
 # Step 1: Define grid
@@ -73,36 +88,41 @@ ggplot(grid_data, aes(x = pi_grid, y = posterior)) +
 
 - Sample from this posterior (Step 4)
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 set.seed(84735)  #BAYES
 post_sample <- sample_n(grid_data, size = 10000, weight = posterior, replace = TRUE)
 ggplot(post_sample, aes(x = pi_grid)) + 
-  geom_histogram(aes(y = ..density..), color = "white", binwidth = 0.05) + 
+  geom_histogram(aes(y = after_stat(density)), color = "white", binwidth = 0.05) + 
   stat_function(fun = dbeta, args = list(11, 3)) + 
   lims(x = c(0, 1))
 ```
 
 - We can compute any summary statistics from the samples (or from the grid posterior itself!)
 
+$$\text{E}(\pi) = \frac{\alpha}{\alpha + \beta} = \frac{11}{11 + 3} \approx 0.7857$$
+
  
 ## MCMC
 
 - Curse of dimensionality -> Grid approximation is limited to cases with only a few parameters.
 
+- *Stochastic Process*: sequence of random variables
+
+- *Markov Chain*: dependence only on previous element
+
+$$\theta^{(i+1)} \sim f(\theta^{(i+1)} | \theta^{(i)}, y)$$
+
+- *Monte Carlo*: Random samples from chain
+
 - **M**arkov **C**hain **M**onte **C**arlo  produces a Markov chain of samples to approximate posterior.
 
-   - Markov Chain: $\theta^{(i+1)} \sim f(\theta^{(i+1)} | \theta^{(i)}, y)$
-   
-   - Monte Carlo: Random samples from chain.
+    - Samples are not **directly** from the posterior and are **not** independent!
 
+    - More on *how* it works in next chapter. But we can just jump in with **rstan**
 
-- Samples are not **directly** from the posterior and are **not** independent!
+## Beta-Binomial MCMC
 
-- More on *how* it works in next chapter. But we can just jump in with **rstan**
-
-## Beta-Binomial (MCMC)
-
-```{r, results='hide'}
+```{r, cache = TRUE}
 # define model in stan language
 bb_model <- "
   data {
@@ -116,8 +136,9 @@ bb_model <- "
     pi ~ beta(2, 2);
   }
 "
+# https://github.com/stan-dev/rstan/wiki/Configuring-C---Toolchain-for-Windows#r-42
 # use stan to simulate posterior
-bb_sim <- stan(model_code = bb_model, data = list(Y = 9), 
+bb_sim <- rstan::stan(model_code = bb_model, data = list(Y = 9), 
                chains = 4, iter = 5000*2, seed = 84735)
 ```
 
@@ -143,14 +164,65 @@ mcmc_dens(bb_sim, pars = "pi") +
 ```  
 
 
+## Gamma-Poisson MCMC
+
+```{r, cache = TRUE}
+# STEP 1: DEFINE the model
+gp_model <- "
+  data {
+    int<lower = 0> Y[2];
+  }
+  parameters {
+    real<lower = 0> lambda;
+  }
+  model {
+    Y ~ poisson(lambda);
+    lambda ~ gamma(3, 1);
+  }
+"
+
+# STEP 2: SIMULATE the posterior
+gp_sim <- rstan::stan(model_code = gp_model, data = list(Y = c(2,8)), 
+               chains = 4, iter = 5000*2, seed = 84735)
+```
+
+
+```{r}
+# Trace plots of the 4 Markov chains
+mcmc_trace(gp_sim, pars = "lambda", size = 0.1)
+```
+
+```{r}
+# Histogram of the Markov chain values
+mcmc_hist(gp_sim, pars = "lambda") + 
+  yaxis_text(TRUE) + 
+  ylab("count")
+```
+
+```{r}
+# Density plot of the Markov chain values
+mcmc_dens(gp_sim, pars = "lambda") + 
+  yaxis_text(TRUE) + 
+  ylab("density")
+```
+
+
 ## Markov chain diagnostics
+
+How do we know if a MCMC process is "good"?
 
 - Primary tools:
    - Trace plots
    - Effective sample size
    - Autocorrelation
    - R-hat
+
 - With trace plots, look for good mixing and compare parallel chains.
+
+```{r, echo = FALSE}
+# Trace plots of the 4 Markov chains
+mcmc_trace(gp_sim, pars = "lambda", size = 0.1)
+```
 
 - Effective sample size takes into account the correlation between samples. (best if > 10% of actual samples)
 
@@ -158,17 +230,56 @@ mcmc_dens(bb_sim, pars = "pi") +
 neff_ratio(bb_sim, pars = c("pi"))
 ```
 
+```{r}
+# Density plots of individual chains
+mcmc_dens_overlay(bb_sim, pars = "pi") + 
+  ylab("density")
+```
+
+
 - Autocorrelation measures the correlation between pairs of Markov chain values that are *Lag* “steps” apart 
 
 ```{r}
 mcmc_acf(bb_sim, pars = "pi")
 ```
 
-- R-hat is the ratio of the variability between chains to the variability within chains. R-hat > 1.05 is cause for concern.
+- R-hat is the ratio of the variability between chains to the variability within chains. 
+
+    - R-hat $\approx$ 1 is ideal
+    - R-hat > 1.05 is cause for concern.
 
 ```{r}
 rhat(bb_sim, pars="pi")
 ```
+
+## Danger Zone
+
+Here we explore a short MCMC to see examples where the diagnostics warn of incomplete approximation.
+
+```{r, results='hide'}
+# STEP 2: SIMULATE the posterior
+bb_sim_short <- stan(model_code = bb_model, data = list(Y = 9), 
+                     chains = 4, iter = 50*2, seed = 84735)
+```
+
+```{r}
+# Trace plots of short chains
+mcmc_trace(bb_sim_short, pars = "pi")
+```
+
+```{r}
+# Density plots of individual short chains
+mcmc_dens_overlay(bb_sim_short, pars = "pi")
+```
+```{r}
+# autocorrelation
+mcmc_acf(bb_sim_short, pars = "pi")
+```
+
+```{r}
+rhat(bb_sim_short, pars="pi")
+```
+
 
 ## Summary
 

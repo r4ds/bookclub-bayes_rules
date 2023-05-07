@@ -19,30 +19,45 @@
 
 ![](images/bayesian_probaility_for_baby.jpeg)
 
+**Congratulations on our progress!** 
+
+Now let us look at more sophisticated models.
+
+![](images/meme_start_unit_3.png)
+
+
 ## New terms 
 
-$Y \rightarrow$ **Response variable**
+**Response variable**: $Y$
 
-$X_{1}, X_{2},  ..., X_{p} \rightarrow$ **Predictors**
+ **Predictor variables**: $X_{1}, X_{2},  ..., X_{p}$
 
 
-- We want to analyze quantitative response : **Regression** 
+- When we want to analyze a quantitative response : **Regression** 
 
-- We want to analyze categorical response:  **Classification**
+- When we want to analyze a categorical response:  **Classification**
 
 In this chapter we will focus on the **Normal regression model**. 
 
-Our *toy* example will come from a bike sharing service. We will try to understand the demand for it service. 
+Our toy example will come from a bike sharing service. We will try to understand the demand for it service. 
 
-We want a model of the number of rides/day. Poisson model is not valid here because we do not have an equal mean and variance. Instead we are going to go with a **normal model**: 
+![Source: Washington Business Journal](images/DC_bikes.png)
 
-$$Y_{i}|\mu, \sigma \overset{ind}{\sim} N(\mu, \sigma^2)  $$
+We want a model of the number of rides/day. 
 
-$$ \mu \sim N(\theta, \tau^2) $$
+* Poisson model is not valid here because we do not have an equal mean and variance. 
+* Instead we are going to go with a **normal model**: 
 
-$$ \sigma \sim some \; prior \; model $$
+$$\begin{array}{rcl}
+  Y_{i}|\mu, \sigma & \overset{ind}{\sim} & N(\mu, \sigma^2) \\
+  \mu & \sim & N(\theta, \tau^2) \\
+  \sigma & \sim & \text{[some other prior model]} \\
+\end{array}$$
 
-Can't we do better with a predictor? Here it will be the temperature in Fahrenheit.  
+
+
+Here the predictor variable will be the temperature in Fahrenheit.  
+
 
 ## Building the regression model
 
@@ -66,23 +81,22 @@ We can *plunk* this assumption in our model :
 
 $$ Y_{i}| \beta_{0}, \beta_{1}, \sigma \overset{ind}{\sim} N(\mu_{i}, \sigma^2) \; with \quad \mu_{i} = \beta_{0} + \beta_{1}X_{i}  $$
 
-As you can see $\sigma$ is now about variability from the **local mean**
+As you can see $\sigma$ is now about variability about the **local mean**
 
-#### Normal regression assumptions
+
+### Normal regression assumptions
 
 - Structure of the data: accounting for $X$, $Y$ for one day is independent of an other day   
 
 - Structure of the relationship: Y can be written as a **linear function** of predictor X : $\mu = \beta_{0} + \beta_{1}X$ 
 
-- Structure of the variability: at any value of X, Y will vary **normaly** around $\mu$ with a consistent standard deviation $\sigma$
+- Structure of the variability: at any value of X, Y will vary **normally** around $\mu$ with a consistent standard deviation $\sigma$
+
 
 ### Specifying the priors
 
 
-
-#### Quiz!
-
-What are our *parameters* ? 
+**Quiz:** What are our *parameters* ? 
 
 <details class="details-example">
     <summary> Results</summary>
@@ -95,7 +109,7 @@ $$ \beta_{0} \sim N(m_{0}, s^2_{0} ) $$
 
 $$ \beta_{1} \sim N(m_{1}, s^2_{1} ) $$
 
-$m_{0}, m_{1}, s_{0}, s_{1}$ are parameters of parameters so they are : **hyperparameters**
+$m_{0}, m_{1}, s_{0}, s_{1}$ are parameters of parameters so they are **hyperparameters**
 
 $$\sigma \sim Exp(l)$$ 
 
@@ -111,11 +125,11 @@ $$\sigma \sim Exp(l)$$
 </details>
 
 
-> Model building one step at a time ! 
+Model building one step at a time! 
 
-  1. Y is discrete or continuous $\rightarrow$ appropriate model for data 
+  1. $Y$ is discrete or continuous $\rightarrow$ appropriate model for data 
   
-  2. Rewrite the mean of Y as a function of predictors X (e.g. $\mu = \beta_0 + \beta_1 X$)
+  2. Rewrite the mean of $Y$ as a function of predictors $X$ (e.g. $\mu = \beta_0 + \beta_1 X$)
   
   3. Identify unknown parameters in your model
   
@@ -124,11 +138,13 @@ $$\sigma \sim Exp(l)$$
 
 ## Tuning prior models for regression parameters
 
-a. An average temperature day (65, 70 degree F) in DC: 3000-7000 riders with around 5000
+a. An average temperature day in DC: (65 to 70 degrees F)
 
-b. For every one degree increase you get about +100 riders $\pm$ 80
+    * 3000-7000 riders with around 5000
 
-c. At any given Temperature daily ridership vary with a sd of 1250 rides 
+b. For every one degree increase, you get about +100 riders $\pm$ 80
+
+c. At any given temperature, daily ridership vary with a standard deviation of 1250 rides 
 
 We will work with centered data $\beta_{0} \rightarrow \beta_{0c}$ because : 
 
@@ -145,11 +161,12 @@ $$ \beta_{1} \sim N(100, 40^2 \tag{b.}) $$
 
 $$\sigma \sim Exp(0.0008). \tag{c.}$$ 
 
-The only hard part was using an equation from chapter 5: 
+where for the exponential distribution $\sigma \sim \text{Exp}(l)$, we relate the observed standard deviation to the rate parameter $l$:
 
-$$E(\sigma) = \frac{1}{l} = 1250$$ 
+$$\text{SD}(\sigma) = \frac{1}{l} = 1250 \quad\Rightarrow\quad l = 0.0008$$ 
 
-It is good to simulate this prior and see what they look like but we will do that in the part about using default rstanarm priors later.
+It is good to simulate this prior and see what they look like but we will do that in the part about using default `rstanarm` priors later.
+
 
 ## Posterior simulatiion 
 
@@ -157,35 +174,48 @@ Now we want to update our prior with data to get a posterior simulation!
 
 ```{r, warning=FALSE}
 # Load and plot data
-library(bayesrules);library(ggplot2)
+library("bayesrules")
+library("ggplot2")
+
 data(bikes)
+
 ggplot(bikes, aes(x = temp_feel, y = rides)) + 
   geom_point(size = 0.5) + 
-  geom_smooth(method = "lm", se = FALSE)
+  geom_smooth(formula = "y ~ x", method = "lm", se = FALSE) +
+  labs(title = "Washington DC Bike Ridership",
+       subtitle = "Fanaee-T, Hadi and Gama, Joao (2013)",
+       caption = "R4DS Book Club",
+       x = "what the temperature feels like (degrees Fahrenheit)",
+       y = "number of bikeshare rides") +
+  theme_minimal()
 ```
 
 I am saving you from the triple integrals in the denominator of p 220 and we are jumping directly to MCMC!
 We are going to use `rstanarm` : Rstan + arm = applied regression models
 
+
 ### Simulation via rstanarm 
 
-```{r, eval=FALSE }
+```{r, eval = FALSE}
 bike_model <- rstanarm::stan_glm(
-                      # data information
-                       rides ~ temp_feel, # <- formula syntax (as used by lm, glm etc)
-                       data = bikes, 
-                       family = gaussian, # <- we assume normal data 
-                       # Priors  
-                       prior_intercept = normal(5000, 1000), # centered intercept
-                       prior = normal(100, 40), 
-                       prior_aux = exponential(0.0008), #notice the aux for auxiliary more after
-                       # MCMC information
-                       chains = 4, iter = 5000*2, seed = 84735)
+  # data information
+  rides ~ temp_feel, # <- formula syntax (as used by lm, glm etc)
+  data = bikes, 
+  family = gaussian, # <- we assume normal data 
+  
+  # Priors  
+  prior_intercept = normal(5000, 1000), # centered intercept
+  prior = normal(100, 40), 
+  prior_aux = exponential(0.0008), #notice the aux for auxiliary more after
+  
+  # MCMC information
+  chains = 4, iter = 5000*2, seed = 84735)
 ```
+
 
 ### Simulation directly with rstan
 
-```{r, eval=FALSE }
+```{r, eval = FALSE}
 # STEP 1: DEFINE the model
 stan_bike_model <- "
   data {
@@ -217,11 +247,13 @@ stan_bike_sim <-
 
 The model will return 5000 x nb of chains simulation of our parameters. Rstanarm will change their name: 
 
-- $\beta_{0} \rightarrow (intercept)$ (Note that this *is* $\beta_{0}$ even though prior is specified for $\beta_{0c}$)
+- $\beta_{0} \rightarrow (intercept)$ 
+
+    - Note that this *is* $\beta_{0}$ even though prior is specified for $\beta_{0c}$
 
 - $\beta_{1} \rightarrow temp\_feel$
 
-But $\sigma$ stay sigma. 
+- But $\sigma$ stays as $\sigma$
 
 
 We need to check if the simulation went well for that we can?    
@@ -231,23 +263,28 @@ We need to check if the simulation went well for that we can?
 
 [X] Check the effective sample size: `neff_ratio`
 
-[X] Compute rhat 
+[X] Compute `rhat`
 
-[X] Examine trace plot  
+[X] Examine trace plots  
 
-[X] Overlay the density plots of each chains
+[X] Overlay the density plots of chains
 
 </details>
+
 
 ## Interpreting the posterior 
 
 What we have is samples of each of the parameters. 
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 # Posterior summary statistics
-broom.mixed::tidy(bike_model, # it take our output from rstanarm::stan_glm
-                  effects = c("fixed", "aux"), # fixed is regression coef et aux is auxiliary ie sigma
-     conf.int = TRUE, conf.level = 0.80)
+broom.mixed::tidy(bike_model, # it takes our output from rstanarm::stan_glm
+                
+                  # fixed is regression coef 
+                  # aux is auxiliary, i.e. sigma
+                  effects = c("fixed", "aux"), 
+                  conf.int = TRUE, conf.level = 0.80)
+
 # A tibble: 4 x 5
   term        estimate std.error conf.low conf.high
   <chr>          <dbl>     <dbl>    <dbl>     <dbl>
@@ -262,7 +299,7 @@ Here we can get the **posterior median relationship** :
 $$ -2194.24 + 82.16X $$
 If we want a bigger picture: 
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 # Store the 4 chains for each parameter in 1 data frame
 bike_model_df <- as.data.frame(bike_model)
 
@@ -275,47 +312,45 @@ head(bike_model_df, 3)
 2       -2188     83.01  1323
 3       -1984     81.54  1363
 
-# and use add_fitted_draws() from tidybayes
-
 # 50 simulated model lines
 bikes %>%
   tidybayes::add_fitted_draws(bike_model, n = 50) %>%
   ggplot(aes(x = temp_feel, y = rides)) +
     geom_line(aes(y = .value, group = .draw), alpha = 0.15) + 
     geom_point(data = bikes, size = 0.05)
-# I did not evaluate the code here 
+# [code not executed for run-time consideration]
 ```
 
 ![Figure 9.7](images/fig.9.7.png)
  
-#### Quiz!
-
-Do we have ample posterior evidence that there's a positive association between ridership and temperature ?
+**Quiz**: Do we have ample posterior evidence that there's a positive association between ridership and temperature ?
 
 <details class="details-example">
     <summary> Answer: </summary>
     
 - Visual evidence : 50 or more posterior scenarios that display positive relationship
 
-- Numerical evidence from CI: 80% CI for $\beta_{1}$ range from 75.6 to 88.8
+- Numerical evidence from credible interval: 
+
+    - 80% CI for $\beta_{1}$ range from 75.6 to 88.8
 
 - Numerical evidence from posterior probability
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 # Tabulate the beta_1 values that exceed 0
 bike_model_df %>% 
   mutate(exceeds_0 = temp_feel > 0) %>% 
   tabyl(exceeds_0)
-# resuly
+# imitate hypothesis test (null: coefficient = 0)
  exceeds_0     n percent
-      TRUE 20000       1
+      TRUE 20000     100
 ```
 
 </details>   
 
 ## Posterior prediction
 
-### Quiz!
+**Quiz**
 
 > Suppose a weather report indicates that tomorrow will be a 75-degree day in D.C. What’s your posterior guess of the number of riders that Capital Bikeshare should anticipate?
 
@@ -334,16 +369,17 @@ But this does not take into account :
 
 </details>
 
-The posterior predictive model takes into account both kinds of variability. We can *approximate* this posterior predictive model with our 20 000 samples of parameters.  
 
 ### Building a posterior predictive model
 
-```{r, eval=FALSE}
+The posterior predictive model takes into account both kinds of variability. We can *approximate* this posterior predictive model with our 20 000 samples of parameters.  
+
+```{r, eval = FALSE}
 # Predict rides for each parameter set in the chain
 set.seed(84735)
 predict_75 <- bike_model_df %>% 
-  mutate(mu = `(Intercept)` + temp_feel*75, # <- our 75 degree
-         y_new = rnorm(20000, mean = mu, sd = sigma)) # <- sampling var. 
+  mutate(mu = `(Intercept)` + temp_feel*75, # <- at 75 degrees
+         y_new = rnorm(20000, mean = mu, sd = sigma)) # <- sampling var 
 head(predict_75, 3)
   (Intercept) temp_feel sigma   mu y_new
 1       -2657     88.16  1323 3955  4838
@@ -366,11 +402,11 @@ predict_75 %>%
 ```
 
 
-$\mu$ is average in readership for 75 degree
+* $\mu$ is average in ridership for 75 degree
 
-$Y_new$ is for a specific day (with 75 degree)
+* $Y_\text{new}$ is for a specific day (with 75 degree)
 
-=> More accuracy in predicting an *average* than an *unique* point!
+$\Rightarrow$ More accuracy in predicting an *average* than for an *unique* point!
 
 ### Posterior with rstanarm
 
@@ -394,7 +430,7 @@ phase_2 <- bikes[1:60, ]
 phase_3 <- bikes
 ```
 
-![Bayes rules !figure 9.13](images/figure9_13.png)
+![Bayes Rules! Figure 9.13](images/figure9_13.png)
 
 ## Using default rstanarm priors
 
@@ -446,21 +482,21 @@ knitr::include_graphics(
 ```
 
 
-## You are not done yet!
-
-- We have learned just enough to be dangerous! 
-
-- Review next chapter on evaluating the model before applying this new tool!
-
 ## Summary 
 
-- Built a simple Bayesian Normal regression with response and predictor quantitative 
+- Built a simple Bayesian ormal regression model with quantitative response and predictor variables
 
 - First example of a case where Markov Chain Monte Carlo simulation was really needed!
 
 - Used simulated samples to summarize our posterior understanding of the relationship between response and predictor.
 
 - Used simulated samples for posterior prediction.
+
+### You are not done yet!
+
+- We have learned just enough to be dangerous! 
+
+- Review next chapter on evaluating the model before applying this new tool!
  
 ## Resources: 
 
