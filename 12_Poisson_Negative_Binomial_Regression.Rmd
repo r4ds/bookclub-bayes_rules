@@ -2,12 +2,465 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+* Apply Bayesian models to nonnegative counts
+* Broaden scope for overdispersed data
 
-## SLIDE 1
+```{r, message = FALSE, warning = FALSE}
+# Load packages
+library("bayesplot")
+library("bayesrules")
+library("broom.mixed")
+library("patchwork")
+library("rstanarm")
+library("tidybayes")
+library("tidyverse")
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+sessionInfo()
+```
+
+
+## Data Set 1
+
+Each year, the Human Rights Campaign releases a “State Equality Index” which monitors the number of LQBTQ+ rights laws in each state
+
+* data from the 2019 index compiled by Sarah Warbelow, Courtnay Avant, and Colin Kutney (2019).
+
+```{r}
+# Load data (from the bayesrules package)
+data(equality_index)
+equality <- equality_index
+```
+
+
+* $Y_{i}$: number of anti-discrimination laws
+
+    * numerical (integer) response variable
+    * $i \in \{1, 2, ..., 50\}$
+
+* $X_{i1}$: percentage urban
+* indicators $X_{i2}$ and $X_{i3}$
+
+$$X_{i2} = \begin{cases} 1 & \text{GOP} \\ 0 & \text{otherwise} \end{cases} \quad\text{and}\quad X_{i3} = \begin{cases} 1 & \text{swing} \\ 0 & \text{otherwise} \end{cases}$$
+
+
+## Normal Distribution
+
+If we follow from previous chapters, our model looks like
+
+$$Y_{i} | \beta_{0}, \beta_{1}, \beta_{2}, \beta_{3}, \sigma \sim N(\mu_{i}, \sigma^{2})$$
+
+with
+
+$$\mu_{i} = \beta_{0} + \beta_{1}X_{i1} + \beta_{2}X_{i2} + \beta_{3}X_{i3}$$
+
+### Exploratory Data Visualization
+
+```{r}
+ggplot(equality, aes(x = laws)) + 
+  geom_histogram(color = "white", breaks = seq(0, 160, by = 10))
+```
+
+### Outlier
+
+```{r}
+# Identify the outlier
+equality %>% 
+  filter(laws == max(laws))
+
+# Remove the outlier
+equality <- equality %>% 
+  filter(state != "california")
+```
+
+### Predictor Variables
+
+```{r}
+ggplot(equality, aes(y = laws, x = percent_urban, color = historical)) + 
+  geom_point(size = 3) +
+  labs(title = "Anti-Discrimination Laws",
+       subtitle = "Human Rights Campaign State Equality Index",
+       caption = "R4DS Bayes Rules book club") +
+  scale_color_manual(values = c("blue", "red", "purple")) +
+  theme_minimal()
+```
+
+
+## Normal Regression
+
+```{r, echo = TRUE, eval = FALSE}
+# Simulate the Normal model
+equality_normal_sim <- stan_glm(laws ~ percent_urban + historical, 
+                                data = equality, 
+                                family = gaussian,
+                                prior_intercept = normal(7, 1.5),
+                                prior = normal(0, 2.5, autoscale = TRUE),
+                                prior_aux = exponential(1, autoscale = TRUE),
+                                chains = 4, iter = 5000*2, seed = 84735)
+```
+
+```{r, echo = FALSE, message = FALSE, results = "hide", warning = FALSE}
+# Simulate the Normal model
+equality_normal_sim <- stan_glm(laws ~ percent_urban + historical, 
+                                data = equality, 
+                                family = gaussian,
+                                prior_intercept = normal(7, 1.5),
+                                prior = normal(0, 2.5, autoscale = TRUE),
+                                prior_aux = exponential(1, autoscale = TRUE),
+                                chains = 4, iter = 5000*2, seed = 84735)
+```
+
+### Posterior Predictive Check
+
+```{r, message = FALSE, warning = FALSE}
+pp_check(equality_normal_sim, plotfun = "hist", nreps = 5) + 
+  geom_vline(xintercept = 0) + 
+  xlab("laws")
+```
+
+* observe that some of the predicted counts (for number of laws) are negative!
+
+
+## Poisson Regression
+
+$$Y_{i} | \lambda_{i} \sim \text{Pois}(\lambda_{i})$$
+
+* expected value: $\text{E}(Y_{i}|\lambda_{i}) = \lambda_{i}$
+* variance: $\text{Var}(Y_{i}|\lambda_{i}) = \lambda_{i}$
+* does $\lambda_{i} = \beta_{0} + \beta_{1}X_{i1} + \beta_{2}X_{i2} + \beta_{3}X_{i3}$?
+
+```{r}
+equality |>
+  ggplot(aes(x = percent_urban, y = laws, group = historical)) +
+  geom_smooth(aes(color = historical),
+              formula = "y ~ x",
+              linewidth = 3,
+              method = "lm",
+              se = FALSE) +
+  labs(title = "Anti-Discrimination Laws",
+       subtitle = "Human Rights Campaign State Equality Index",
+       caption = "R4DS Bayes Rules book club") +
+  scale_color_manual(values = c("blue", "red", "purple")) +
+  theme_minimal() +
+  xlim(0, 100)
+```
+
+* observe that some of the predicted counts (for number of laws) are negative!
+
+### Log-Link Function
+
+$$Y_{i} | \beta_{0}, \beta_{1}, \beta_{2}, \beta_{3}, \sigma \sim \text{Pois}(\lambda_{i})$$
+
+with
+
+$$\log(\lambda_{i}) = \beta_{0} + \beta_{1}X_{i1} + \beta_{2}X_{i2} + \beta_{3}X_{i3}$$
+or
+$$\lambda_{i} = e^{\beta_{0} + \beta_{1}X_{i1} + \beta_{2}X_{i2} + \beta_{3}X_{i3}}$$
+
+### rstan
+
+```{r, echo = TRUE, eval = FALSE}
+equality_model_prior <- stan_glm(laws ~ percent_urban + historical, 
+                                 data = equality, 
+                                 family = poisson,
+                                 prior_intercept = normal(2, 0.5),
+                                 prior = normal(0, 2.5, autoscale = TRUE), 
+                                 chains = 4, iter = 5000*2, seed = 84735, 
+                                 prior_PD = TRUE)
+```
+
+```{r, echo = FALSE, message = FALSE, results = "hide", warning = FALSE}
+equality_model_prior <- stan_glm(laws ~ percent_urban + historical, 
+                                 data = equality, 
+                                 family = poisson,
+                                 prior_intercept = normal(2, 0.5),
+                                 prior = normal(0, 2.5, autoscale = TRUE), 
+                                 chains = 4, iter = 5000*2, seed = 84735, 
+                                 prior_PD = TRUE)
+```
+
+### Poisson Regression Assumptions
+
+* **Structure of the data**: Conditioned on predictors $X$, the observed data $Y_i$ on case $i$ is independent of the observed data on any other case $j$.
+* **Structure of the variable** $Y$: Response variable $Y$ has a Poisson structure, i.e., is a discrete *count* of events that happen in a fixed interval of space or time.
+* **Structure of the relationship**: The *logged* average $Y$ value can be written as a linear combination of the predictors
+$$\log(\lambda_{i}) = \beta_{0} + \beta_{1}X_{i1} + \beta_{2}X_{i2} + \beta_{3}X_{i3}$$
+* **Structure of the variability** in $Y$: A Poisson random variable $Y$ with rate $\lambda$ has equal mean and variance, $\text{E}(Y)=\text{Var}(Y)=\lambda$. Thus, conditioned on predictors $X$, the typical value of $Y$ should be roughly equivalent to the variability in $Y$. As such, the variability in $Y$ increases as its mean increases.
+
+## Prior Distribution
+
+Assuming these priors are independent.
+
+$$\begin{array}{rcl}
+Y_{i} | \beta_{0}, \beta_{1}, \beta_{2}, \beta_{3}, \sigma & \sim & \text{Pois}(\lambda_{i}) \\
+\beta_{0c} & \sim & \text{N}(2, 0.5^{2}) \\
+\beta_{1} & \sim & \text{N}(0, 0.17^{2}) \\
+\beta_{2} & \sim & \text{N}(0, 4.97^{2}) \\
+\beta_{3} & \sim & \text{N}(0, 5.60^{2}) \\
+\end{array}$$
+
+* "typical state" $\lambda = 7$
+
+$$\log(\lambda) = \log(7) \approx 1.95 \approx 2$$
+
+* logged number of laws $(2 \pm 2 \times 0.5)$
+
+$$(e^{1}, e^{3}) \approx (3, 20)$$
+
+```{r}
+prior_summary(equality_model_prior)
+```
+
+### So Far
+
+```{r, message= FALSE, warning = FALSE}
+equality %>% 
+  add_fitted_draws(equality_model_prior, n = 100) %>%
+  ggplot(aes(x = percent_urban, y = laws, color = historical)) +
+    geom_line(aes(y = .value, group = paste(historical, .draw))) +
+  labs(title = "Anti-Discrimination Laws",
+       subtitle = "Human Rights Campaign State Equality Index",
+       caption = "R4DS Bayes Rules book club") +
+  scale_color_manual(values = c("blue", "red", "purple")) +
+  theme_minimal() + 
+    ylim(0, 100)
+```
+
+
+## Posterior Distribution
+
+```{r, echo = TRUE, eval = FALSE}
+# shortcut instead of running stan_glm() again
+equality_model <- update(equality_model_prior, prior_PD = FALSE)
+```
+
+```{r, echo = FALSE, message = FALSE, results = "hide", warning = FALSE}
+# shortcut instead of running stan_glm() again
+equality_model <- update(equality_model_prior, prior_PD = FALSE)
+```
+
+### Checks
+
+```{r, message = FALSE, warning = FALSE}
+mcmc_trace(equality_model)
+```
+
+```{r, message = FALSE, warning = FALSE}
+mcmc_dens_overlay(equality_model)
+```
+
+```{r, message = FALSE, warning = FALSE}
+mcmc_acf(equality_model)
+```
+
+### Posterior Predictive Check
+
+```{r, message = FALSE, warning = FALSE}
+set.seed(1)
+pp_check(equality_model, plotfun = "hist", nreps = 5) + 
+  xlab("laws")
+```
+
+```{r}
+pp_check(equality_model) + 
+  xlab("laws")
+```
+
+
+## Interpretation
+
+```{r, message = FALSE, warning = FALSE}
+equality %>%
+  add_fitted_draws(equality_model, n = 50) %>%
+  ggplot(aes(x = percent_urban, y = laws, color = historical)) +
+  geom_line(aes(y = .value, group = paste(historical, .draw)), 
+              alpha = .1) +
+  geom_point(data = equality) +
+  labs(title = "Anti-Discrimination Laws",
+       subtitle = "Human Rights Campaign State Equality Index",
+       caption = "R4DS Bayes Rules book club") +
+  scale_color_manual(values = c("blue", "red", "purple")) +
+  theme_minimal()
+```
+
+```{r}
+tidy(equality_model, conf.int = TRUE, conf.level = 0.80)
+```
+
+$$\log(\lambda_{i}) = 1.71 + 0.0164X_{i1} - 1.52X_{i2} - 0.61X_{i3}$$
+or
+$$\lambda_{i} = e^{1.71 + 0.0161X_{i1} - 1.52X_{i2} - 0.61X_{i3}}$$
+
+* $\beta_{0} = 1.71$: the "typical state" has $e^{1.71} \approx 5.53$ anti-discrimination laws
+* $\beta_{1} = 0.0164$: when controlling for `historical` voting trends, if the urban population in one state is 1 percentage point greater than another state, we’d expect it to have 1.0165 times the number of, or 1.65% more, anti-discrimination laws
+$$e^{0.0164} \approx 1.0165$$
+* $\beta_{2} = -1.52$: when controlling for `historicalgop` voting trends, if the urban population in one state is 1 percentage point greater than another state, we’d expect it to have about 88 percent fewer anti-discrimination laws
+$$e^{-1.52} \approx 0.2187$$
+* $\beta_{3} = 0.61$: when controlling for `historicalswing` voting trends, if the urban population in one state is 1 percentage point greater than another state, we’d expect it to have about 46 percent fewer anti-discrimination laws
+$$e^{-1.52} \approx 0.5434$$
+
+
+## Posterior Prediction
+
+Consider the state of Minnesota, a historically Democrat state with 73.3% of residents residing in urban areas and 4 anti-discrimination laws.
+
+```{r}
+equality %>% 
+  filter(state == "minnesota")
+```
+```{r}
+# Calculate posterior predictions
+set.seed(84735)
+mn_prediction <- posterior_predict(
+  equality_model, newdata = data.frame(percent_urban = 73.3, 
+                                       historical = "dem"))
+```
+
+```{r}
+mcmc_hist(mn_prediction, binwidth = 1) + 
+  geom_vline(color = "purple", xintercept = 4, linewidth = 4) + 
+  xlab("Predicted number of laws in Minnesota")
+```
+
+The posterior distribution leads to a credible interval with values near (10, 30) for the number of anti-discriminatory laws, but Minnesota has 4 such laws.
+
+
+## Data Set 2
+
+In 2017, Cards Against Humanity Saves America launched a series of monthly surveys in order to get the “Pulse of the Nation”
+
+* $Y$: number of books somebody has read in the past year
+* $X_{1}$: age
+* $X_{2}$: whether they’d rather be wise but unhappy or happy but unwise
+
+$$X_{2} = \begin{cases} 1 & \text{wise but unhappy} \\ 0 & \text{happy but unwise}\end{cases}$$
+
+```{r}
+# Load data
+data(pulse_of_the_nation)
+pulse <- pulse_of_the_nation %>% 
+  filter(books < 100) # avoid outliers
+```
+
+```{r, message = FALSE, warning = FALSE}
+p1 <- ggplot(pulse, aes(x = books)) + 
+  geom_histogram(color = "white")
+p2 <- ggplot(pulse, aes(y = books, x = age)) + 
+  geom_point()
+p3 <- ggplot(pulse, aes(y = books, x = wise_unwise)) + 
+  geom_boxplot()
+
+# patchwork
+p1 + p2 + p3
+```
+
+### Poisson Regression 
+
+Should we model `books` with Poisson regression?
+
+```{r, echo = TRUE, eval = FALSE}
+books_poisson_sim <- stan_glm(
+  books ~ age + wise_unwise, 
+  data = pulse, family = poisson,
+  prior_intercept = normal(0, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  prior_aux = exponential(1, autoscale = TRUE),
+  chains = 4, iter = 5000*2, seed = 84735)
+```
+
+```{r, echo = FALSE, message = FALSE, results = "hide", warning = FALSE}
+books_poisson_sim <- stan_glm(
+  books ~ age + wise_unwise, 
+  data = pulse, family = poisson,
+  prior_intercept = normal(0, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  prior_aux = exponential(1, autoscale = TRUE),
+  chains = 4, iter = 5000*2, seed = 84735)
+```
+
+### Posterior Predictive Check
+
+```{r}
+pp_check(books_poisson_sim) + 
+  xlab("books")
+```
+
+### Overdispersion
+
+A random variable $Y$ is *overdispersed* if the observed variability in $Y$ exceeds the variability expected by the assumed probability model of $Y$.
+
+
+## Negative Binomial Distribution
+
+* Like the Poisson model, the Negative Binomial is suitable for count data $Y\in\{0,1,2,…\}$
+* Unlike the Poisson, the Negative Binomial does not make the restrictive assumption that $\text{E}(Y)=\text{Var}(Y)$
+* $\mu$: mean parameter
+* $r$: reciprocal dispersion parameter
+
+$$\begin{array}{rcl}
+  Y|\mu, r & \sim & \text{NegBin}(\mu,r) \\
+  f(y|\mu,r) & = & \binom{y+r-1}{r}\left(\frac{r}{\mu+r}\right)^{r}\left(\frac{\mu}{\mu+r}\right)^{y} \\
+  \text{E}(Y|\mu, r) & = & \mu \\
+  \text{Var}(Y|\mu, r) & = & \mu + \frac{\mu^{2}}{r} \\
+\end{array}$$
+
+## Negative Binomial Regression
+
+$$\begin{array}{rcl}
+Y_{i} | \beta_{0}, \beta_{1}, \beta_{2}, r & \sim & \text{NegBin}(\mu_{i}) \\
+\beta_{0c} & \sim & \text{N}(2, 0.5^{2}) \\
+\beta_{1} & \sim & \text{N}(0, 0.15^{2}) \\
+\beta_{2} & \sim & \text{N}(0, 5.01^{2}) \\
+r & \sim & \text{Exp}(1) \\
+\end{array}$$
+
+```{r, echo = TRUE, eval = FALSE}
+books_negbin_sim <- stan_glm(
+  books ~ age + wise_unwise, 
+  data = pulse, family = neg_binomial_2,
+  prior_intercept = normal(0, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  prior_aux = exponential(1, autoscale = TRUE),
+  chains = 4, iter = 5000*2, seed = 84735)
+```
+
+```{r, echo = FALSE, message = FALSE, results = "hide", warning = FALSE}
+books_negbin_sim <- stan_glm(
+  books ~ age + wise_unwise, 
+  data = pulse, family = neg_binomial_2,
+  prior_intercept = normal(0, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  prior_aux = exponential(1, autoscale = TRUE),
+  chains = 4, iter = 5000*2, seed = 84735)
+```
+
+### Prior Distribution
+
+```{r, message = FALSE, warning = FALSE}
+prior_summary(books_negbin_sim)
+```
+
+### Posterior Predictive Check
+
+```{r, message = FALSE, warning = FALSE}
+pp_check(books_negbin_sim) + 
+  xlim(0, 75) + 
+  xlab("books")
+```
+
+### Interpretation
+
+```{r, message = FALSE, warning = FALSE}
+tidy(books_negbin_sim, conf.int = TRUE, conf.level = 0.80)
+```
+
+## Generalized Linear Models
+
+We can also use `stan_glm()` to fit models with Binomial, Gamma, inverse Normal, and other data structures. All of these options belong to a larger class of generalized linear models (GLMs).
+
+$$g((\text{E}(Y|...)) = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \cdots + \beta_{p}X_{p}$$
+
+where the appropriate **link function** $g$ depends on the data structure.
+
 
 ## Meeting Videos
 
