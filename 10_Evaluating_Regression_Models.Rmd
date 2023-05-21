@@ -1,41 +1,80 @@
 # Evaluating Regression Models
 
+```{r 10.4,eval=T, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+library(bayesrules)
+library(tidyverse)
+library(bayesplot)
+library(rstanarm)
+```
 
 **Learning objectives:**
 
 - Determine whether a model is fair
-- Determine how wrong a model is
-- Determine our model’s posterior predictive accuracy
+- Discuss data science ethics
+- Explore our model’s posterior predictive accuracy
 
-## More question to ask
+```{r}
+data(bikes)
+ggplot(bikes, aes(y = rides, x = temp_feel)) + 
+  geom_point(size = 0.2) + 
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+
+## More Questions to Consider
 
 When we look at the Bayesian model results, it might be important to investigate a bit more about:
 
 - How was the data collected?
 - By whom and for what purpose was the data collected?
 - How might the results of the analysis, or the data collection itself, impact individuals and society?
-- What biases might be baked into this analysis?
 
 ```{r 10.1, echo=FALSE, fig.cap="Credits: https://godcgo.com/a-bike-friendly-washington-dc/"}
 knitr::include_graphics("images/fig.10.1_dc_godcgo.png")
 ```
 
+* another resource: [The Impact of Weather Conditions on Capital Bikeshare Trips](https://www.semanticscholar.org/paper/The-Impact-of-Weather-Conditions-on-Capital-Trips-Gebhart-Noland/318f13dfafa6fa12176e0b856bc141f675f17203)
 
-## Verifying Normal regression assumptions
 
-**Assumption 1**: Structure of the data
+## Beware of Biases
 
-- independency
+What biases might be baked into this analysis?  Here are some recent examples in media.
 
-**Assumption 2**: Structure of the relationship
+1. "Amazon scraps secret AI recruiting tool that showed bias against women" ([Reuters article](https://www.reuters.com/article/us-amazon-com-jobs-automation-insight/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-idUSKCN1MK08G))
+
+![Dastin, 2018](images/Dastin2018.png)
+
+2. “As Cameras Track Detroit’s Residents, a Debate Ensues over Racial Bias.” ([Slate article](https://slate.com/technology/2020/03/ice-lawsuit-hijacked-algorithm.html))
+
+![Harmon, 2019](images/Harmon2019.png)
+
+3. “How Automation Bias Encourages the Use of Flawed Algorithms.” ([NYT article](https://www.nytimes.com/2019/07/08/us/detroit-facial-recognition-cameras.html))
+
+![Hadavas, 2020](images/Hadavas2020.png)
+
+
+
+
+
+
+
+
+## Verifying Normal Regression Assumptions
+
+**Assumption 1**: Structure of the Data
+
+- independence
+
+**Assumption 2**: Structure of the Relationship
 
 - linearity 
 
-**Assumption 3 **: Structure of the variability
+**Assumption 3 **: Structure of the Variability
 
 - normality
 
-## Our model-case is made of:
+
+## Our Case Study
 
 - number of Capital Bikeshare rides: $Y_{i}$
 - temperature on day $i$: $X_{i}$
@@ -55,11 +94,11 @@ $$ \mu_{i} = \beta_{0} + \beta_{1}X_{i} $$
 
 > "...To turn this into a Bayesian model, we must incorporate prior models for each of the unknown regression parameters...(ct.9.1.2)"
 
-with this model parameters:
+with these model parameters:
 
 $$ Y_{i}| \beta_{0}, \beta_{1}, \sigma \overset{ind}{\sim} N(\mu_{i}, \sigma^2) \; with \quad \mu_{i} = \beta_{0} + \beta_{1}X_{i}  $$
 
-we expect some good results as we consider 500 daily observations within the two-year period.
+we expect some good results as we consider 500 daily observations within a two-year period.
 
 The response variable **ridership** $Y$ is likely to be correlated over time with other features such as **temperature** $X$.
 
@@ -83,7 +122,7 @@ DiagrammeR::grViz("
   # node statement
   node [shape = oval,width=0.2]
   a [label = 'Assumption 1']
-  b [label = 'independence']
+  b [label = 'Independence']
   # edge statement
   a -> b}")
 ```
@@ -100,16 +139,7 @@ $$ \beta_{1} \sim N(m_{1}, s^2_{1}) = N(100, 40^2 \tag{b.}) $$
 $$ \sigma\sim Exp(l) = Exp(0.0008 \tag{c.}) $$
 
 
-```{r 10.4,eval=T, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
-library(bayesrules)
-library(tidyverse)
-library(bayesplot)
-library(rstanarm)
-```
 
-```{r 10.5}
-data(bikes)
-```
 
 
 ```{r 10.6,echo=FALSE}
@@ -129,8 +159,8 @@ DiagrammeR::grViz("
   node [shape = oval,width=0.2]
   a [label = 'Assumption 2']
   b [label = 'Assumption 3']
-  c [label = 'linearity']
-  d [label = 'normality']
+  c [label = 'Linearity']
+  d [label = 'Normality']
   # edge statement
   a -> c
   b -> d}")
@@ -191,7 +221,8 @@ ggplot(one_simulation, aes(x = simulated_rides)) +
   theme(plot.title = element_text(size=10))
 ```
 
-## Posterior predictive check
+
+## Posterior Predictive check
 
 Use the `pp_check()` function from {bayesplot} package included in the {rstanarm} package. It compares the observed outcome variable y to simulated datasets from the posterior predictive distribution. 
 
@@ -202,21 +233,33 @@ pp_check(bike_model,nreps = 50) +
   labs(title="50 datasets of ridership simulated from the posterior (light blue)\nalongside the actual observed ridership data (dark blue)")
 ```
 
+<!---
 So, in general to check the last two assumptions you should:
 
 - Assume a different data structure
 - Make a transformation
+--->
+
+## Dealing with Wrong Models
+
+If **Assumption 1** (Independence) may be faulty, we will later consider *hierarchical Bayesian models* in Unit 4 to handle dependent grouped data.
+
+If **Assumption 2** (Linearity) may be faulty, perhaps a transformation can help, such as a logarithmic scale for $X$, $Y$, or both.
+
+If **Assumption 3** (Normality) may be faulty, consider a different distribution (e.g. Poisson, binomial, negative binomial)
 
 
-## How accurate are the posterior predictive models?
+## How Accurate are the Posterior Predictive Models?
 
-**Three approaches to evaluating predictive quality**
+Here we explore three approaches to evaluating predictive quality
 
-1.  Posterior predictive summaries
+###  Posterior predictive summaries
 
-    * median absolute error (MAE)
-    * scaled median absolute error
-    * within_50 and within_95
+* median absolute error (MAE)
+* scaled median absolute error (AKA relative error)
+* within_50 and within_95 
+
+    - proportion of data within those *posterior prediction intervals*
  
 ```{r 10.14}
 set.seed(84735)
@@ -249,16 +292,21 @@ dim(predictions)
 ```{r 10.17}
 ppc_intervals(bikes$rides, yrep = predictions, x = bikes$temp_feel, 
               prob = 0.5, prob_outer = 0.95)+
-  labs(title="The posterior predictive medians (light blue dots),\n50% prediction intervals (wide, short blue bars),\nand 95% prediction intervals (narrow, long blue bars)\nfor each day in the bikes dataset, along with the corresponding\nobserved data points (dark blue dots).")
+  labs(title="Posterior Predictive Medians",
+       subtitle = "with prediction intervals",
+       caption = "R4DS Book Club",
+       x = "temperature feel",
+       y = "ridership")
 ```
 
- 
-2.  Cross-validation
+The posterior predictive medians (light blue dots), 50% prediction intervals (wide, short blue bars),and 95% prediction intervals (narrow, long blue bars) for each day in the bikes data set, along with the corresponding observed data points (dark blue dots).
+
+### Cross-validation
 
 To see how well our model generalizes to new data beyond our original sample, we can estimate these properties using cross-validation techniques.
   
-  * Train the model
-  * Test the model
+* Train the model
+* Test the model
   
 ```{r 10.18}
 set.seed(84735)
@@ -267,22 +315,23 @@ cv_procedure <- prediction_summary_cv(model = bike_model,
                                       k = 10)
 ```
 ```{r 10.19}
-cv_procedure$folds%>%head
+cv_procedure$folds %>% head
 ```
   
 ```{r 10.20}
 cv_procedure$cv
 ```
 
-<br>
 
+### Expected log-predictive density
+
+<!---
 All we want is:
+--->
+
 ```{r 10.21,fig.cap="Two hypothetical posterior predictive pdfs for Y new, the yet unobserved ridership on a new day. The eventual observed value of y new, is represented by a dashed vertical line", echo=FALSE}
 knitr::include_graphics("images/fig.10.10_ELPD.png")
 ```
-
-
-3.  Expected log-predictive density (ELPD)
 
 **ELPD** measures the average log posterior predictive pdf, across all possible new data points. The higher the ELPD, the better. Higher ELPDs indicate greater posterior predictive accuracy when using our model to predict new data points.
 
@@ -293,11 +342,13 @@ model_elpd <- loo(bike_model)
 model_elpd$estimates
 ```
 
+These estimates are very context dependent, but are more useful when comparing models.
 
-## Improving posterior predictive accuracy
 
-  * Collect more data
-  * Use different or more predictors
+## Improving Posterior Predictive Accuracy
+
+* Collect more data
+* Use different or more predictors
 
   
 ## How good is the MCMC simulation vs how good is the model?
@@ -306,14 +357,10 @@ model_elpd$estimates
 
 2.  Does the model fit?
 
-    * are the assumptions reasonable?
-    * is the model fair?
-    * does it produce good predictions?
+    * Are the assumptions reasonable?
+    * Is the model fair?
+    * Does it produce good predictions?
 
-
-## Extra resources:
-
-[The Impact of Weather Conditions on Capital Bikeshare Trips](https://www.semanticscholar.org/paper/The-Impact-of-Weather-Conditions-on-Capital-Trips-Gebhart-Noland/318f13dfafa6fa12176e0b856bc141f675f17203)
 
 ## Meeting Videos
 
