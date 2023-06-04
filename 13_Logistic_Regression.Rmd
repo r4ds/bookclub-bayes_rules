@@ -2,12 +2,545 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- Deal with binary categorical variable
+- Learn a classification modeling approach
+- Evaluate the classification quality
 
-## SLIDE 1
+> We’ll dig into two classification techniques: `Bayesian logistic regression` and `naive Bayesian classification`.
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+
+## The logistic regression model
+
+```{r message=FALSE,warning=FALSE}
+
+# Load packages
+library(bayesrules)
+library(rstanarm)
+library(bayesplot)
+library(tidyverse)
+library(tidybayes)
+library(broom.mixed)
+
+```
+
+
+Load and process the data
+```{r}
+data(weather_perth)
+weather <- weather_perth %>% 
+  select(day_of_year, raintomorrow, humidity9am, humidity3pm, raintoday)
+
+weather %>% head
+```
+
+Predict `raintomorrow`:
+
+$$Y=\left\{\begin{matrix}
+ 1 & \text{rain tomorrow}\\ 
+ 0 & \text{ otherwise}
+\end{matrix}\right.$$
+
+
+
+### Definition of Odds & probability
+
+
+`odds`: the probability that the event happens `relative` to the probability that it doesn’t happen.
+
+$$\pi \epsilon [0,1]$$
+
+$$odds=\frac{\pi}{1-\pi} \epsilon [0,\infty)$$
+
+
+$$\pi=\frac{odds}{1+odds}$$
+
+
+
+
+To predict `raintomorrow` What’s an appropriate model structure for the data? 
+
+- Bernoulli (or, equivalently, Binomial with 1 trial)
+- Gamma
+- Beta
+
+
+
+> What values can $Y_i$ take and what probability models assume this same set of values?
+
+
+
+The `Bernoulli probability model` is the best candidate for the data, given that $Y_i$ is a discrete variable which can only take two values, 0 or 1:
+
+
+$$Y_i|\pi_i \sim Bern(\pi_i)$$
+$$E(Y_i|\pi_i)=\pi_i$$
+
+The `logistic regression model` specify how the expected value of rain $\pi_i$ depends upon predictor $X_{i1}$:
+
+$$g(\pi_i)=\beta_0+\beta_1 X_{i1}$$
+ 
+ $\pi_i$ depends upon predictor $X_{i1}$ through the:
+ 
+ $$g(\pi_i)=log(\pi_i/(1-\pi_i))$$
+ 
+$$\frac{\pi_i}{1-\pi_i}=e^{\beta_0+\beta_1 X_{i1}}$$
+
+$$\pi_i=\frac{e^{\beta_0+\beta_1 X_{i1}}}{1+e^{\beta_0+\beta_1 X_{i1}}}$$
+$\beta_0$ is when all predictors are 0
+$\beta_1=log(odds_{x+1})-log(odds_x)$
+$e^{\beta_1}=\frac{odds_{x+1}}{1+odds_x}$
+
+
+$$log(odds)=log(\frac{\pi}{1-\pi})=\beta_0+\beta_1 X_{1}+...+\beta_p X_p$$
+
+```{r}
+weather <- weather_perth %>% 
+  select(day_of_year, raintomorrow, 
+         humidity9am, humidity3pm, raintoday)
+
+weather %>%head
+```
+
+
+Based on assumptions that it will rain tomorrow with a 20% chance.
+```{r}
+weather%>%
+  count(raintomorrow)%>%
+  mutate(prop=n/sum(n)*100)
+```
+
+
+```{r}
+weather%>%
+  count(raintomorrow)%>%
+  mutate(prop=n/sum(n)*100)%>%
+  ggplot(aes(x="",prop,fill=raintomorrow))+
+  geom_bar(stat="identity", width=1)+
+   coord_polar("y", start=0)+
+  theme_void()
+```
+
+$$\pi= 0.2$$
+
+
+**Assumptions:**
+
+- on an average day, there’s a roughly 20% chance of rain. 
+- the chance of rain increases when preceded by a day with high humidity or rain.
+
+
+```{r message=FALSE,warning=FALSE}
+weather %>%
+  ggplot()+
+  geom_line(aes(day_of_year,humidity9am),color="steelblue",linewidth=0.5)+
+  geom_line(aes(day_of_year,humidity3pm),color="pink",linewidth=0.5)+
+  geom_smooth(aes(day_of_year,humidity9am),color="steelblue")+
+  geom_smooth(aes(day_of_year,humidity3pm),color="pink")+
+  facet_wrap(vars(raintomorrow))+
+  labs(title="raintomorrow?")
+```
+
+
+```{r}
+weather%>%
+  ggplot(aes(raintomorrow,color=raintomorrow))+
+  geom_density()
+```
+
+
+```{r eval=FALSE,echo=FALSE}
+weather <- weather%>%
+  mutate(raintoday=ifelse(raintoday=="No",0,1),
+         raintomorrow=ifelse(raintomorrow=="No",0,1))
+
+fit <- glm(
+  raintomorrow ~ humidity9am + humidity3pm + raintoday,
+  data = weather,
+  family = bernulli
+)
+
+fit%>%tidy()
+
+augment(fit)
+  #rename(pi=.fitted)%>%
+  mutate(pi=(.fitted-mean(.fitted))/sd(.fitted)^2)%>%pull(pi)%>%range
+         odds=pi/(1-pi),
+         log_odds=log(odds))
+```
+
+
+**Model specification**
+
+- Data
+
+$$Y_i|\beta_0,\beta_1 \sim^{ind} Bern(\pi_i)$$
+$$log(\frac{\pi_i}{1-\pi_i})=\beta_0+\beta_1 X_{i1}$$
+
+
+
+Based on the assumption that it will rain with a 20% chance, the log odds is about -1.4. This is a centered value of a range.
+```{r}
+log(0.2/(1-0.2))
+```
+
+
+
+$$log(\frac{\pi_i}{1-\pi_i}) \approx -1.4$$
+
+### Specifying the priors:
+
+#### Beta 0 centered ($\beta_{0c}$)
+
+$$\beta_{0c} \sim N(\mu,\sigma)$$
+
+
+The range takes consideration that it cannot go below zero, the chance of not rain has a probability of 0. And so it cannot be more than 1. Probability range: [0,1].
+
+We are talking about logs:
+```{r}
+log(1)
+```
+
+Zero is the upper value of the range, for a max value probability of 1:
+```{r}
+exp(log(1))
+```
+
+`Range: [? , 0]`
+
+
+$$-1.4 + 2x=0$$
+
+```{r }
+x=1.4/2
+x
+```
+
+
+```{r}
+-1.4 + 2*0.7;
+-1.4 - 2*0.7
+```
+
+**Range: (-2.8,0]**
+
+
+$$\beta_{0c} \sim N(-1.4,0.7^2)$$
+
+The `odds of rain` on an average day could be somewhere between 0.06 and 1:
+
+```{r}
+exp(-2.8);exp(0)
+```
+
+
+$$(e^{-2.8},e^0) \approx (0.06,1)$$
+
+The `probability of rain` on an average day could be somewhere between 0.057 and 0.50:
+
+```{r}
+0.06/(1+0.06);
+1/(1+1)
+```
+
+
+$$(\frac{0.06}{1+0.06},\frac{1}{(1+1)}) \approx (0.057,0.5)$$
+
+
+
+
+#### Beta 1 ($\beta_1$)
+
+$$\beta_1 \sim N(\mu,\sigma)$$
+
+With the $\beta_1$ we want to identify if `the chance of rain increases` when preceded by a day with `high humidity`.
+
+Our range in this case has a lower limit of zero, and we estimate the upper limit to be 0.14: `Range [0, 0.14]`
+
+
+$$(e^0,e^{0.14}) \approx (1,1.150)$$
+
+The central value for this range is 0.07:
+```{r}
+(0+0.14)/2
+```
+
+
+Calculate the $\sigma$ value:
+
+$$0.07 + 2x = 0.14$$
+
+```{r}
+x1= (0.14-0.07)/2
+x1
+```
+
+
+So, the Normal distribution parameters are:
+
+- $\mu = 0.07$
+- $\sigma=0.035$
+
+$$\beta_{1} \sim N(0.07,0.035^2)$$
+```{r}
+p1<- plot_normal(mean = -1.4, sd = 0.7) + 
+  labs(x = "beta_0c", y = "pdf")
+p2 <- plot_normal(mean = 0.07, sd = 0.035) + 
+  labs(x = "beta_1", y = "pdf")
+library(patchwork)
+p1|p2
+```
+
+
+We simulate 20,000 prior plausible pairs of $\beta_{0c}$ and $\beta_1$ to describe a prior plausible relationship between the `probability of rain tomorrow and today’s 9 a.m. humidity`:
+  
+  
+Run a prior simulation:  
+
+    prior_PD = TRUE
+  
+```{r results='hide'}
+rain_model_prior <- stan_glm(raintomorrow ~ humidity9am,
+                             data = weather, 
+                             family = binomial,
+                             prior_intercept = normal(-1.4, 0.7),
+                             prior = normal(0.07, 0.035),
+                             chains = 4, iter = 5000*2, seed = 84735,
+                             prior_PD = TRUE)
+
+rain_model_prior
+```
+
+
+And plot just 100 of them:
+
+
+    add_fitted_draws(rain_model_prior, n = 100) 
+    
+
+```{r message=FALSE,warning=FALSE}
+set.seed(84735)
+
+# Plot 100 prior models with humidity
+weather %>% 
+  add_fitted_draws(rain_model_prior, n = 100) %>% 
+  ggplot(aes(x = humidity9am, y = raintomorrow)) +
+    geom_line(aes(y = .value, group = .draw), size = 0.1)
+
+# Plot the observed proportion of rain in 100 prior datasets
+weather %>% 
+  add_predicted_draws(rain_model_prior, n = 100) %>% 
+  group_by(.draw) %>% 
+  summarize(proportion_rain = mean(.prediction == 1)) %>% 
+  ggplot(aes(x = proportion_rain)) +
+    geom_histogram(color = "white")
+```
+
+## Simulating the posterior
+
+```{r}
+ggplot(weather, aes(x = humidity9am, y = raintomorrow)) + 
+  geom_jitter(size = 0.2)
+```
+
+Calculate & plot the rain rate by humidity bracket:
+
+```{r}
+weather %>% 
+  mutate(humidity_bracket = 
+           cut(humidity9am, 
+               breaks = seq(10, 100, by = 10))) %>% 
+  group_by(humidity_bracket) %>% 
+  summarize(rain_rate = mean(raintomorrow == "Yes")) %>% 
+  ggplot(aes(x = humidity_bracket, y = rain_rate)) + 
+    geom_point() + 
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+```
+
+
+Simulate the model:
+
+    prior_PD = FALSE
+
+```{r results='hide'}
+rain_model_1 <- update(rain_model_prior, prior_PD = FALSE)
+rain_model_1
+```
+
+
+Check the stability of the simulation results before proceeding:
+
+MCMC trace, density, & autocorrelation plots
+```{r message=FALSE,warning=FALSE}
+mcmc_trace(rain_model_1)
+mcmc_dens_overlay(rain_model_1)
+mcmc_acf(rain_model_1)
+```
+
+Plot the posterior model results:
+```{r message=FALSE,warning=FALSE}
+weather %>%
+  add_fitted_draws(rain_model_1, n = 100) %>%
+  ggplot(aes(x = humidity9am, y = raintomorrow)) +
+    geom_line(aes(y = .value, group = .draw), alpha = 0.15) + 
+    labs(y = "probability of rain")
+```
+
+
+Posterior summaries on the `log(odds) scale`
+```{r}
+posterior_interval(rain_model_1, prob = 0.80)
+```
+
+Posterior summaries on the odds scale
+```{r}
+exp(posterior_interval(rain_model_1, prob = 0.80))
+```
+
+## Prediction & classification
+
+```{r}
+weather%>%pull(humidity9am)%>%range()
+```
+
+Posterior predictions of binary outcome:
+```{r}
+set.seed(84735)
+binary_prediction <- posterior_predict(
+  rain_model_1, 
+  newdata = data.frame(humidity9am = 99))
+```
+
+```{r}
+set.seed(84735)
+rain_model_1_df <- as.data.frame(rain_model_1) %>% 
+  mutate(log_odds = `(Intercept)` + humidity9am*99,
+         odds = exp(log_odds),
+         prob = odds / (1 + odds),
+         Y = rbinom(20000, size = 1, prob = prob))
+
+rain_model_1_df %>% head
+```
+
+```{r}
+weather%>%
+  group_by(raintomorrow)%>%
+  reframe(avg=mean(humidity9am))%>%
+  mutate(prop=avg/sum(avg))
+```
+```{r}
+mcmc_hist(binary_prediction) + 
+  labs(x = "Y")
+ggplot(rain_model_1_df, aes(x = Y)) + 
+  stat_count()
+```
+
+```{r}
+# Summarize the posterior predictions of Y
+table(binary_prediction)
+colMeans(binary_prediction)
+```
+
+
+
+## Model evaluation
+
+1.  How fair is the model?
+2.  How wrong is the model?
+3.  How accurate are the model’s posterior classifications?
+
+
+```{r message=FALSE,warning=FALSE}
+proportion_rain <- function(x){mean(x == 1)}
+
+pp_check(rain_model_1, 
+         #nreps = 100,
+         plotfun = "stat", 
+         stat = "proportion_rain") + 
+  xlab("probability of rain")
+```
+
+
+
+Evaluate the `rain_model_1` classifications:
+```{r}
+set.seed(84735)
+rain_pred_1 <- posterior_predict(rain_model_1, newdata = weather)
+dim(rain_pred_1)
+```
+
+
+```{r}
+weather_classifications <- weather %>% 
+  mutate(rain_prob = colMeans(rain_pred_1),
+         rain_class_1 = as.numeric(rain_prob >= 0.5)) %>% 
+  select(humidity9am, rain_prob, rain_class_1, raintomorrow)
+
+weather_classifications%>%head
+```
+
+### Confusion matrix
+```{r}
+weather_classifications %>% 
+  janitor::tabyl(raintomorrow, rain_class_1) %>% 
+  janitor::adorn_totals(c("row", "col"))
+```
+
+```{r}
+set.seed(84735)
+classification_summary(model = rain_model_1, 
+                       data = weather, 
+                       cutoff = 0.5)
+```
+
+Changing cutoff to 0.2 the sensitivity jumped from 7.53% to 63.98%, and the true negative rate dropped from 98.65% to 71.25%.
+```{r}
+set.seed(84735)
+classification_summary(model = rain_model_1, 
+                       data = weather, 
+                       cutoff = 0.2)
+```
+```{r}
+set.seed(84735)
+cv_accuracy_1 <- classification_summary_cv(
+  model = rain_model_1, 
+  data = weather, 
+  cutoff = 0.2, 
+  k = 10)
+```
+
+
+## Extending the model
+```{r results='hide'}
+rain_model_2 <- stan_glm(
+  raintomorrow ~ humidity9am + humidity3pm + raintoday, 
+  data = weather, family = binomial,
+  prior_intercept = normal(-1.4, 0.7),
+  prior = normal(0, 2.5, autoscale = TRUE), 
+  chains = 4, iter = 5000*2, seed = 84735)
+
+# Obtain prior model specifications
+prior_summary(rain_model_2)
+```
+
+```{r}
+set.seed(84735)
+cv_accuracy_2 <- classification_summary_cv(
+  model = rain_model_2, data = weather, cutoff = 0.2, k = 10)
+```
+
+
+```{r}
+# Calculate ELPD for the models
+loo_1 <- loo(rain_model_1)
+loo_2 <- loo(rain_model_2)
+```
+
+```{r}
+# Compare the ELPD for the 2 models
+loo_compare(loo_1, loo_2)
+```
+
 
 ## Meeting Videos
 
