@@ -134,7 +134,7 @@ summarize_beta_binomial(alpha = 45, beta = 55, y = 30, n = 50)
 
 ## Simulating the Beta-Binomial
 
-- Here we are going to simulate the posterior model of Michelle's support $\pi$. We bigin by simulating **10,000** values of $\pi$ from **Beta(45,55)** prior using **rbeta()** and, subsequently, a potential Bin(50,$\pi$) poll result **Y** from each $\pi$ using **rbinom()**
+- Here we are going to simulate the posterior model of Michelle's support $\pi$. We begin by simulating **10,000** values of $\pi$ from **Beta(45,55)** prior using **rbeta()** and, subsequently, a potential Bin(50,$\pi$) poll result **Y** from each $\pi$ using **rbinom()**
 
 
 - The resulting 10,000 pairs of $\pi$ and Y values are shown below. In general, the greater Michelle’s support, the better her poll results tend to be. Further, the highlighted pairs illustrate that the eventual observed poll result, Y=30 of 50 polled voters supported Michelle, would most likely arise if her underlying support $\pi$ were somewhere in the range from 0.4 to 0.6.

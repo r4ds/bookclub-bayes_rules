@@ -24,6 +24,7 @@ Imports:
     janitor,
     latex2exp,
     modelr,
+    patchwork,
     rmarkdown,
     rstan,
     rstanarm,
