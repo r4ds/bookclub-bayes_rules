@@ -17,8 +17,11 @@ Imports:
     bookdown,
     broom.mixed,
     DiagrammeR,
+    dplyr,
     e1071,
     forcats,
+    ggplot2,
+    ggtext,
     ggthemes,
     gt,
     janitor,
@@ -29,4 +32,5 @@ Imports:
     rstan,
     rstanarm,
     tidybayes,
+    tidyr,
     tidyverse

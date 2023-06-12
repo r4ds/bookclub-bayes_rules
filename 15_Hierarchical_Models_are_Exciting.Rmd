@@ -1,37 +1,48 @@
 # Hierarchical Models are Exciting
 
-
-
-**Welcome to Unit 4 - The final *unit* !**
-
-Hierarchical models expand our toolbox for hierarchical (grouped / pooled) data:
-
- - a sampled group of schools and data $y$ on multiple individual students within each school
- 
- - a sampled group of labs and data $y$ from multiple individual experiments within each lab
-
- - a sampled group of people on whom we make multiple individual observations of information $y$ over time.
- 
-Unit four will explore these techniques in these final chapters:
-
-- Chapter 15: Introduce the concepts
-
-- Chapter 16: Hierarchical models without predictors
-
-- Chapter 17: Normal Hierarchical Models with predictors
-
-- Chapter 18: Non-Normal Hierarchical Regression
-
-- Chapter 19: More Layers!
-
-
-**Chapter 15 - Learning objectives:**
+**Learning objectives**
 
 - Explore the limitations of our current Bayesian modeling toolbox under two extremes, complete pooling and no pooling.
 
 - Examine the benefits of the partial pooling provided by hierarchical Bayesian models.
 
 - Focus on the big ideas and leave the details to subsequent chapters.
+
+```{r, message = FALSE, warning = FALSE}
+# Load packages
+library("broom.mixed")
+library("bayesrules")
+library("dplyr")
+library("ggplot2")
+library("rstanarm")
+
+sessionInfo()
+```
+
+
+## Data: Cherry Blossom 5K
+
+![Cherry Blossom 5K and 10-mile races](images/cherry_blossom_5K.png)
+
+```{r}
+# Load data
+data(cherry_blossom_sample)
+running <- cherry_blossom_sample %>% 
+  select(runner, age, net)
+```
+
+```{r}
+table(running$runner)
+```
+
+```{r}
+summary(running$age, give.attr = FALSE)
+```
+
+```{r}
+summary(running$net, give.attr = FALSE)
+```
+
 
 ## Pooled / Grouped data
 
@@ -40,17 +51,6 @@ Unit four will explore these techniques in these final chapters:
 - We will use the `cherry_blossom_sample` data:
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
-# Load packages
-library(bayesrules)
-library(tidyverse)
-library(rstanarm)
-library(broom.mixed)
-
-# Load data
-data(cherry_blossom_sample)
-running <- cherry_blossom_sample %>% 
-  select(runner, age, net)
-
 ggplot(running, aes(x = runner, y = net)) + 
   geom_boxplot()
 ```
