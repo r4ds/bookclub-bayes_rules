@@ -1,30 +1,5 @@
 # Hierarchical Models are Exciting
 
-**Welcome to Unit 4 - The final *unit* !**
-
-Hierarchical models expand our toolbox for hierarchical (grouped / pooled) data:
-
- - a sampled group of schools and data $y$ on multiple individual students within each school
- 
- - a sampled group of labs and data $y$ from multiple individual experiments within each lab
-
- - a sampled group of people on whom we make multiple individual observations of information $y$ over time.
- 
-Unit four will explore these techniques in these final chapters:
-
-- Chapter 15: Introduce the concepts
-
-- Chapter 16: Hierarchical models without predictors
-
-- Chapter 17: Normal Hierarchical Models with predictors
-
-- Chapter 18: Non-Normal Hierarchical Regression
-
-- Chapter 19: More Layers!
-
-
-## Chapter 15
-
 **Learning objectives**
 
 - Explore the limitations of our current Bayesian modeling toolbox under two extremes, complete pooling and no pooling.
