@@ -13,7 +13,7 @@ If you would like to present, please see the sign-up sheet for your cohort (link
 - Cohort 1 (ended 2022-10-20): [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGg3BSs7FW5_LPYfAyNft7I0)
 - Cohort 2 (ended 2022-11-16): [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGj_iXxIxkutG3rUzh-Z5vi7)
 - Cohort 3 (ended 2022-12-21): [meeting videos](https://youtube.com/playlist?list=PL3x6DOfs2NGhtHrM2ZAQLzgDpvA-Bj2-m)
-- [Cohort 4](https://docs.google.com/spreadsheets/d/1tf2GwxwpZNyQsXfyi8wBfuMyRrr6FT1ZxZAQPzxFJCA/edit?usp=sharing) (started 2023-02-12): [Sundays, 09:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20230212T150000&p1=24&p2=1440&p3=137) | [meeting videos](https://youtube.com/playlist?list=PL3x6DOfs2NGgr7tq9xfZsr-jET5VJ6Q0U)
+- Cohort 4 (started 2023-02-12, ended 2023-07-09): [meeting videos](https://youtube.com/playlist?list=PL3x6DOfs2NGgr7tq9xfZsr-jET5VJ6Q0U)
 
 <hr>
 

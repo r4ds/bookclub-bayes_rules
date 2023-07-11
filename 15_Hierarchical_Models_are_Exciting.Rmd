@@ -231,12 +231,22 @@ knitr::include_graphics(rep("images/runners-ch-15-1.png"))
 
 ### Cohort 4
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/Rx16d8khmdE")`
 
 <details>
-<summary> Meeting chat log </summary>
 
+<summary>Meeting chat log</summary>
+
+```         
+00:01:49	Federica Gazzelloni:	Hello
+00:02:03	Derek Sollberger (he/him):	good morning
+00:02:19	Derek Sollberger (he/him):	https://dsollbergerquarto.netlify.app/posts/bayesrules/14_naive_bayes_classification
+00:02:48	Federica Gazzelloni:	Most probably is that the package needs to be checked in the DESCRIPTION file
+00:03:16	Federica Gazzelloni:	Thanks for sharing!
+00:03:45	Derek Sollberger (he/him):	rstan is not compatible with the new 4.3.0 (as said in the rstan GitHub page).  I don't know how to use the compatible version of rstan with the "build book" process
+00:04:09	Federica Gazzelloni:	Reacted to "rstan is not compati..." with 🧐
+00:04:39	Derek Sollberger (he/him):	start
+00:56:08	Derek Sollberger (he/him):	end
 ```
-LOG
-```
+
 </details>
