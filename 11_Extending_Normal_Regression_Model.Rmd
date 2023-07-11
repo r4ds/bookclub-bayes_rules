@@ -594,12 +594,6 @@ prediction_summary_cv(model = model_1,
 
 ### Cohort 4
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/r1EVL_g2TX4")`
 
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
+`r knitr::include_url("https://www.youtube.com/embed/R95OvHDPBIs")`

@@ -531,12 +531,17 @@ knitr::include_graphics(
 
 ### Cohort 4
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+`r knitr::include_url("https://www.youtube.com/embed/FQlPeY0dTds")`
 
 <details>
 <summary> Meeting chat log </summary>
 
 ```
-LOG
+00:23:08	Federica Gazzelloni:	To make the toggle hiding code:
+
+<details class="details-example">
+    <summary> Results</summary>
+…your content here…
+</details>
 ```
 </details>

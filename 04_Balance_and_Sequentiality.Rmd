@@ -163,12 +163,4 @@ summarize_beta_binomial(alpha = 5, beta = 11, y = 50, n = 99) %>%
 
 ### Cohort 4
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
+`r knitr::include_url("https://www.youtube.com/embed/LonmgZxBDk8")`
