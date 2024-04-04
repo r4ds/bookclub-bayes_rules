@@ -80,7 +80,7 @@ penguins |>
   geom_bar(position = "fill") + 
   labs(title = "<span style = 'color:#067476'>For which species is a<br>below-average weight most likely?</span>",
        subtitle = "(focus on the <span style = 'color:#c65ccc'>below-average</span> category)",
-       caption = "R4DS Book Club") +
+       caption = "DSLC Book Club") +
   scale_fill_manual(values = c("#c65ccc", "#fb7504")) +
   theme_minimal() +
   theme(plot.title = element_markdown(face = "bold", size = 24),
@@ -98,7 +98,7 @@ penguins |>
   geom_bar(position = "fill") + 
   labs(title = "<span style = 'color:#067476'>For which species is a<br>below-average weight most likely?</span>",
        subtitle = "(focus on the <span style = 'color:#c65ccc'>below-average</span> category)",
-       caption = "R4DS Book Club") +
+       caption = "DSLC Book Club") +
   scale_fill_manual(values = c("#c65ccc", "#fb7504")) +
   theme_minimal() +
   theme(plot.title = element_markdown(face = "bold", size = 24),
@@ -165,7 +165,7 @@ penguins|>
   geom_vline(xintercept = 50, linetype = "dashed", linewidth = 3) + 
   labs(title = "<span style = 'color:#c65ccc'>For which species is a<br>50mm-long bill the most common?</span>",
        subtitle = "one numerical predictor",
-       caption = "R4DS Book Club") +
+       caption = "DSLC Book Club") +
   scale_fill_manual(values = c(adelie_color, chinstrap_color, gentoo_color)) +
   theme_minimal() +
   theme(plot.title = element_markdown(face = "bold", size = 24),
@@ -183,7 +183,7 @@ penguins|>
   geom_vline(xintercept = 50, linetype = "dashed", linewidth = 3) + 
   labs(title = "<span style = 'color:#c65ccc'>For which species is a<br>50mm-long bill the most common?</span>",
        subtitle = "one numerical predictor",
-       caption = "R4DS Book Club") +
+       caption = "DSLC Book Club") +
   scale_fill_manual(values = c(adelie_color, chinstrap_color, gentoo_color)) +
   theme_minimal() +
   theme(plot.title = element_markdown(face = "bold", size = 24),
@@ -240,7 +240,7 @@ penguins |>
   geom_vline(xintercept = 50, linetype = "dashed") + 
   labs(title = "<span style = 'color:#c65ccc'>Prior Probabilities</span>",
        subtitle = "conditionally normal",
-       caption = "R4DS Book Club") +
+       caption = "DSLC Book Club") +
   scale_color_manual(values = c(adelie_color, chinstrap_color, gentoo_color)) +
   theme_minimal() +
   theme(plot.title = element_markdown(face = "bold", size = 24),
@@ -263,7 +263,7 @@ penguins |>
   geom_vline(xintercept = 50, linetype = "dashed") + 
   labs(title = "<span style = 'color:#c65ccc'>Prior Probabilities</span>",
        subtitle = "conditionally normal",
-       caption = "R4DS Book Club") +
+       caption = "DSLC Book Club") +
   scale_color_manual(values = c(adelie_color, chinstrap_color, gentoo_color)) +
   theme_minimal() +
   theme(plot.title = element_markdown(face = "bold", size = 24),
@@ -316,7 +316,7 @@ ggplot(aes(x = flipper_length_mm, y = bill_length_mm,
                color = "black", linetype = 2, linewidth = 2) +
   labs(title = "<span style = 'color:#c65ccc'>Two Predictor Variables</span>",
        subtitle = "50mm-long bill and 195mm-long flipper",
-       caption = "R4DS Book Club") +
+       caption = "DSLC Book Club") +
   scale_color_manual(values = c(adelie_color, chinstrap_color, gentoo_color)) +
   theme_minimal() +
   theme(plot.title = element_markdown(face = "bold", size = 24),
@@ -338,7 +338,7 @@ ggplot(aes(x = flipper_length_mm, y = bill_length_mm,
                color = "black", linetype = 2, linewidth = 2) +
   labs(title = "<span style = 'color:#c65ccc'>Two Predictor Variables</span>",
        subtitle = "50mm-long bill and 195mm-long flipper",
-       caption = "R4DS Book Club") +
+       caption = "DSLC Book Club") +
   scale_color_manual(values = c(adelie_color, chinstrap_color, gentoo_color)) +
   theme_minimal() +
   theme(plot.title = element_markdown(face = "bold", size = 24),

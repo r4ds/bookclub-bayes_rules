@@ -184,7 +184,7 @@ ggplot(bikes, aes(x = temp_feel, y = rides)) +
   geom_smooth(formula = "y ~ x", method = "lm", se = FALSE) +
   labs(title = "Washington DC Bike Ridership",
        subtitle = "Fanaee-T, Hadi and Gama, Joao (2013)",
-       caption = "R4DS Book Club",
+       caption = "DSLC Book Club",
        x = "what the temperature feels like (degrees Fahrenheit)",
        y = "number of bikeshare rides") +
   theme_minimal()
