@@ -294,7 +294,7 @@ ppc_intervals(bikes$rides, yrep = predictions, x = bikes$temp_feel,
               prob = 0.5, prob_outer = 0.95)+
   labs(title="Posterior Predictive Medians",
        subtitle = "with prediction intervals",
-       caption = "R4DS Book Club",
+       caption = "DSLC Book Club",
        x = "temperature feel",
        y = "ridership")
 ```

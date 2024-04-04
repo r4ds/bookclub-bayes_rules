@@ -79,7 +79,7 @@ ggplot(equality, aes(y = laws, x = percent_urban, color = historical)) +
   geom_point(size = 3) +
   labs(title = "Anti-Discrimination Laws",
        subtitle = "Human Rights Campaign State Equality Index",
-       caption = "R4DS Bayes Rules book club") +
+       caption = "DSLC Bayes Rules book club") +
   scale_color_manual(values = c("blue", "red", "purple")) +
   theme_minimal()
 ```
@@ -138,7 +138,7 @@ equality |>
               se = FALSE) +
   labs(title = "Anti-Discrimination Laws",
        subtitle = "Human Rights Campaign State Equality Index",
-       caption = "R4DS Bayes Rules book club") +
+       caption = "DSLC Bayes Rules book club") +
   scale_color_manual(values = c("blue", "red", "purple")) +
   theme_minimal() +
   xlim(0, 100)
@@ -219,7 +219,7 @@ equality %>%
     geom_line(aes(y = .value, group = paste(historical, .draw))) +
   labs(title = "Anti-Discrimination Laws",
        subtitle = "Human Rights Campaign State Equality Index",
-       caption = "R4DS Bayes Rules book club") +
+       caption = "DSLC Bayes Rules book club") +
   scale_color_manual(values = c("blue", "red", "purple")) +
   theme_minimal() + 
     ylim(0, 100)
@@ -277,7 +277,7 @@ equality %>%
   geom_point(data = equality) +
   labs(title = "Anti-Discrimination Laws",
        subtitle = "Human Rights Campaign State Equality Index",
-       caption = "R4DS Bayes Rules book club") +
+       caption = "DSLC Bayes Rules book club") +
   scale_color_manual(values = c("blue", "red", "purple")) +
   theme_minimal()
 ```

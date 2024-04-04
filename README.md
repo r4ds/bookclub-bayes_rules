@@ -1,14 +1,14 @@
-# R4DS Bayes Rules! Book Club
+# DSLC Bayes Rules! Book Club
 
-Welcome to the R4DS Bayes Rules! Book Club!
+Welcome to the DSLC Bayes Rules! Book Club!
 
 We are working together to read [_Bayes Rules!_](https://www.bayesrulesbook.com/) by Alicia A. Johnson, Miles Q. Ott, & Mine Dogucu (Chapman and Hall/CRC, copyright 2022, [9780367255398](https://www.routledge.com/Bayes-Rules-An-Introduction-to-Applied-Bayesian-Modeling/Johnson-Ott-Dogucu/p/book/9780367255398?utm_source=website&utm_medium=shared_link&utm_campaign=B023819_jm1_5ll_7pp_d676_bayesrulesauthorshare)).
-Join the [#book_club-bayes_rules](https://rfordatascience.slack.com/archives/C03EK4FUMQX) channel on the [R4DS Slack](https://r4ds.io/join) to participate.
-As we read, we are producing [notes about the book](https://r4ds.io/bayes_rules).
+Join the [#book_club-bayes_rules](https://dslcio.slack.com/archives/C03EK4FUMQX) channel on the [DSLC Slack](https://dslc.io/join) to participate.
+As we read, we are producing [notes about the book](https://dslc.io/bayes_rules).
 
 ## Meeting Schedule
 
-If you would like to present, please see the sign-up sheet for your cohort (linked below, and pinned in the [#book_club-bayes_rules](https://rfordatascience.slack.com/archives/C03EK4FUMQX) channel on Slack)!
+If you would like to present, please see the sign-up sheet for your cohort (linked below, and pinned in the [#book_club-bayes_rules](https://dslcio.slack.com/archives/C03EK4FUMQX) channel on Slack)!
 
 - Cohort 1 (ended 2022-10-20): [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGg3BSs7FW5_LPYfAyNft7I0)
 - Cohort 2 (ended 2022-11-16): [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGj_iXxIxkutG3rUzh-Z5vi7)
@@ -43,4 +43,4 @@ Do these steps each time you present another chapter:
 10. When your PR has been accepted ("merged"), `usethis::pr_finish()` to close out your branch and prepare your local repository for future work.
 11. Now that your local copy is up-to-date with the main repo, you need to update your remote fork. Run `gert::git_push("origin")` or click the `Push` button on the `Git` tab of Rstudio.
 
-When your PR is checked into the main branch, the bookdown site will rebuild, adding your slides to [this site](https://r4ds.io/bayes_rules).
+When your PR is checked into the main branch, the bookdown site will rebuild, adding your slides to [this site](https://dslc.io/bayes_rules).
